@@ -70,10 +70,12 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	public function admin_init() {}
 	public function admin_notices() {}
 	public function admin_footer_scripts() {}
+	public function load_scripts_styles() {}
 
 
-	public function load_scripts_styles() {
-		//@todo we'll load this from the EED_Barcode_Scanner module.
+
+	public function load_scripts_styles_default() {
+		EED_Barcode_Scanner::instance()->enqueue_scripts();
 	}
 
 
@@ -87,7 +89,7 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	 * @return string html output.
 	 */
 	protected function _barcode_scanner() {
-		$this->_template_args['admin_page_content'] = 'Congratulations the Admin page is loaded.  Soon to be replaced with the actual scanner of course!';
+		$this->_template_args['admin_page_content'] = EED_Barcode_Scanner::instance()->scanner_form( false );
 		$this->display_admin_page_with_no_sidebar();
 	}
 

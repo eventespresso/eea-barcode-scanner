@@ -112,7 +112,8 @@ class EED_Barcode_Scanner extends EED_Module {
 		wp_register_script( 'eea-scanner-detection', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.' . $script_min . 'js', array( 'eea-scanner-detection-cps' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		//addon js/css
-		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array(), EE_BARCODE_SCANNER_VERSION );
+		wp_register_style( 'espresso_default', EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css', array( 'dashicons' ), EVENT_ESPRESSO_VERSION );
+		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array('espresso_default'), EE_BARCODE_SCANNER_VERSION );
 		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		// is the shortcode or widget in play || is_admin?
@@ -137,7 +138,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	public function scanner_form( $echo = true ) {
 
 		//user permission check first
-		if ( ! $this->_user_check ) {
+		if ( ! $this->_user_check() ) {
 			EE_Error::add_error( __('Sorry, but you do not have permissions to access the barcode scanner form.  Please see the site administrator about gaining access', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			return '';
 		}
@@ -147,25 +148,26 @@ class EED_Barcode_Scanner extends EED_Module {
 		EE_Registry::instance()->load_helper('Template');
 		$action_options = array(
 			0 => array(
-				'text' => __('Confirm', 'event_espresso'),
+				'text' => __('Confirm First', 'event_espresso'),
 				'id' => 'confirm'
 				),
 			1 => array(
-				'text' => __('Automatic check-in or check-out', 'event_espresso' ),
+				'text' => __('Continuous', 'event_espresso' ),
 				'id' => 'auto'
 				)
 			);
 
 		$template_args = array(
 			'_wpnonce' => wp_create_nonce( 'ee_banner_scan_form' ),
-			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' )
+			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' ),
+			'button_class' => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button'
 			);
 		$template = EE_BARCODE_SCANNER_ADMIN . 'templates/scanner_detection_form.template.php';
 
 		if ( $echo ) {
-			EEH_Template::display_template( $template_path, $template_args );
+			EEH_Template::display_template( $template, $template_args );
 		} else {
-			return EEH_Template::display_template( $template_path, $template_args, TRUE );
+			return EEH_Template::display_template( $template, $template_args, TRUE );
 		}
 	}
 
@@ -182,7 +184,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return bool  yes if user can, no if user can't.
 	 */
 	private function _user_check() {
-		return is_admin() ? EE_Capabilities::current_user_can( 'ee_edit_checkin', 'do_barcode_scan' ) : apply_filters( 'EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true );
+		return is_admin() ? EE_Capabilities::instance()->current_user_can( 'ee_edit_checkin', 'do_barcode_scan' ) : apply_filters( 'EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true );
 	}
 
 

@@ -6,6 +6,40 @@
 /*
 General Styles
 ---------------------------------------------------------------------------------------------------- */
+.eea-barcode-scanning-container {
+	width: 80%;
+	margin: auto;
+	background-color: #ddd;
+	border: 2px #dfdfdf solid;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	padding: 10px;
+	margin-top: 20px;
+}
+
+.eea-barcode-scanner-form-container {
+	width: 70%;
+	margin: auto;
+	padding: 0;
+}
+
+.eea-barcode-scanner-form-container .eea-barcode-scan-code {
+	width: 55%;
+	vertical-align: middle;
+}
+
+.eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
+	width: 30%;
+	margin-left: 0px;
+}
+
+.eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
+	width: 12%;
+	margin-right: 0px;
+}
 
 
 /* Media Query for screens smaller then 768px (iPad portrait)
