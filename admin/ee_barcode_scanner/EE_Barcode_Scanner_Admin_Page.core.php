@@ -37,7 +37,7 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 		$this->_page_routes = array(
 			'default' => array(
 				'func' => '_barcode_scanner',
-				'capability' => 'ee_edit_checkin'
+				'capability' => 'ee_read_checkins'
 				)
 			);
 	}

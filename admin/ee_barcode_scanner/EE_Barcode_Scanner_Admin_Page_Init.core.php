@@ -48,7 +48,7 @@ class EE_Barcode_Scanner_Admin_Page_Init extends EE_Admin_Page_Init {
 			'parent_slug' => 'espresso_events',
 			'menu_slug' => EE_BARCODE_SCANNER_PG_SLUG,
 			'menu_label' => EE_BARCODE_SCANNER_PG_NAME,
-			'capability' => 'ee_edit_checkin',
+			'capability' => 'ee_read_checkins',
 			'admin_init_page' => $this
 			) );
 	}
