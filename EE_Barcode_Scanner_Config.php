@@ -15,7 +15,7 @@
  */
  /**
  *
- * Class EE_EE_Barcode_Scanner_Config
+ * Class EE_Barcode_Scanner_Config
  *
  * Description
  *
@@ -26,7 +26,7 @@
  *
  */
 
-class EE_EE_Barcode_Scanner_Config extends EE_Config_Base {
+class EE_Barcode_Scanner_Config extends EE_Config_Base {
 
 
 
@@ -34,5 +34,5 @@ class EE_EE_Barcode_Scanner_Config extends EE_Config_Base {
 
 
 
-// End of file EE_EE_Barcode_Scanner_Config.php
-// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EE_EE_Barcode_Scanner_Config.php
+// End of file EE_Barcode_Scanner_Config.php
+// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EE_Barcode_Scanner_Config.php

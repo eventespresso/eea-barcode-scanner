@@ -140,10 +140,10 @@ class EEW_EE_Barcode_Scanner extends WP_Widget {
 					echo $args['before_title'] . $title . $args['after_title'];
 				}
 				// load scripts
-				EE_EE_Barcode_Scanner::instance()->enqueue_scripts();
+				EE_Barcode_Scanner::instance()->enqueue_scripts();
 				// settings
 				$attributes = array();
-				echo EE_EE_Barcode_Scanner::instance()->display_ee_barcode_scanner( $attributes );
+				echo EE_Barcode_Scanner::instance()->display_ee_barcode_scanner( $attributes );
 				// After widget (defined by themes).
 				echo $args['after_widget'];
 			}

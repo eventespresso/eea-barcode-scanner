@@ -1,5 +1,5 @@
 <?php
-/* @var $config EE_EE_Barcode_Scanner_Config */
+/* @var $config EE_Barcode_Scanner_Config */
 ?>
 <div class="padding">
 	<h4>

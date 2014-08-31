@@ -2,8 +2,8 @@
 /*
   Plugin Name: Event Espresso - EE Barcode Scanner
   Plugin URI: http://www.eventespresso.com
-  Description: The Event Espresso EE Barcode Scanner adds NEW stuff to Event Espresso
-  Version: 0.0.1.dev.002
+  Description: Add a barcode scanner for checking in or checkout out attendees.  Requires Event Espresso 4 Core and the EE4 ticketing addon (which generates barcodes used for scanning).
+  Version: 1.0.0.dev.002
   Author: Event Espresso
   Author URI: http://www.eventespresso.com
   Copyright 2014 Event Espresso (email : support@eventespresso.com)
@@ -27,25 +27,25 @@
  *
  * Event Registration and Management Plugin for WordPress
  *
- * @ package		Event Espresso
+ * @ package		EE4 Barcode Scanner
  * @ author			Event Espresso
  * @ copyright	(c) 2008-2014 Event Espresso  All Rights Reserved.
  * @ license		http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
- * @ link				http://www.eventespresso.com
- * @ version	 	EE4
+ * @ link			http://www.eventespresso.com
+ * @ version	 	1.0.0
  *
  * ------------------------------------------------------------------------
  */
-define( 'EE_EE_BARCODE_SCANNER_VERSION', '0.0.1.dev.002' );
-define( 'EE_EE_BARCODE_SCANNER_PLUGIN_FILE',  __FILE__ );
-function load_espresso_ee_barcode_scanner() {
+define( 'EE_BARCODE_SCANNER_VERSION', '1.0.0.dev.002' );
+define( 'EE_BARCODE_SCANNER_PLUGIN_FILE',  __FILE__ );
+function load_espresso_barcode_scanner() {
 if ( class_exists( 'EE_Addon' )) {
 	// ee_barcode_scanner version
-	require_once ( plugin_dir_path( __FILE__ ) . 'EE_EE_Barcode_Scanner.class.php' );
-	EE_EE_Barcode_Scanner::register_addon();
+	require_once ( plugin_dir_path( __FILE__ ) . 'EE_Barcode_Scanner.class.php' );
+	EEE_Barcode_Scanner::register_addon();
 }
 }
-add_action( 'AHEE__EE_System__load_espresso_addons', 'load_espresso_ee_barcode_scanner' );
+add_action( 'AHEE__EE_System__load_espresso_addons', 'load_espresso_barcode_scanner' );
 
-// End of file espresso_ee_barcode_scanner.php
-// Location: wp-content/plugins/espresso-ee-barcode-scanner/espresso_ee_barcode_scanner.php
+// End of file espresso_barcode_scanner.php
+// Location: wp-content/plugins/eea-barcode-scanner/espresso_barcode_scanner.php

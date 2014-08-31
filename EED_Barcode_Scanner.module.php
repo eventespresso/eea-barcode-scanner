@@ -69,14 +69,14 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 	/**
 	 *    config
 	 *
-	 * @return EE_EE_Barcode_Scanner_Config
+	 * @return EE_Barcode_Scanner_Config
 	 */
 	public function config(){
 		// config settings are setup up individually for EED_Modules via the EE_Configurable class that all modules inherit from, so
 		// $this->config();  can be used anywhere to retrieve it's config, and:
 		// $this->_update_config( $EE_Config_Base_object ); can be used to supply an updated instance of it's config object
-		// to piggy back off of the config setup for the base EE_EE_Barcode_Scanner class, just use the following (note: updates would have to occur from within that class)
-		return EE_Registry::instance()->addons->EE_EE_Barcode_Scanner->config();
+		// to piggy back off of the config setup for the base EE_Barcode_Scanner class, just use the following (note: updates would have to occur from within that class)
+		return EE_Registry::instance()->addons->EE_Barcode_Scanner->config();
 	}
 
 
@@ -113,10 +113,10 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 			wp_register_style( 'espresso_ee_barcode_scanner', EVENT_ESPRESSO_UPLOAD_URL . 'css/espresso_ee_barcode_scanner.css' );
 		} else {
 			// EE ee_barcode_scanner style
-			wp_register_style( 'espresso_ee_barcode_scanner', EE_EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css' );
+			wp_register_style( 'espresso_ee_barcode_scanner', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css' );
 		}
 		// ee_barcode_scanner script
-		wp_register_script( 'espresso_ee_barcode_scanner', EE_EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'jquery' ), EE_EE_BARCODE_SCANNER_VERSION, TRUE );
+		wp_register_script( 'espresso_ee_barcode_scanner', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'jquery' ), EE_BARCODE_SCANNER_VERSION, TRUE );
 
 		// is the shortcode or widget in play?
 		if ( EED_EE_Barcode_Scanner::$shortcode_active ) {

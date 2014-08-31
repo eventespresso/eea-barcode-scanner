@@ -37,14 +37,14 @@ class EE_Barcode_Scanner_Admin_Page_Init extends EE_Admin_Page_Init  {
 
 		define( 'EE_BARCODE_SCANNER_PG_SLUG', 'espresso_ee_barcode_scanner' );
 		define( 'EE_BARCODE_SCANNER_LABEL', __( 'EE_Barcode_Scanner', 'event_espresso' ));
-		define( 'EE_EE_BARCODE_SCANNER_ADMIN_URL', admin_url( 'admin.php?page=' . EE_BARCODE_SCANNER_PG_SLUG ));
-		define( 'EE_EE_BARCODE_SCANNER_ADMIN_ASSETS_PATH', EE_EE_BARCODE_SCANNER_ADMIN . 'assets' . DS );
-		define( 'EE_EE_BARCODE_SCANNER_ADMIN_ASSETS_URL', EE_EE_BARCODE_SCANNER_URL . 'admin' . DS . 'ee_barcode_scanner' . DS . 'assets' . DS );
-		define( 'EE_EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH', EE_EE_BARCODE_SCANNER_ADMIN . 'templates' . DS );
-		define( 'EE_EE_BARCODE_SCANNER_ADMIN_TEMPLATE_URL', EE_EE_BARCODE_SCANNER_URL . 'admin' . DS . 'ee_barcode_scanner' . DS . 'templates' . DS );
+		define( 'EE_BARCODE_SCANNER_ADMIN_URL', admin_url( 'admin.php?page=' . EE_BARCODE_SCANNER_PG_SLUG ));
+		define( 'EE_BARCODE_SCANNER_ADMIN_ASSETS_PATH', EE_BARCODE_SCANNER_ADMIN . 'assets' . DS );
+		define( 'EE_BARCODE_SCANNER_ADMIN_ASSETS_URL', EE_BARCODE_SCANNER_URL . 'admin' . DS . 'ee_barcode_scanner' . DS . 'assets' . DS );
+		define( 'EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH', EE_BARCODE_SCANNER_ADMIN . 'templates' . DS );
+		define( 'EE_BARCODE_SCANNER_ADMIN_TEMPLATE_URL', EE_BARCODE_SCANNER_URL . 'admin' . DS . 'ee_barcode_scanner' . DS . 'templates' . DS );
 
 		parent::__construct();
-		$this->_folder_path = EE_EE_BARCODE_SCANNER_ADMIN;
+		$this->_folder_path = EE_BARCODE_SCANNER_ADMIN;
 
 	}
 

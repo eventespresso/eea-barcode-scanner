@@ -12,7 +12,7 @@ if (!defined('EVENT_ESPRESSO_VERSION'))
  * @author				Mike Nelson
  *
  */
-class EE_EE_Barcode_Scanner_Thing extends EE_Base_Class{
+class EE_Barcode_Scanner_Thing extends EE_Base_Class{
 	/**
 	 *
 	 * @param type $props_n_values

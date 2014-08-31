@@ -13,7 +13,7 @@ if (!defined('EVENT_ESPRESSO_VERSION')) {
  * @author				Mike Nelson
  *
  */
-class EEE_EE_Barcode_Scanner_Attendee extends EEE_Base_Class{
+class EEE_Barcode_Scanner_Attendee extends EEE_Base_Class{
 
 	public function __construct(){
 		$this->_model_name_extended = 'Attendee';

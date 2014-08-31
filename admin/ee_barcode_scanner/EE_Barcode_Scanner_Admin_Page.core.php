@@ -30,8 +30,8 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	protected function _init_page_props() {
 		$this->page_slug = EE_BARCODE_SCANNER_PG_SLUG;
 		$this->page_label = EE_BARCODE_SCANNER_LABEL;
-		$this->_admin_base_url = EE_EE_BARCODE_SCANNER_ADMIN_URL;
-		$this->_admin_base_path = EE_EE_BARCODE_SCANNER_ADMIN;
+		$this->_admin_base_url = EE_BARCODE_SCANNER_ADMIN_URL;
+		$this->_admin_base_path = EE_BARCODE_SCANNER_ADMIN;
 	}
 
 
@@ -94,7 +94,7 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	protected function _add_screen_options_default() {}
 	protected function _add_feature_pointers() {}
 	public function load_scripts_styles() {
-		wp_register_script( 'espresso_ee_barcode_scanner_admin', EE_EE_BARCODE_SCANNER_ADMIN_ASSETS_URL . 'espresso_ee_barcode_scanner_admin.js', array( 'espresso_core' ), EE_EE_BARCODE_SCANNER_VERSION, TRUE );
+		wp_register_script( 'espresso_ee_barcode_scanner_admin', EE_BARCODE_SCANNER_ADMIN_ASSETS_URL . 'espresso_ee_barcode_scanner_admin.js', array( 'espresso_core' ), EE_BARCODE_SCANNER_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_ee_barcode_scanner_admin');
 
 		EE_Registry::$i18n_js_strings['confirm_reset'] = __( 'Are you sure you want to reset ALL your Event Espresso EE_Barcode_Scanner Information? This cannot be undone.', 'event_espresso' );
@@ -123,7 +123,7 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	 */
 	protected function _settings_page( $template ) {
 		EE_Registry::instance()->load_helper( 'Form_Fields' );
-		$this->_template_args['ee_barcode_scanner_config'] = EE_Config::instance()->get_config( 'addons', 'EED_EE_Barcode_Scanner', 'EE_EE_Barcode_Scanner_Config' );
+		$this->_template_args['ee_barcode_scanner_config'] = EE_Config::instance()->get_config( 'addons', 'EED_EE_Barcode_Scanner', 'EE_Barcode_Scanner_Config' );
 		add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
 		$this->_template_args['yes_no_values'] = array(
 			EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
@@ -131,26 +131,26 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 		);
 
 		$this->_template_args['return_action'] = $this->_req_action;
-		$this->_template_args['reset_url'] = EE_Admin_Page::add_query_args_and_nonce( array('action'=> 'reset_settings','return_action'=>$this->_req_action), EE_EE_BARCODE_SCANNER_ADMIN_URL );
+		$this->_template_args['reset_url'] = EE_Admin_Page::add_query_args_and_nonce( array('action'=> 'reset_settings','return_action'=>$this->_req_action), EE_BARCODE_SCANNER_ADMIN_URL );
 		$this->_set_add_edit_form_tags( 'update_settings' );
 		$this->_set_publish_post_box_vars( NULL, FALSE, FALSE, NULL, FALSE);
-		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH . $template, $this->_template_args, TRUE );
+		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH . $template, $this->_template_args, TRUE );
 		$this->display_admin_page_with_sidebar();
 	}
 
 
 	protected function _usage() {
-		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH . 'ee_barcode_scanner_usage_info.template.php', array(), TRUE );
+		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_BARCODE_SCANNER_ADMIN_TEMPLATE_PATH . 'ee_barcode_scanner_usage_info.template.php', array(), TRUE );
 		$this->display_admin_page_with_no_sidebar();
 	}
 
 	protected function _update_settings(){
 		EE_Registry::instance()->load_helper( 'Class_Tools' );
 		if(isset($_POST['reset_ee_barcode_scanner']) && $_POST['reset_ee_barcode_scanner'] == '1'){
-			$config = new EE_EE_Barcode_Scanner_Config();
+			$config = new EE_Barcode_Scanner_Config();
 			$count = 1;
 		}else{
-			$config = EE_Config::instance()->get_config( 'addons', 'EED_EE_Barcode_Scanner', 'EE_EE_Barcode_Scanner_Config' );
+			$config = EE_Config::instance()->get_config( 'addons', 'EED_EE_Barcode_Scanner', 'EE_Barcode_Scanner_Config' );
 			$count=0;
 			//otherwise we assume you want to allow full html
 			foreach($this->_req_data['ee_barcode_scanner'] as $top_level_key => $top_level_value){
@@ -177,7 +177,7 @@ class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 	 * resets the ee_barcode_scanner data and redirects to where they came from
 	 */
 //	protected function _reset_settings(){
-//		EE_Config::instance()->addons['ee_barcode_scanner'] = new EE_EE_Barcode_Scanner_Config();
+//		EE_Config::instance()->addons['ee_barcode_scanner'] = new EE_Barcode_Scanner_Config();
 //		EE_Config::instance()->update_espresso_config();
 //		$this->_redirect_after_action(1, 'Settings', 'reset', array('action' => $this->_req_data['return_action']));
 //	}
