@@ -148,11 +148,11 @@ class EED_Barcode_Scanner extends EED_Module {
 		EE_Registry::instance()->load_helper('Template');
 		$action_options = array(
 			0 => array(
-				'text' => __('Confirm First', 'event_espresso'),
+				'text' => __('Lookup Attendee', 'event_espresso'),
 				'id' => 'confirm'
 				),
 			1 => array(
-				'text' => __('Continuous', 'event_espresso' ),
+				'text' => __('Continuous Scanning', 'event_espresso' ),
 				'id' => 'auto'
 				)
 			);
