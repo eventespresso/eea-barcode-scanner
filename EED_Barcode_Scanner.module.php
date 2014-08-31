@@ -14,7 +14,7 @@
  * ------------------------------------------------------------------------
  */
 /**
- * Class  EED_EE_Barcode_Scanner
+ * Class  EED_Barcode_Scanner
  *
  * @package			Event Espresso
  * @subpackage		espresso-ee-barcode-scanner
@@ -22,7 +22,7 @@
  *
  * ------------------------------------------------------------------------
  */
-class EED_EE_Barcode_Scanner extends EED_Module {
+class EED_Barcode_Scanner extends EED_Module {
 
 	/**
 	 * @var 		bool
@@ -33,7 +33,7 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 
 
 	/**
-	 * @return EED_EE_Barcode_Scanner
+	 * @return EED_Barcode_Scanner
 	 */
 	public static function instance() {
 		return parent::get_instance( __CLASS__ );
@@ -48,7 +48,7 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 	  *  @return 	void
 	  */
 	 public static function set_hooks() {
-		 EE_Config::register_route( 'ee_barcode_scanner', 'EED_EE_Barcode_Scanner', 'run' );
+		 EE_Config::register_route( 'ee_barcode_scanner', 'EED_Barcode_Scanner', 'run' );
 	 }
 
 	 /**
@@ -59,8 +59,8 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 	  */
 	 public static function set_hooks_admin() {
 		 // ajax hooks
-		 add_action( 'wp_ajax_get_ee_barcode_scanner', array( 'EED_EE_Barcode_Scanner', '_get_ee_barcode_scanner' ));
-		 add_action( 'wp_ajax_nopriv_get_ee_barcode_scanner', array( 'EED_EE_Barcode_Scanner', '_get_ee_barcode_scanner' ));
+		 add_action( 'wp_ajax_get_ee_barcode_scanner', array( 'EED_Barcode_Scanner', '_get_ee_barcode_scanner' ));
+		 add_action( 'wp_ajax_nopriv_get_ee_barcode_scanner', array( 'EED_Barcode_Scanner', '_get_ee_barcode_scanner' ));
 	 }
 
 
@@ -119,7 +119,7 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 		wp_register_script( 'espresso_ee_barcode_scanner', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'jquery' ), EE_BARCODE_SCANNER_VERSION, TRUE );
 
 		// is the shortcode or widget in play?
-		if ( EED_EE_Barcode_Scanner::$shortcode_active ) {
+		if ( EED_Barcode_Scanner::$shortcode_active ) {
 			wp_enqueue_style( 'espresso_ee_barcode_scanner' );
 			wp_enqueue_script( 'espresso_ee_barcode_scanner' );
 		}
@@ -141,5 +141,5 @@ class EED_EE_Barcode_Scanner extends EED_Module {
 	public function __destruct() { return FALSE; }
 
  }
-// End of file EED_EE_Barcode_Scanner.module.php
-// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EED_EE_Barcode_Scanner.module.php
+// End of file EED_Barcode_Scanner.module.php
+// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EED_Barcode_Scanner.module.php

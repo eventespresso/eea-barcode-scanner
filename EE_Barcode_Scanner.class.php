@@ -46,8 +46,8 @@ Class  EE_Barcode_Scanner extends EE_Addon {
 					'EE_Barcode_Scanner_Admin_Page' => EE_BARCODE_SCANNER_ADMIN . 'EE_Barcode_Scanner_Admin_Page.core.php',
 					'EE_Barcode_Scanner_Admin_Page_Init' => EE_BARCODE_SCANNER_ADMIN . 'EE_Barcode_Scanner_Admin_Page_Init.core.php',
 				),
-				'module_paths' => array( EE_BARCODE_SCANNER_PATH . 'EED_EE_Barcode_Scanner.module.php' ),
-				'shortcode_paths' => array( EE_BARCODE_SCANNER_PATH . 'EES_EE_Barcode_Scanner.shortcode.php' ),
+				'module_paths' => array( EE_BARCODE_SCANNER_PATH . 'EED_Barcode_Scanner.module.php' ),
+				'shortcode_paths' => array( EE_BARCODE_SCANNER_PATH . 'EES_Barcode_Scanner.shortcode.php' ),
 				// if plugin update engine is being used for auto-updates. not needed if PUE is not being used.
 				'pue_options' => array(
 					'pue_plugin_slug' => 'eea_barcode_scanner',
