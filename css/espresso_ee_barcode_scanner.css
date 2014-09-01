@@ -134,6 +134,10 @@ Attendee container css
 	border-radius: 5px;
 }
 
+.eea-barcode-scanner-contact-group-container {
+	background-color: transparent;
+}
+
 .eea-bs-custom-answers-table {
 	width: 100%;
 }
@@ -160,7 +164,6 @@ Attendee container css
 
 .eea-bs-table td {
 	vertical-align: middle;
-	padding: 0px 8px;
 }
 
 .eea-bs-table td:first-child, .eea-bs-table th:first-child, .eea-bs-table td:nth-child(2), .eea-bs-table th:nth-child(2) {
