@@ -193,6 +193,14 @@ Attendee container css
 	float: right;
 }
 
+.eea-barcode-scanner-avatar-container .avatar {
+	-webkit-border-radius: 128px;
+	-moz-border-radius: 128px;
+	-ms-border-radius: 128px;
+	-o-border-radius: 128px;
+	border-radius: 128px;
+}
+
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
 
