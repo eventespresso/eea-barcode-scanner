@@ -21,7 +21,7 @@
 			<!-- on with the form -->
 			<?php echo $action_selector; ?>
 			<input type="text" class="eea-barcode-scan-code" name="eea_barcode_scan_code" value="" placeholder="<?php _e('Scan or enter barcode here.', 'event_espresso' ); ?>">
-			<input class="<?php echo $button_class; ?>" type = "submit" value="<?php _e('Go', 'event_espresso'); ?>"
+			<input class="<?php echo $button_class; ?>" type="submit" value="<?php _e('Go', 'event_espresso'); ?>"
 		</form>
 	</div>
 </div>
