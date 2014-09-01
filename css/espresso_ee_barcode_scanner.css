@@ -9,6 +9,11 @@ General Styles
 .eea-barcode-scanning-container {
 	width: 80%;
 	margin: auto;
+	margin-top: 20px;
+}
+
+.eea-barcode-scanner-form-container {
+	width: 100%;
 	background-color: #ddd;
 	border: 2px #dfdfdf solid;
 	-webkit-border-radius: 5px;
@@ -17,13 +22,6 @@ General Styles
 	-o-border-radius: 5px;
 	border-radius: 5px;
 	padding: 10px;
-	margin-top: 20px;
-}
-
-.eea-barcode-scanner-form-container {
-	width: 70%;
-	margin: auto;
-	padding: 0;
 }
 
 .eea-barcode-scanner-form-container .eea-barcode-scan-code {
@@ -41,6 +39,156 @@ General Styles
 	margin-right: 0px;
 }
 
+/**
+Attendee container css
+**/
+
+.eea-barcode-scanner-attendee-container {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.eea-barcode-scanner-avatar-container {
+	display: inline-block;
+	float: left;
+	width: 20%;
+	text-align: center;
+}
+
+.eea-barcode-scanner-attendee-details-container {
+	display: inline-block;
+	float: left;
+	width: 80%;
+}
+
+#poststuff h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
+	font-size: 2em;
+	margin: 0;
+	margin-top: -10px;
+	padding-left: 0;
+}
+
+#poststuff h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
+	margin: 0;
+	margin-bottom: 5px;
+	padding: 0;
+	font-size: 1.5em;
+}
+
+.eea-bs-status-container, .eea-bs-checkout-action-container {
+	min-width: 25%;
+	display: inline-block;
+	float: left;
+	font-size: 1.3em;
+	margin-top: 8px;
+}
+
+.eea-bs-status-label {
+	margin-right: 4px;
+	font-weight: bold;
+}
+
+.eea-bs-status-circle {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	margin-left: 8px;
+	vertical-align: middle;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	-ms-border-radius: 20px;
+	-o-border-radius: 20px;
+	border-radius: 20px;
+}
+
+.eea-bs-checkout-action-container {
+	margin-top: 20px;
+}
+
+.eea-bs-checkout-status-date {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #ddd;
+	padding: 4px 10px;
+	font-size: .8em;
+}
+
+.eea-bs-checkout-action-button.big {
+	margin-top: -10px;
+	margin-left: 20px;
+	font-weight: 900;
+}
+
+.eea-bs-details-container {
+	width: 100%;
+	margin-top: 20px;
+	padding: 10px;
+	background-color: #ddd;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.eea-bs-custom-answers-table {
+	width: 100%;
+}
+
+.eea-bs-custom-answers-table td:first-child {
+	min-width: 30%;
+}
+
+.eea-bs-custom-answers-table td:last-child {
+	width: 70%;
+}
+
+
+.eea-bs-admin-label {
+	font-size: .85em;
+	font-style: italic;
+}
+
+.eea-bs-table {
+	width: 100%;
+	margin-top: 20px;
+	text-align: left;
+}
+
+.eea-bs-table td {
+	vertical-align: middle;
+	padding: 0px 8px;
+}
+
+.eea-bs-table td:first-child, .eea-bs-table th:first-child, .eea-bs-table td:nth-child(2), .eea-bs-table th:nth-child(2) {
+	width: 25%;
+}
+
+.eea-bs-table td:nth-child(3), .eea-bs-table th:nth-child(3) {
+	width: 35%;
+}
+
+.eea-bs-check-icon {
+	float: right;
+	font-size: 20px;
+	vertical-align: middle;
+}
+
+.eea-bs-check-icon.dashicons {
+	margin-right: 20px;
+}
+
+.eea-bs-table .eea-bs-checkout-action-button {
+	width: 100%;
+}
+
+.eea-barcode-scanner-contact-group-container .eea-bs-checkout-action-button {
+	margin-top: 20px;
+	float: right;
+}
 
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
