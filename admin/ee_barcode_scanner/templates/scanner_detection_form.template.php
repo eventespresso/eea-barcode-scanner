@@ -56,7 +56,7 @@
 			</div>
 			<div style="clear:both"></div>
 			<div id="eea-bs-view-answers-container" class="eea-barcode-scanner-contact-answer-details-container eea-bs-details-container">
-				<h4 class="eea-bs-subtitle-label eea-bs-answers-header">Answers to Custom Questions:</h4>
+				<h4 class="eea-bs-subtitle-label eea-bs-answers-header">Registration Form Answers:</h4>
 				<table class="eea-bs-custom-answers-table">
 					<tbody>
 						<tr>
