@@ -191,6 +191,97 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 	/**
+	 * This is the wp_ajax callback for the barcode scanner main action.
+	 *
+	 * @since %VER%
+	 *
+	 * @return string  html response.
+	 */
+	public function ee_barcode_scanner_main_action() {
+		//verify user has basic access.
+		if ( ! $this->_user_check() ) {
+			EE_Error::add_error( __('You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			$this->_return_json();
+		}
+
+		//verify incoming package.
+		$nonce = EE_Registry::instance()->get('_wpnonce');
+		$action = EE_Registry::instance()->get('ee_scanner_action');
+		$this->_response['data']['regcode'] = EE_Registry::instance()->get('ee_reg_code');
+
+		if ( empty( $nonce ) || empty( $action ) || empty( $this->_response['data']['regcode'] ) ) {
+			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce", "ee_scanner_action", or "ee_reg_code" are empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			$this->_return_json();
+		}
+
+		//verify nonce
+		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
+			EE_Error::add_error( __('Invalid request.  Missing a valid nonce in the request.'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			$this->_return_json();
+		}
+
+		//perform action.
+		$method = '_scanner_action_' . $action;
+		if ( ! method_exists( $this, $method ) ) {
+			EE_Error::add_error( sprintf( __( 'The incoming action on the scanner request (%s) is invalid.  Please check the spelling and ensure there is a callback for handling that action defined.', 'event_espresso' ), $action ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			$this->_return_json();
+		}
+
+		//ALL is good! let's call the action and return the response.
+		$this->_response['content'] = call_user_func( array( $this, $method ) );
+
+		//do_action for the action.yo.
+		do_action( 'AHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__' . $action, $this->_response );
+		do_action( 'AHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action', $action, $this->_response );
+
+		//filter response
+		$this->_response = apply_filters( 'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__' . $action . '__response', $this->_response );
+		$this->_response = apply_filters( 'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__response', $this->_response, $action );
+		$this->_return_json();
+	}
+
+
+
+
+
+	/**
+	 * This looks up a registrant (attendee) and prepares appropriate response.
+	 *
+	 * @since %VER%
+	 *
+	 * @return string
+	 */
+	protected function _scanner_action_lookup_attendee() {
+		//valid registration?
+		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( $this->_response['data']['regcode'] );
+		if ( empty( $registration ) ) {
+			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '';
+		}
+
+		//alright there IS a registration.  Let's get the template and return.
+		EE_Registry::instance()->load_helper( 'Template' );
+		$contact = $registration->attendee();
+		//$group_regs =
+		/*$template_args = array(
+			'avatar' = get_avatar()
+			);/**/
+	}
+	protected function _scanner_action_toggle_attendee() {}
+	protected function _scanner_action_check_in_all_attendees() {}
+	protected function _scanner_action_check_out_all_attendees() {}
+	protected function _scanner_action_toggle_check_in_status_for_all_attendees( $checkin = TRUE ) {}
+
+
+
+
+
+	/**
 	 * Helper method for checking user permissions on running a scan.
 	 * Note by default, all wp-admin implementations of the scanning form (and related actions) are only permissible to users with the ee_edit_checkin capability.  However, when the shortcode is used to output the form it allows for ANY user to do the scans.  This is filterable however.  The reason for this is because it is possible that users want to allow self-checkin.  It IS possible for admins to still control the integrity of frontend scanning by using the shortcode on a password protected post.
 	 *
