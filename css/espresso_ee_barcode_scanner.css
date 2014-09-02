@@ -201,6 +201,119 @@ Attendee container css
 	border-radius: 128px;
 }
 
+
+/** steps **/
+.eea-bs-main-step-container {
+	width: 75%;
+	position: relative;
+	margin-bottom: 50px;
+	height: 80px;
+}
+
+.eea-bs-step-line {
+	position: absolute;
+	z-index: -1;
+	width: 100%;
+	top: 50%;
+}
+
+.eea-bs-step-number {
+	display: inline-block;
+	margin-right: 70px;
+	margin-left: 30px;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.eea-step-bubble {
+	width: 50px;
+	height: 50px;
+	margin: auto;
+	-webkit-border-radius: 50px;
+	-moz-border-radius: 50px;
+	-ms-border-radius: 50px;
+	-o-border-radius: 50px;
+	border-radius: 50px;
+	background-color: #ddd;
+	color: #000;
+	text-align: center;
+}
+
+.eea-bs-step-active .eea-step-bubble {
+	color: #fff;
+	background-color: #666;
+	width: 55px;
+	height: 55px;
+	margin: auto;
+	-webkit-border-radius: 55px;
+	-moz-border-radius: 55px;
+	-ms-border-radius: 55px;
+	-o-border-radius: 55px;
+	border-radius: 55px;
+}
+
+.eea-step-bubble p {
+	font-size: 2.5em;
+	padding: 0;
+	margin: 0;
+	font-weight: bold;
+}
+
+.eea-bs-step-active .eea-step-bubble p {
+	font-size: 2.8em;
+}
+
+.eea-bs-step-text {
+	display:block;
+	margin-top: 15px;
+	font-size: 1.3em;
+}
+
+.eea-bs-ed-selection-container {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.eea-bs-ed-selector {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#poststuff .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
+	font-size: 2.5em;
+	font-weight: 999;
+	margin-bottom: 0px;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+#poststuff .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
+	font-size: 1.5em;
+	font-weight: 999;
+	color: #666;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+.eea-bs-ed-selector-divider {
+	display:block;
+	width: 7px;
+	height: 7px;
+	margin: auto;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-ms-border-radius: 7px;
+	-o-border-radius: 7px;
+	border-radius: 7px;
+	background-color: #666;
+}
+
+.eea-bs-ed-selector-select {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
 
