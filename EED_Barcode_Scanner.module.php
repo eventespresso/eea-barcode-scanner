@@ -58,7 +58,8 @@ class EED_Barcode_Scanner extends EED_Module {
 	  */
 	 public static function set_hooks_admin() {
 		 // ajax hooks
-		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', '_ee_barcode_scanner_main_action' ) );
+		 $bs = self::instance();
+		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( $bs, 'ee_barcode_scanner_main_action' ) );
 	 }
 
 
