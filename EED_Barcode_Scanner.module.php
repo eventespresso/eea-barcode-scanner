@@ -27,6 +27,16 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 	/**
+	 * Will hold the ajax response.
+	 *
+	 * @since %VER%
+	 * @var array
+	 */
+	protected $_response = array();
+
+
+
+	/**
 	 * @return EED_Barcode_Scanner
 	 */
 	public static function instance() {
@@ -194,6 +204,26 @@ class EED_Barcode_Scanner extends EED_Module {
 	}
 
 
+
+
+	private function _return_json() {
+		$default_response = array(
+			'error' => FALSE,
+			'success' => FALSE,
+			'notices' => EE_Error::get_notices(),
+			'content' => '',
+			'data' => array(),
+			'isEEajax' => TRUE
+			);
+		$this->_response = array_merge( $default_response, $this->_response );
+
+		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
+		if ( NULL === error_get_last() || ! headers_sent() )
+			header('Content-Type: application/json; charset=UTF-8');
+
+		echo json_encode( $json );
+		exit();
+	}
 
 
 	/**
