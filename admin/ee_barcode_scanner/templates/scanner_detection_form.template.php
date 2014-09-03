@@ -7,6 +7,7 @@
  * Template args available for this template are:
  * @type string $_wpnonce  The created nonce for the scanning app.
  * @type int      $step           what step is active (1, 2 or 3)... depends on whether there are datetimes or not.
+ * @type string  $context      The context where this form is being loaded ('admin' or 'frontend' );
  * @type string $event_name If present (and $event_selector is empty) then we just display the event name (not the selector).
  * @type string $event_selector  If present then the event selector is shown.
  * @type string $dtt_selector   If there is only one event, then this will contain the datetimes on that event (if multiples datetimes.)
@@ -56,7 +57,8 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 	<div class="eea-barcode-scanner-form-container"<?php echo $scanner_display; ?>>
 		<form name="eea-barcode-scan" action="" method="post">
 			<!-- hidden inputs -->
-			<input type="hidden" class="eea-barcode-scan-nonce" name="eea_barcode_scan_nonce" value="<?php echo $_wpnonce; ?>">
+			<input type="hidden" id="eea-barcode-scan-nonce" name="eea_barcode_scan_nonce" value="<?php echo $_wpnonce; ?>">
+			<input type="hidden" id="eea-barcode-scan-context" name="eea_barcode_scan_context" value="<?php echo $context; ?>">
 
 			<!-- on with the form -->
 			<?php echo $action_selector; ?>

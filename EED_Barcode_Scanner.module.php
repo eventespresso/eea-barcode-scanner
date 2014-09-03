@@ -207,6 +207,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$template_args = array(
 			'_wpnonce' => wp_create_nonce( 'ee_banner_scan_form' ),
 			'step' => $step,
+			'context' => is_admin() ? 'admin' : 'frontend',
 			'event_name' => $event_name,
 			'event_selector' => $event_selector,
 			'dtt_selector' => $dtt_selector,
