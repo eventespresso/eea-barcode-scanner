@@ -6,46 +6,54 @@
  *
  * Template args available for this template are:
  * @type string $_wpnonce  The created nonce for the scanning app.
+ * @type int      $step           what step is active (1, 2 or 3)... depends on whether there are datetimes or not.
+ * @type string $event_name If present (and $event_selector is empty) then we just display the event name (not the selector).
+ * @type string $event_selector  If present then the event selector is shown.
+ * @type string $dtt_selector   If there is only one event, then this will contain the datetimes on that event (if multiples datetimes.)
+ * @type string $dtt_name       If there is only one datetime then this will have the name of that datetime.
+ * @type int     $dtt_id 		If there is only one datetime then this will have the id of the dtt.
  * @type string $action_selector A selector for indicating the default actions when submitted.
  * @type string $button_class The class for the submit button.
  */
+$eeactivestep1 = $step === 1 ? ' eea-bs-step-active' : '';
+$eeactivestep2 = $step === 2 ? ' eea-bs-step-active' : '';
+$eeactivestep3 = $step === 3 ? ' eea-bs-step-active' : '';
+$eventdisplay = empty( $event_name ) ? ' style="display:none;"' : '';
+$dtt_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
+$divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
+$scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
 ?>
 <!-- namespace with css -->
 <div class="eea-barcode-scanning-container">
 	<!-- step display -->
 	<div class="eea-bs-main-step-container">
 		<hr class="eea-bs-step-line">
-		<div class="eea-bs-step-number eea-bs-step-one eea-bs-step-active"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
+		<div class="eea-bs-step-number eea-bs-step-one<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
 		<div class="eea-bs-step-number eea-bs-step-two"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
 		<div class="eea-bs-step-number eea-bs-step-three"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
-			<select class="eea-bs-ed-selector-select" name="eea_bs_event_selector" id="eea-bs-event-selector">
-				<option value="28">Event A</option>
-				<option value="32">Event Some other event</option>
-				<option value="56">Premiere event</option>
-			</select>
+			<?php echo $event_selector; ?>
 			<div class="eea-bs-ed-selector-selected-text">
-				<h3 class="eea-bs-ed-selected-event-text" style="display:none;">Event A</h3>
+				<h3 class="eea-bs-ed-selected-event-text"<?php echo $eventdisplay; ?>><?php echo $event_name; ?></h3>
 			</div>
 		</div>
 		<div class="eea-bs-ed-selector">
-			<span class="eea-bs-ed-selector-divider" style="display:none;"></span>
+			<span class="eea-bs-ed-selector-divider"<?php echo $divider_display; ?>></span>
 		</div>
 		<div class="eea-bs-ed-selector eea-bs-dtt-selection">
-			<select class="eea-bs-ed-selector-select" name="eea_bs_dtt_selector" id="eea-bs-dtt-selector" style="display:none;">
-				<option value="28">Opening Ceremonies - July 28 @ 10am-10:45am</option>
-				<option value="32">Main Session - July 28 @ 11am-12pm</option>
-				<option value="56">Closing Session - July 28 @1pm-3pm</option>
-			</select>
+			<?php echo $dtt_selector; ?>
+			<?php if ( ! empty( $dtt_id ) ) : ?>
+				<input type="hidden" name="eea_bs_dtt_selector" value="<?php echo $dtt_id; ?>">
+			<?php endif; ?>
 			<div class="eea-bs-ed-selector-selected-text">
-				<h3 class="eea-bs-ed-selected-dtt-text" style="display:none;">Opening Ceremonies - July 28 @ 10am-10:45am</h3>
+				<h3 class="eea-bs-ed-selected-dtt-text"<?php echo $dtt_display; ?>><?php echo $dtt_name; ?></h3>
 			</div>
 		</div>
 	</div>
 	<!-- barcode scanning form -->
-	<div class="eea-barcode-scanner-form-container" style="display:none;">
+	<div class="eea-barcode-scanner-form-container"<?php echo $scanner_display; ?>>
 		<form name="eea-barcode-scan" action="" method="post">
 			<!-- hidden inputs -->
 			<input type="hidden" class="eea-barcode-scan-nonce" name="eea_barcode_scan_nonce" value="<?php echo $_wpnonce; ?>">

@@ -173,8 +173,45 @@ class EED_Barcode_Scanner extends EED_Module {
 				)
 			);
 
+		//events selector for step one!
+		//getting events that are published but not expired.
+		$query[0] = array(
+			'status' => 'publish',
+			'Datetime.DTT_EVT_end' => array( '>', date( 'Y-m-d g:i:s', time() ) )
+			);
+		$events = EEM_Event::instance()->get_all( $query );
+		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = '';
+		$event_name = '';
+
+		//if only ONE event then let's just return that and the datetime selector.
+		if ( count ( $events ) === 1 ) {
+			$event = reset( $events );
+			$this->_response['data']['EVT_ID'] = $event->ID();
+			$event_name = $event->name();
+			$dtt_selector = $this->_scanner_action_retrieve_datetimes();
+			$dtt_name = empty( $dtt_selector ) && ! empty( $this->_response['data']['dtt_name'] ) ? $this->_response['data']['dtt_name'] : '';
+			$dtt_id = empty( $this->_response['data']['DTT_ID'] ) ? '' : $this->_response['data']['DTT_ID'];
+		} else {
+			//setup event selector.
+			$evt_options = array();
+			foreach( $events as $event ) {
+				$evt_options[] = array(
+					'text' => $event->name(),
+					'id' => $event->ID()
+					);
+			}
+			$event_selector = EEH_Form_Fields::select_input( 'eea_bs_event_selector', $evt_options, '', '', 'eea-bs-ed-selector-select' );
+		}
+		$step = ! empty( $event_name ) ? 2 : 1;
+		$step = !empty( $dtt_selector ) || !empty( $dtt_name ) ? 3 : $step;
 		$template_args = array(
 			'_wpnonce' => wp_create_nonce( 'ee_banner_scan_form' ),
+			'step' => $step,
+			'event_name' => $event_name,
+			'event_selector' => $event_selector,
+			'dtt_selector' => $dtt_selector,
+			'dtt_name' => $dtt_name,
+			'dtt_id' => $dtt_id,
 			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' ),
 			'button_class' => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button'
 			);
