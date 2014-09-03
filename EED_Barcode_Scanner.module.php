@@ -123,9 +123,8 @@ class EED_Barcode_Scanner extends EED_Module {
 		wp_register_script( 'eea-scanner-detection', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.' . $script_min . 'js', array( 'eea-scanner-detection-cps' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		//chosen
-		wp_register_script( 'eea-bs-chosen-jquery', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.jquery.' . $script_min . 'js', array( 'jquery' ), EE_BARCODE_SCANNER_VERSION, true );
-		wp_register_script( 'eea-bs-chosen', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'js', array( 'eea-bs-chosen-jquery' ), EE_BARCODE_SCANNER_VERSION, true );
-		wp_register_style( 'eea-bs-chosen-css', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.css', array(), EE_BARCODE_SCANNER_VERSION );
+		wp_register_script( 'eea-bs-chosen', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.jquery.' . $script_min . 'js', array( 'jquery' ), EE_BARCODE_SCANNER_VERSION, true );
+		wp_register_style( 'eea-bs-chosen-css', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css', array(), EE_BARCODE_SCANNER_VERSION );
 
 		//addon js/css
 		wp_register_style( 'espresso_default', EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css', array( 'dashicons' ), EVENT_ESPRESSO_VERSION );
@@ -135,7 +134,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		// is the shortcode or widget in play || is_admin?
 		if ( EED_Barcode_Scanner::$shortcode_active || ( is_admin() && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner' ) ) {
 			wp_enqueue_style( 'eea-scanner-detection-css' );
-			wp_enqueue_script( 'ee-scanner-detection-core' );
+			wp_enqueue_script( 'eea-scanner-detection-core' );
 		}
 	}
 
