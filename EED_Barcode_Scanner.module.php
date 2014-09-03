@@ -133,7 +133,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		// is the shortcode or widget in play || is_admin?
-		if ( EED_Barcode_Scanner::$shortcode_active || is_admin() ) {
+		if ( EED_Barcode_Scanner::$shortcode_active || ( is_admin() && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner' ) ) {
 			wp_enqueue_style( 'eea-scanner-detection-css' );
 			wp_enqueue_script( 'ee-scanner-detection-core' );
 		}
