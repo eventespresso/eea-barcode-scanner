@@ -209,9 +209,11 @@ class EED_Barcode_Scanner extends EED_Module {
 		$nonce = EE_Registry::instance()->get('_wpnonce');
 		$action = EE_Registry::instance()->get('ee_scanner_action');
 		$this->_response['data']['regcode'] = EE_Registry::instance()->get('ee_reg_code');
+		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->get('EVT_ID');
+		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->get('DTT_ID');
 
-		if ( empty( $nonce ) || empty( $action ) || empty( $this->_response['data']['regcode'] ) ) {
-			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce", "ee_scanner_action", or "ee_reg_code" are empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+		if ( empty( $nonce ) || empty( $action ) ) {
+			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['error'] = TRUE;
 			$this->_return_json();
 		}
@@ -246,6 +248,55 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 
+	/**
+	 * This retrieves all datetimes for a given event and returns a setup selector for the barcode setup steps.
+	 *
+	 * @since %VER%
+	 *
+	 * @return string
+	 */
+	protected function _scanner_action_retrieve_datetimes() {
+		//have required request var
+		if ( empty( $this->_response['data']['EVT_ID'] ) ) {
+			EE_Error::add_error( __('Missing required EVT_ID in the request for the retrieve_datetimes action.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '';
+		}
+
+		//get all datetimes
+		$datetimes = EEM_Datetime::instance()->get_datetimes_for_event_ordered_by_DTT_order( $this->_response['data']['EVT_ID'], FALSE, FALSE );
+
+		$this->_response['data']['dtt_count'] = count( $datetimes );
+
+		if ( count( $datetimes ) === 1 ) {
+			$dtt = reset( $datetimes );
+			$name = $dtt->name();
+			$datename = !empty( $name ) ? $name . ' - ' : '';
+			$datename .= $dtt->get_dtt_display_name();
+			$this->_response['data']['dtt_name'] = $datename;
+			$this->_response['data']['DTT_ID'] = $dtt->ID();
+			$this->_response['success'] = TRUE;
+			return '';
+		}
+
+		//setup selector
+		EE_Registry::instance()->load_helper( 'Form_Fields' );
+		$options = array();
+		foreach ( $datetimes as $dtt ) {
+			$name = $dtt->name();
+			$datename = !empty( $name ) ? $name . ' - ' : '';
+			$datename .= $dtt->get_dtt_display_name();
+			$options[] = array(
+				'text' => $datename,
+				'id' => $dtt->ID()
+				);
+		}
+		return EEH_Form_Fields::select_input( 'eea_bs_dtt_selector', $options, '', '', 'eea-bs-ed-selector-select' );
+
+	}
+
+
+
 
 
 	/**
@@ -256,6 +307,13 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return string
 	 */
 	protected function _scanner_action_lookup_attendee() {
+		//have required request var
+		if ( empty( $this->_response['data']['regcode'] ) ) {
+			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '';
+		}
+
 		//valid registration?
 		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( $this->_response['data']['regcode'] );
 		if ( empty( $registration ) ) {
