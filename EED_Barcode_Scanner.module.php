@@ -243,11 +243,11 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//verify incoming package.
-		$nonce = EE_Registry::instance()->get('_wpnonce');
-		$action = EE_Registry::instance()->get('ee_scanner_action');
-		$this->_response['data']['regcode'] = EE_Registry::instance()->get('ee_reg_code');
-		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->get('EVT_ID');
-		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->get('DTT_ID');
+		$nonce = EE_Registry::instance()->REQ->get('_wpnonce');
+		$action = EE_Registry::instance()->REQ->get('ee_scanner_action');
+		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
+		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get('EVT_ID');
+		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get('DTT_ID');
 
 		if ( empty( $nonce ) || empty( $action ) ) {
 			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
