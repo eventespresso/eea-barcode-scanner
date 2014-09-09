@@ -35,6 +35,7 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
+			<span class="spinner"></span>
 			<?php echo $event_selector; ?>
 			<div class="eea-bs-ed-selector-selected-text">
 				<h3 class="eea-bs-ed-selected-event-text"<?php echo $eventdisplay; ?>><?php echo $event_name; ?></h3>
@@ -44,6 +45,7 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 			<span class="eea-bs-ed-selector-divider"<?php echo $divider_display; ?>></span>
 		</div>
 		<div class="eea-bs-ed-selector eea-bs-dtt-selection">
+			<span class="spinner"></span>
 			<?php echo $dtt_selector; ?>
 			<?php if ( ! empty( $dtt_id ) ) : ?>
 				<input type="hidden" name="eea_bs_dtt_selector" value="<?php echo $dtt_id; ?>">
@@ -64,6 +66,7 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 			<?php echo $action_selector; ?>
 			<input type="text" class="eea-barcode-scan-code" name="eea_barcode_scan_code" value="" placeholder="<?php _e('Scan or enter barcode here.', 'event_espresso' ); ?>">
 			<input class="<?php echo $button_class; ?>" type="submit" value="<?php _e('Go', 'event_espresso'); ?>"
+			<span class="spinner"></span>
 		</form>
 	</div>
 	<div class="eea-barcode-scanning-results">
