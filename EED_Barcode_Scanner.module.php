@@ -163,10 +163,14 @@ class EED_Barcode_Scanner extends EED_Module {
 		EE_Registry::instance()->load_helper('Template');
 		$action_options = array(
 			0 => array(
+				'text' => '',
+				'id' => ''
+				),
+			1 => array(
 				'text' => __('Lookup Attendee', 'event_espresso'),
 				'id' => 'confirm'
 				),
-			1 => array(
+			2 => array(
 				'text' => __('Continuous Scanning', 'event_espresso' ),
 				'id' => 'auto'
 				)
@@ -318,7 +322,10 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//setup selector
 		EE_Registry::instance()->load_helper( 'Form_Fields' );
-		$options = array();
+		$options[] = array(
+			'text' => '',
+			'id' => ''
+			);
 		foreach ( $datetimes as $dtt ) {
 			$name = $dtt->name();
 			$datename = !empty( $name ) ? $name . ' - ' : '';
@@ -367,7 +374,61 @@ class EED_Barcode_Scanner extends EED_Module {
 			'avatar' = get_avatar()
 			);/**/
 	}
-	protected function _scanner_action_toggle_attendee() {}
+
+
+
+	/**
+	 * Toggles checkin status for a registration
+	 *
+	 * @since %VER%
+	 *
+	 * @return string
+	 */
+	protected function _scanner_action_toggle_attendee() {
+		if ( empty( $this->_response['data']['regcode'] ) ) {
+			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//do we have a dtt_id?
+		if ( empty( $this->_response['data']['DTT_ID'] ) ) {
+			EE_Error::add_error( __('Missing required datetime ID from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//valid registration?
+		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( $this->_response['data']['regcode'] );
+
+		if ( empty( $registration ) ) {
+			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//k let's make sure this registration has access to the given datetime.
+		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
+			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ) );
+			$this->_response['success'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//toggle checkin
+		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
+		switch ( $status ) {
+			case 1 :
+				$content = __('This registration has been checked in.', 'event_espresso');
+				break;
+			case 2 :
+				$content = __( 'This registration has been checked out', 'event_espresso' );
+				break;
+		}
+		$this->_response['success'] = TRUE;
+		return $content;
+	}
+
+
 	protected function _scanner_action_check_in_all_attendees() {}
 	protected function _scanner_action_check_out_all_attendees() {}
 	protected function _scanner_action_toggle_check_in_status_for_all_attendees( $checkin = TRUE ) {}
@@ -407,7 +468,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		if ( NULL === error_get_last() || ! headers_sent() )
 			header('Content-Type: application/json; charset=UTF-8');
 
-		echo json_encode( $json );
+		echo json_encode( $this->_response );
 		exit();
 	}
 
