@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
 		isAdmin : true,
 		spinner : null,
 		data : {
-			regcode : '',
+			ee_reg_code : '',
 			evtName : '',
 			EVT_ID : 0,
 			dttName : '',
@@ -65,7 +65,8 @@ jQuery(document).ready(function($) {
 			this.dttName = $('.eea-bs-ed-selected-dtt-text');
 			this.scanner = $('.eea-barcode-scanner-form-container');
 			this.attendeeLookup = $('.eea-barcode-scanning-results');
-			this.spinner = '.spinner';
+			this.spinner = $('.spinner');
+			this.data._wpnonce = $('#eea-barcode-scan-nonce').val();
 		},
 
 
@@ -76,19 +77,19 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		loadChosen : function() {
-			if ( typeof eventSelector === 'null' && $('#eea_bs_event_selector').length ) {
+			if ( this.eventSelector === null && $('#eea_bs_event_selector').length ) {
 				this.eventSelector = $('#eea_bs_event_selector');
 				this.eventSelector.chosen().change( function(){
-					eebsHelper.toggleEventSelector(false);();
+					eebsHelper.toggleEventSelector(false);
 				});
 			}
 
-			if ( typeof dttSelector === 'null' && $('#eea_bs_dtt_selector').length ) {
+			if ( this.dttSelector === null && $('#eea_bs_dtt_selector').length ) {
 				this.dttSelector = $('#eea_bs_dtt_selector');
 				this.dttSelector.chosen().change( function() {
 					eebsHelper.loadScanner();
 				});
-			} else if ( this.dttSelector.length ) {
+			} else if ( this.dttSelector !== null ) {
 				this.dttSelector.trigger("chosen:updated");
 			}
 		},
@@ -110,9 +111,9 @@ jQuery(document).ready(function($) {
 				this.scanner.scannerDetection( this.scannerOptions );
 				//register callbacks.
 				this.scanner
-					.bind( 'scannerDetectionComplete', this.scannerComplete( e,data ) )
-					.bind( 'scannerDetectionError', this.scannerError( e, data ) )
-					.bind( 'scannerDetectionReceive', this.scannerReceive( e, data ) );
+					.bind( 'scannerDetectionComplete', function( e, data ) { eebsHelper.scannerComplete( e, data ); } )
+					.bind( 'scannerDetectionError', function( e, data ) { eebsHelper.scannerError( e, data ); } )
+					.bind( 'scannerDetectionReceive', function( e, data ) { eebsHelper.scannerReceive(e, data); } );
 				//set loaded flag
 				this.scannerLoaded = true;
 			}
@@ -129,7 +130,7 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		scannerComplete : function( event, data ) {
-			this.data.regcode = data.string;
+			this.data.ee_reg_code = data.string;
 			this.data.ee_scanner_action = this.lookUp ? 'lookup_attendee' : 'toggle_attendee';
 			this.doAjax( this.attendeeLookup );
 			return;
@@ -205,7 +206,7 @@ jQuery(document).ready(function($) {
 				this.data.ee_scanner_action = 'retrieve_datetimes';
 
 				//put/replace DTTselector in dom and then loadChosen.
-				$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) ) {
+				$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
 					//we can get the response from xhr
 					var ct = xhr.getResponseHeader("content-type") || "";
 					if ( ct.indexOf('json') > -1 ) {
@@ -214,7 +215,7 @@ jQuery(document).ready(function($) {
 						//let's handle toggling all the elements if we had a successful switch!
 						if ( resp.success ) {
 							eebsHelper.data.dttName = typeof resp.data.dtt_name !== 'undefined' ? resp.data.dtt_name : '';
-							eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID ? 0;
+							eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID : 0;
 							eebsHelper.data.dttCount = typeof resp.data.dtt_count !== 'undefined' ? resp.data.dtt_count  : 0;
 							eebsHelper.data.dttselector = typeof resp.content !== 'undefined' ? resp.content : '';
 							eebsHelper.toggleDTTSelector();
@@ -223,9 +224,9 @@ jQuery(document).ready(function($) {
 							return;
 						}
 					}
-				}
-				this.doAjax();
+				} );
 			}
+			this.doAjax();
 		},
 
 
@@ -276,7 +277,7 @@ jQuery(document).ready(function($) {
 				this.data.dttID = 0;
 				this.data.dttName = '';
 			}
-		}
+		},
 
 
 
@@ -310,6 +311,7 @@ jQuery(document).ready(function($) {
 						var resp = response;
 						//note that there should be registered ajaxSuccess callbacks for methods doing anything different.  However, below are the common actions.
 						eebsHelper.noticesContainer.html( resp.notices );
+						$('.espresso-notices').show();
 						if ( where && typeof resp.content !== 'undefined' ) {
 							where.html( resp.content );
 						}
@@ -323,7 +325,7 @@ jQuery(document).ready(function($) {
 	}
 
 	//startUp scanner handler
-	eebsHelper::init();
+	eebsHelper.init();
 
 
 	/**
@@ -333,7 +335,7 @@ jQuery(document).ready(function($) {
 	 *
 	 * @return {void}
 	 */
-	$(.'ee-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
+	$('.ee-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
 		e.stopPropagation();
 		var action = this.val();
 		eebsHelper.lookUp = action == 'auto' ? false : true;
