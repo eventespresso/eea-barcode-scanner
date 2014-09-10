@@ -38,7 +38,7 @@ Class  EE_Barcode_Scanner extends EE_Addon {
 			'EE_Barcode_Scanner',
 			array(
 				'version' => EE_BARCODE_SCANNER_VERSION,
-				'min_core_version' => '4.5.0',
+				'min_core_version' => '4.5.0.dev.000',
 				'main_file_path' => EE_BARCODE_SCANNER_PLUGIN_FILE,
 				'admin_path' => EE_BARCODE_SCANNER_ADMIN,
 				'autoloader_paths' => array(
