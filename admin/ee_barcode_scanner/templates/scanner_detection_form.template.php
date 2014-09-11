@@ -29,9 +29,9 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 	<!-- step display -->
 	<div class="eea-bs-main-step-container">
 		<hr class="eea-bs-step-line">
-		<div class="eea-bs-step-number eea-bs-step-one<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
-		<div class="eea-bs-step-number eea-bs-step-two"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
-		<div class="eea-bs-step-number eea-bs-step-three"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
+		<div class="eea-bs-step-number eea-bs-step-1<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
+		<div class="eea-bs-step-number eea-bs-step-2"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
+		<div class="eea-bs-step-number eea-bs-step-3"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
@@ -57,7 +57,7 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 	</div>
 	<!-- barcode scanning form -->
 	<div class="eea-barcode-scanner-form-container"<?php echo $scanner_display; ?>>
-		<form name="eea-barcode-scan" action="" method="post">
+		<form id="eea-barcode-scanner-form" name="eea-barcode-scan" action="" method="post">
 			<!-- hidden inputs -->
 			<input type="hidden" id="eea-barcode-scan-nonce" name="eea_barcode_scan_nonce" value="<?php echo $_wpnonce; ?>">
 			<input type="hidden" id="eea-barcode-scan-context" name="eea_barcode_scan_context" value="<?php echo $context; ?>">
