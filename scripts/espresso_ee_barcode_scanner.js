@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
 		attendeeLookup : null,
 		isAdmin : true,
 		spinner : null,
+		addedEventAjaxCallback : false,
 		data : {
 			ee_reg_code : '',
 			evtName : '',
@@ -29,7 +30,7 @@ jQuery(document).ready(function($) {
 			action : 'ee_barcode_scanner_main_action',
 			ee_scanner_action : ''
 		},
-		noticesContainer : $('#ajax-notices-container'),
+		noticesContainer : $('.eea-barcode-notices'),
 
 		/**
 		 * scanner detection options
@@ -112,8 +113,8 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		loadScanner : function() {
-			this.scanner.show();
 			this.advanceStep();
+			this.scanner.show();
 
 			//iniitalizeScanner (if it hasn't been already).
 			if ( ! this.scannerLoaded ) {
@@ -126,6 +127,7 @@ jQuery(document).ready(function($) {
 				//set loaded flag
 				this.scannerLoaded = true;
 			}
+			return;
 		},
 
 
@@ -209,7 +211,6 @@ jQuery(document).ready(function($) {
 				this.eventName.text( this.data.evtName ).show();
 
 				//hide the event selector
-				this.eventSelector.hide();
 				this.eventSelectorChosen.hide();
 
 				this.selectorDivider.show();
@@ -222,31 +223,35 @@ jQuery(document).ready(function($) {
 				this.data.ee_scanner_action = 'retrieve_datetimes';
 
 				//put/replace DTTselector in dom and then loadChosen.
-				$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
-					//we can get the response from xhr
-					var ct = xhr.getResponseHeader("content-type") || "";
-					if ( ct.indexOf('json') > -1 ) {
-						var resp = xhr.responseText;
-						resp = $.parseJSON(resp);
-						//if we've got ee_scanner_action and it does NOT equal this action... let's get out.
-						if ( typeof resp.data === 'undefined' || typeof resp.data.ee_scanner_action === 'undefined' || resp.data.ee_scanner_action != 'retrieve_datetimes' ) {
-							return;
+				if ( ! this.addedEventAjaxCallback ) {
+					this.addedEventAjaxCallback = true;
+					$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
+						//we can get the response from xhr
+						var ct = xhr.getResponseHeader("content-type") || "";
+						if ( ct.indexOf('json') > -1 ) {
+							var resp = xhr.responseText;
+							resp = $.parseJSON(resp);
+							//if we've got ee_scanner_action and it does NOT equal this action... let's get out.
+							if ( typeof resp.data === 'undefined' || typeof resp.data.ee_scanner_action === 'undefined' || resp.data.ee_scanner_action != 'retrieve_datetimes' ) {
+								return;
+							}
+							//let's handle toggling all the elements if we had a successful switch!
+							if ( resp.success ) {
+								eebsHelper.data.dttName = typeof resp.data.dtt_name !== 'undefined' ? resp.data.dtt_name : '';
+								eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID : 0;
+								eebsHelper.data.dttCount = typeof resp.data.dtt_count !== 'undefined' ? resp.data.dtt_count  : 0;
+								eebsHelper.data.dttselector = typeof resp.content !== 'undefined' ? resp.content : '';
+								eebsHelper.toggleDTTSelector();
+							} else {
+								eebsHelper.toggleEventSelector();
+								return;
+							}
 						}
-						//let's handle toggling all the elements if we had a successful switch!
-						if ( resp.success ) {
-							eebsHelper.data.dttName = typeof resp.data.dtt_name !== 'undefined' ? resp.data.dtt_name : '';
-							eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID : 0;
-							eebsHelper.data.dttCount = typeof resp.data.dtt_count !== 'undefined' ? resp.data.dtt_count  : 0;
-							eebsHelper.data.dttselector = typeof resp.content !== 'undefined' ? resp.content : '';
-							eebsHelper.toggleDTTSelector();
-						} else {
-							eebsHelper.toggleEventSelector();
-							return;
-						}
-					}
-				} );
+					} );
+				}
+				this.doAjax();
 			}
-			this.doAjax();
+			return;
 		},
 
 
@@ -261,7 +266,7 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		toggleDTTSelector : function( show ) {
-			show = typeof show === 'undefined' ? true : false;
+			show = typeof show === 'undefined' ? true : show;
 			if ( show ) {
 				this.advanceStep();
 				if ( this.data.dttCount > 1 ) {
@@ -272,12 +277,15 @@ jQuery(document).ready(function($) {
 				}
 			} else {
 				//hide dttselector and name containers.
-				this.dttSelector.hide();
-				this.dttSelectorChosen.hide();
+				if ( this.dttSelector !== null ) {
+					this.dttSelector.hide();
+					this.dttSelectorChosen.hide();
+				}
 				this.selectorDivider.hide();
 				this.toggleDTTname(false);
 				this.scanner.hide();
 			}
+			return;
 		},
 
 
@@ -286,7 +294,7 @@ jQuery(document).ready(function($) {
 		 * toggles the datetime name.
 		 */
 		toggleDTTname : function( show ) {
-			show = typeof show === 'undefined' ? true : false;
+			show = typeof show === 'undefined' ? true : show;
 			if ( show ) {
 				if ( this.data.dttName === ''  ) {
 					this.data.dttName = $('option[value="' + this.dttSelector.val() + '"]', this.dttSelector).text();
@@ -299,6 +307,7 @@ jQuery(document).ready(function($) {
 				this.data.dttID = 0;
 				this.data.dttName = '';
 			}
+			return;
 		},
 
 
@@ -319,6 +328,37 @@ jQuery(document).ready(function($) {
 			//add class to new step
 			$('.eea-bs-step-' + this.currentStep ).addClass( 'eea-bs-step-active' );
 			return;
+		},
+
+
+
+		/**
+		 * This handles the trigger action from someone clicking a step.
+		 *
+		 * @param {string} stepel This is the element for the triggered step
+		 *
+		 * @return {void}
+		 */
+		triggerStep : function( stepel ) {
+			//first check if clicked step is active, if it is do nothing.
+			if ( $(stepel).hasClass( 'eea-bs-step-active' ) ) {
+				return;
+			}
+
+			//okay not active so let's find out what step
+			var data = $(stepel).data();
+			var stepnum = typeof data.stepNum !== 'undefined' ? data.stepNum : '1';
+
+			switch ( stepnum ) {
+				case 1 :
+					eebsHelper.toggleEventSelector();
+					break;
+				case 2 :
+					eebsHelper.toggleDTTSelector();
+					break;
+			}
+			return;
+
 		},
 
 
@@ -356,6 +396,7 @@ jQuery(document).ready(function($) {
 						$('.espresso-notices').show();
 						if ( where && typeof resp.content !== 'undefined' ) {
 							where.html( resp.content );
+							where.show();
 						}
 						$(eebsHelper.spinner).hide();
 					}
@@ -373,6 +414,7 @@ jQuery(document).ready(function($) {
 	/**
 	 * capture default scanner action changes and set the relevant property on the scanner helper.
 	 *
+	 * @since %VER%
 	 * @param {object} e event
 	 *
 	 * @return {void}
@@ -383,12 +425,37 @@ jQuery(document).ready(function($) {
 		eebsHelper.lookUp = action == 'auto' ? false : true;
 	} );
 
+
+
+	/**
+	 * Capture form submt
+	 *
+	 * @since %VER%
+	 * @param {event} e
+	 *
+	 * @return {void}
+	 */
 	$('.eea-barcode-scanner-form-container').on('submit', '#eea-barcode-scanner-form', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var data = {};
 		data.string = $('.eea-barcode-scan-code').val();
 		eebsHelper.scannerComplete('', data );
+	});
+
+
+
+	/**
+	 * Capture step ui clicks
+	 *
+	 * @since %VER%
+	 *
+	 * @return {void}
+	 */
+	$('.eea-bs-main-step-container').on('click', '.eea-bs-step-number', function(e) {
+		e.stopPropagation();
+		eebsHelper.triggerStep( this );
+		return;
 	});
 
 });
