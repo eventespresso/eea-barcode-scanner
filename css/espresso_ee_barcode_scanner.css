@@ -206,8 +206,10 @@ Attendee container css
 .eea-bs-main-step-container {
 	width: 75%;
 	position: relative;
-	margin-bottom: 50px;
 	height: 80px;
+	margin: auto;
+	margin-bottom: 50px;
+
 }
 
 .eea-bs-step-line {
@@ -273,6 +275,7 @@ Attendee container css
 .eea-bs-ed-selection-container {
 	padding-top: 10px;
 	padding-bottom: 10px;
+	margin:auto;
 }
 
 .eea-bs-ed-selector {
