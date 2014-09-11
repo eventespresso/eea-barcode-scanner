@@ -26,12 +26,14 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 ?>
 <!-- namespace with css -->
 <div class="eea-barcode-scanning-container">
+	<!-- notices -->
+	<div class="eea-barcode-notices"><!--used by js --></div>
 	<!-- step display -->
 	<div class="eea-bs-main-step-container">
 		<hr class="eea-bs-step-line">
-		<div class="eea-bs-step-number eea-bs-step-1<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
-		<div class="eea-bs-step-number eea-bs-step-2"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
-		<div class="eea-bs-step-number eea-bs-step-3"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
+		<div data-step-num="1" class="eea-bs-step-number eea-bs-step-1<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
+		<div data-step-num="2" class="eea-bs-step-number eea-bs-step-2<?php echo $eeactivestep2; ?>"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
+		<div data-step-num="3" class="eea-bs-step-number eea-bs-step-3<?php echo $eeactivestep3; ?>"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
