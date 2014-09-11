@@ -127,8 +127,12 @@ class EED_Barcode_Scanner extends EED_Module {
 		wp_register_style( 'eea-bs-chosen-css', EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css', array(), EE_BARCODE_SCANNER_VERSION );
 
 		//addon js/css
-		wp_register_style( 'espresso_default', EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css', array( 'dashicons' ), EVENT_ESPRESSO_VERSION );
-		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array('espresso_default', 'eea-bs-chosen-css'), EE_BARCODE_SCANNER_VERSION );
+		$scanner_css_dep = 'ee-admin-css';
+		if ( ! is_admin() ) {
+			wp_register_style( 'espresso_default', EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css', array( 'dashicons' ), EVENT_ESPRESSO_VERSION );
+			$scanner_css_dep = 'espresso_default';
+		}
+		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array($scanner_css_dep, 'eea-bs-chosen-css'), EE_BARCODE_SCANNER_VERSION );
 		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		// is the shortcode or widget in play || is_admin?
@@ -368,7 +372,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//k let's make sure this registration has access to the given datetime.
 		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
-			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ) );
+			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['success'] = TRUE;
 			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
 		}
@@ -457,7 +461,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//k let's make sure this registration has access to the given datetime.
 		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
-			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ) );
+			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['success'] = TRUE;
 			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
 		}
