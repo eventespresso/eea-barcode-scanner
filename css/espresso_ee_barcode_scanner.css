@@ -318,6 +318,19 @@ Attendee container css
 	margin-right: 10px;
 }
 
+
+/**checkin result feedback**/
+.ee-bs-barcode-checkin-result.dashicons-no, .ee-bs-barcode-checkin-result.dashicons-yes {
+	display: block;
+	font-size: 10em;
+	margin: auto;
+	color: red;
+}
+
+.ee-bs-barcode-checkin-result.dashicons-yes {
+	color: green;
+}
+
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
 
