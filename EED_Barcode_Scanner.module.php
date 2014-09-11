@@ -396,13 +396,13 @@ class EED_Barcode_Scanner extends EED_Module {
 				$checkin_color = ' ee-green';
 				break;
 			case 1 :
-				$last_checkin = sprintf( __("Last checked in on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j "@ "', 'h:i a') );
+				$last_checkin = sprintf( __("Last checked in on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j @', 'h:i a') );
 				$checkin_button_text = __( 'Check Out', 'event_espresso' );
 				$all_checkin_button_text = __( 'Check Out All Registrations', 'event_espresso' );
 				$checkin_color = ' ee-red';
 				break;
 			case 2 :
-				$last_checkin = sprintf( __("Last checked out on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j "@ "', 'h:i a') );
+				$last_checkin = sprintf( __("Last checked out on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a') );
 				$checkin_button_text = __( 'Check In', 'evnet_espresso' );
 				$all_checkin_button_text = __( 'Check In All Registrations ', 'event_espresso' );
 				$checkin_color = ' ee-green';
@@ -470,14 +470,14 @@ class EED_Barcode_Scanner extends EED_Module {
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
 		switch ( $status ) {
 			case 1 :
-				$content = __('This registration has been checked in.', 'event_espresso');
+				EE_Error::add_success( __('This registration has been checked in.', 'event_espresso') );
 				break;
 			case 2 :
-				$content = __( 'This registration has been checked out', 'event_espresso' );
+				EE_Error::add_success( __( 'This registration has been checked out', 'event_espresso' ) );
 				break;
 		}
 		$this->_response['success'] = TRUE;
-		return $content;
+		return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
 	}
 
 
