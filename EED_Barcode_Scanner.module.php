@@ -53,8 +53,8 @@ class EED_Barcode_Scanner extends EED_Module {
 	  */
 	 public static function set_hooks() {
 	 	 // ajax hooks
-		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', '_ee_barcode_scanner_main_action' ) );
-		 add_action( 'wp_ajax_nopriv_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', '_ee_barcode_scanner_main_action' ) );
+		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
+		 add_action( 'wp_ajax_nopriv_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
 	 }
 
 
@@ -163,14 +163,10 @@ class EED_Barcode_Scanner extends EED_Module {
 		EE_Registry::instance()->load_helper('Template');
 		$action_options = array(
 			0 => array(
-				'text' => '',
-				'id' => ''
-				),
-			1 => array(
 				'text' => __('Lookup Attendee', 'event_espresso'),
 				'id' => 'confirm'
 				),
-			2 => array(
+			1 => array(
 				'text' => __('Continuous Scanning', 'event_espresso' ),
 				'id' => 'auto'
 				)
@@ -196,14 +192,14 @@ class EED_Barcode_Scanner extends EED_Module {
 			$dtt_id = empty( $this->_response['data']['DTT_ID'] ) ? '' : $this->_response['data']['DTT_ID'];
 		} else {
 			//setup event selector.
-			$evt_options = array();
+			$evt_options[] = array( 'text' => '', 'id' => '' );
 			foreach( $events as $event ) {
 				$evt_options[] = array(
 					'text' => $event->name(),
 					'id' => $event->ID()
 					);
 			}
-			$event_selector = EEH_Form_Fields::select_input( 'eea_bs_event_selector', $evt_options, '', '', 'eea-bs-ed-selector-select' );
+			$event_selector = EEH_Form_Fields::select_input( 'eea_bs_event_selector', $evt_options, '', 'data-placeholder="Select Event..."', 'eea-bs-ed-selector-select' );
 		}
 		$step = ! empty( $event_name ) ? 2 : 1;
 		$step = !empty( $dtt_selector ) || !empty( $dtt_name ) ? 3 : $step;
@@ -258,6 +254,9 @@ class EED_Barcode_Scanner extends EED_Module {
 			$this->_response['error'] = TRUE;
 			$this->_return_json();
 		}
+
+		//add action back into response so ajax_success has an easy way to target success hooks
+		$this->_response['data']['ee_scanner_action'] = $action;
 
 		//verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
@@ -359,20 +358,69 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//valid registration?
-		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( $this->_response['data']['regcode'] );
-		if ( empty( $registration ) ) {
+		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( strtolower( $this->_response['data']['regcode'] ) );
+		if ( ! $registration instanceof EE_Registration ) {
 			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['error'] = TRUE;
 			return '';
 		}
 
+
+		//k let's make sure this registration has access to the given datetime.
+		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
+			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ) );
+			$this->_response['success'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
 		//alright there IS a registration.  Let's get the template and return.
 		EE_Registry::instance()->load_helper( 'Template' );
 		$contact = $registration->attendee();
-		//$group_regs =
-		/*$template_args = array(
-			'avatar' = get_avatar()
-			);/**/
+
+		//get other registrations in group.
+		$other_regs = $registration->get_all_other_registrations_in_group();
+
+		//first related checking for the given datetime.
+		$checkin = $registration->get_first_related( 'Checkin', array( array( 'DTT_ID' => $this->_response['data']['DTT_ID'] ), 'order_by' => array( 'CHK_timestamp' => 'DESC' ) ) );
+		$checkin_status = $registration->check_in_status_for_datetime( 0, $checkin );
+
+		switch( $checkin_status ) {
+			case 0 :
+				$last_checkin = __('Has not been checked in yet.', 'event_espresso');
+				$checkin_button_text = __('Check In', 'event_espresso');
+				$all_checkin_button_text = __( 'Check In All Registrations', 'event_espresso' );
+				$checkin_color = ' ee-green';
+				break;
+			case 1 :
+				$last_checkin = sprintf( __("Last checked in on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j "@ "', 'h:i a') );
+				$checkin_button_text = __( 'Check Out', 'event_espresso' );
+				$all_checkin_button_text = __( 'Check Out All Registrations', 'event_espresso' );
+				$checkin_color = ' ee-red';
+				break;
+			case 2 :
+				$last_checkin = sprintf( __("Last checked out on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j "@ "', 'h:i a') );
+				$checkin_button_text = __( 'Check In', 'evnet_espresso' );
+				$all_checkin_button_text = __( 'Check In All Registrations ', 'event_espresso' );
+				$checkin_color = ' ee-green';
+				break;
+		}
+
+		//made it here so time pull the attendee lookup template and fill it out and return
+		$template_args = array(
+			'avatar' => get_avatar( $contact->email(), '128', 'mystery' ),
+			'registration' => $registration,
+			'contact' => $contact,
+			'other_regs' => $other_regs,
+			'last_checkin' => $last_checkin,
+			'checkin_button_text' => $checkin_button_text,
+			'all_checkin_button_text' => $all_checkin_button_text,
+			'transaction' => $registration->transaction(),
+			'DTT_ID' => $this->_response['data']['DTT_ID'],
+			'checkin_color' => $checkin_color
+			);
+		$template = $template = EE_BARCODE_SCANNER_ADMIN . 'templates/scanner_attendee_details.template.php';
+		$this->_response['success'] = TRUE;
+		return EEH_Template::display_template( $template, $template_args, TRUE );
 	}
 
 
@@ -399,9 +447,9 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//valid registration?
-		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( $this->_response['data']['regcode'] );
+		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( strtolower($this->_response['data']['regcode']) );
 
-		if ( empty( $registration ) ) {
+		if ( ! $registration instanceof EE_Registration ) {
 			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['error'] = TRUE;
 			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
