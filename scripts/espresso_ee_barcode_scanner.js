@@ -419,9 +419,9 @@ jQuery(document).ready(function($) {
 	 *
 	 * @return {void}
 	 */
-	$('.ee-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
+	$('.eea-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
 		e.stopPropagation();
-		var action = this.val();
+		var action = $(this).val();
 		eebsHelper.lookUp = action == 'auto' ? false : true;
 	} );
 
