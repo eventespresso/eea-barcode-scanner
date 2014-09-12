@@ -285,7 +285,7 @@ jQuery(document).ready(function($) {
 			if ( show ) {
 				if ( this.data.dttName === ''  ) {
 					this.data.dttName = $(this.dttSelector.selector + ' option[value="' + this.dttSelector.val() + '"]').text();
-					this.data.dttID = this.dttSelector.val();
+					this.data.DTT_ID = this.dttSelector.val();
 				}
 				if ( this.dttSelector !== null ) {
 					this.dttSelector.hide();
@@ -295,7 +295,7 @@ jQuery(document).ready(function($) {
 				this.loadScanner();
 			} else {
 				this.dttName.html('').hide();
-				this.data.dttID = 0;
+				this.data.DTT_ID = 0;
 				this.data.dttName = '';
 			}
 			return;
