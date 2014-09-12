@@ -357,6 +357,10 @@ class EED_Barcode_Scanner extends EED_Module {
 	protected function _scanner_action_lookup_attendee() {
 		$registration = $this->_validate_incoming_data();
 
+		if ( ! $registration instanceof EE_Registration) {
+			return $registration;
+		}
+
 		//alright there IS a registration.  Let's get the template and return.
 		EE_Registry::instance()->load_helper( 'Template' );
 		$contact = $registration->attendee();
@@ -466,7 +470,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$registration = $this->_validate_incoming_data();
 
 		if ( ! $registration instanceof EE_Registration) {
-			return $valid;
+			return $registration;
 		}
 
 
@@ -497,7 +501,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$registration = $this->_validate_incoming_data();
 
 		if ( ! $registration instanceof EE_Registration) {
-			return $valid;
+			return $registration;
 		}
 
 		//get all registrations in group.
