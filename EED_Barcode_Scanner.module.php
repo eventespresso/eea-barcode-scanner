@@ -338,7 +338,8 @@ class EED_Barcode_Scanner extends EED_Module {
 				'id' => $dtt->ID()
 				);
 		}
-		return EEH_Form_Fields::select_input( 'eea_bs_dtt_selector', $options, '', '', 'eea-bs-ed-selector-select' );
+		$this->_response['success'] = TRUE;
+		return EEH_Form_Fields::select_input( 'eea_bs_dtt_selector', $options, '', 'data-placeholder="Select Datetime..."', 'eea-bs-ed-selector-select' );
 
 	}
 
@@ -575,13 +576,13 @@ class EED_Barcode_Scanner extends EED_Module {
 				EE_Error::add_success( __('This group registration has been checked in.', 'event_espresso') );
 				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-in';
 				$this->_response['data']['buttonText'] = __('Check Out', 'event_espresso');
-				$this->_resposne['data']['checkout_button_class'] = 'ee-red';
+				$this->_response['data']['checkout_button_class'] = 'ee-red';
 				break;
 			case 2 :
 				EE_Error::add_success( __( 'This group registration has been checked out', 'event_espresso' ) );
 				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-out';
 				$this->_response['data']['buttonText'] = __('Check In', 'event_espresso');
-				$this->_resposne['data']['checkout_button_class'] = 'ee-green';
+				$this->_response['data']['checkout_button_class'] = 'ee-green';
 				break;
 		}
 		$this->_response['success'] = TRUE;
@@ -621,8 +622,11 @@ class EED_Barcode_Scanner extends EED_Module {
 		$this->_response = array_merge( $default_response, $this->_response );
 
 		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
-		if ( NULL === error_get_last() || ! headers_sent() )
+		if ( NULL === error_get_last() || ! headers_sent() ) {
 			header('Content-Type: application/json; charset=UTF-8');
+		} else {
+			header('Content-Type: html; charset=UTF-8');
+		}
 
 		echo json_encode( $this->_response );
 		exit();

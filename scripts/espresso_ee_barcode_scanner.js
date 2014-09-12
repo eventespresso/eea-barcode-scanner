@@ -101,10 +101,11 @@ jQuery(document).ready(function($) {
 			if ( this.dttSelector === null && $('#eea_bs_dtt_selector').length ) {
 				this.dttSelector = $('#eea_bs_dtt_selector');
 				this.dttSelector.chosen().change( function() {
-					eebsHelper.loadScanner();
-				this.dttSelectorChosen = $('#eea_bs_dtt_selector_chosen');
+					eebsHelper.dttSelectorChosen = $('#eea_bs_dtt_selector_chosen');
+					eebsHelper.toggleDTTname();
 				});
 			} else if ( this.dttSelector !== null ) {
+				console.log('chosen_update_trigger');
 				this.dttSelector.trigger("chosen:updated");
 			}
 		},
@@ -121,6 +122,7 @@ jQuery(document).ready(function($) {
 		loadScanner : function() {
 			this.advanceStep();
 			this.scanner.show();
+			this.scannerField.val('');
 			this.scannerField.focus();
 
 			//iniitalizeScanner (if it hasn't been already).
@@ -250,7 +252,12 @@ jQuery(document).ready(function($) {
 			if ( show ) {
 				this.advanceStep();
 				if ( this.data.dttCount > 1 ) {
-					$('.eea-bs-dtt-selection').html( this.data.dttselector ).show();
+					$('.eea-bs-dtt-selection-container').html( this.data.dttselector ).show();
+					if ( this.dttSelector !== null ) {
+						this.dttSelector = null;
+						this.dttSelectorChosen.remove();
+						this.dttSelectorChosen = null;
+					}
 					this.loadChosen();
 				} else {
 					this.toggleDTTname();
@@ -277,10 +284,14 @@ jQuery(document).ready(function($) {
 			show = typeof show === 'undefined' ? true : show;
 			if ( show ) {
 				if ( this.data.dttName === ''  ) {
-					this.data.dttName = $('option[value="' + this.dttSelector.val() + '"]', this.dttSelector).text();
+					this.data.dttName = $(this.dttSelector.selector + ' option[value="' + this.dttSelector.val() + '"]').text();
 					this.data.dttID = this.dttSelector.val();
 				}
-				this.dttName.text(this.data.dttName).show();
+				if ( this.dttSelector !== null ) {
+					this.dttSelector.hide();
+					this.dttSelectorChosen.hide();
+				}
+				this.dttName.html(this.data.dttName).show();
 				this.loadScanner();
 			} else {
 				this.dttName.html('').hide();
@@ -332,7 +343,7 @@ jQuery(document).ready(function($) {
 			this.currentButtonEl = buttonEl;
 
 
-			switch ( button.checkinButton ) {
+			switch ( data.checkinButton ) {
 				case 'main' :
 					eebsHelper.data.ee_scanner_action = 'toggle_attendee';
 					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
@@ -340,11 +351,11 @@ jQuery(document).ready(function($) {
 					break;
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container'.show() );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
 					eebsHelper.doAjax();
 					break;
-				case 'all'
-					eebsHelper.data.ee_scanner_action = 'checkin_in_or_out_all_attendees';
+				case 'all' :
+					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
 					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
@@ -357,7 +368,7 @@ jQuery(document).ready(function($) {
 
 		registerAjaxCallbacks : function() {
 
-			//callback for secondary_attendee toggle checkin
+			//callback for ajax Success actions.
 			$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
 				//we can get the response from xhr
 				var ct = xhr.getResponseHeader("content-type") || "";
@@ -433,12 +444,13 @@ jQuery(document).ready(function($) {
 					eebsHelper.toggleEventSelector();
 					break;
 				case 2 :
-					if ( eebsHelper.data.dttName === '' && eebsHelper.dttSelector === null ) {
-						return;
-					} else if ( eebsHelper.data.dttName !== '' && eebsHelper.dttSelector === null ) {
+					if ( eebsHelper.data.dttName !== '' && eebsHelper.dttSelector === null ) {
 						return;
 					} else {
-						eebsHelper.toggleDTTSelector();
+						eebsHelper.advanceStep(true);
+						eebsHelper.advanceStep();
+						eebsHelper.toggleDTTname( false );
+						eebsHelper.dttSelectorChosen.show();
 					}
 					break;
 			}
@@ -501,6 +513,8 @@ jQuery(document).ready(function($) {
 						if ( where && typeof resp.content !== 'undefined' ) {
 							where.html( resp.content );
 							where.show();
+							eebsHelper.scannerField.val('');
+							eebsHelper.scannerField.focus();
 						}
 						$(eebsHelper.spinner).hide();
 					}

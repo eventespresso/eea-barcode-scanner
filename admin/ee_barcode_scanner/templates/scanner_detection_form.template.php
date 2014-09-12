@@ -48,7 +48,9 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 		</div>
 		<div class="eea-bs-ed-selector eea-bs-dtt-selection">
 			<span class="spinner"></span>
-			<?php echo $dtt_selector; ?>
+			<div class="eea-bs-dtt-selection-container">
+				<?php echo $dtt_selector; ?>
+			</div>
 			<?php if ( ! empty( $dtt_id ) ) : ?>
 				<input type="hidden" name="eea_bs_dtt_selector" value="<?php echo $dtt_id; ?>">
 			<?php endif; ?>
