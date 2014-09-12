@@ -46,7 +46,7 @@ $answers = $registration->answers();
 				<span class="eea-bs-checkout-status-date"><?php echo $last_checkin; ?></span>
 			</section>
 			<section class="eea-bs-checkout-action-container">
-				<button class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?>"><?php echo $checkin_button_text; ?></button>
+				<button data-checkin-button="main" data-reg-url-lnk="<?php echo $registration->reg_url_link(); ?>" class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?>"><?php echo $checkin_button_text; ?></button>
 			</section>
 			<div style="clear:both">
 		</div>
@@ -95,6 +95,7 @@ $answers = $registration->answers();
 						$checkin_status = $reg->check_in_status_for_datetime( 0, $checkin );
 						$att = $reg->attendee();
 						$checkin_button_text = $checkin_status === 1 ? __(' Check Out', 'event_espresso' ) : __('Check In', 'event_espresso');
+						$reg_url_link = $reg->reg_url_link();
 						switch ( $checkin_status ) {
 							case 0 :
 								$checkin_class = ' dashicons-no';
@@ -114,12 +115,12 @@ $answers = $registration->answers();
 							<td><?php echo $att->fname(); ?></td>
 							<td><?php echo $att->lname(); ?></td>
 							<td><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a' ) : ''; ?><span class="eea-bs-check-icon ee-icon<?php echo $checkin_class; ?>"></span></td>
-							<td><button class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $chkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
+							<td><button data-checkin-button="secondary" data-reg-url-lnk="<?php echo $reg_url_link; ?>" class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $chkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<button class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?> align-right"><?php echo $all_checkin_button_text; ?></button>
+			<button data-checkin-button="all" data-reg-url-lnk="<?php echo $registration->reg_url_link(); ?>" data-checkin-type="<?php echo $checkin_status; ?>" class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?> align-right"><?php echo $all_checkin_button_text; ?></button>
 			<div style="clear:both"></div>
 		<?php endif; ?>
 	</div>
