@@ -78,7 +78,7 @@ $answers = $registration->answers();
 			</table>
 		</div>
 	<?php endif; ?>
-	<div id="eea-bs-view-group-container" class="eea-barcode-scanner-contact-group-container eea-bs-details-container">
+	<div id="eea-bs-view-group-container" class="eea-barcode-scanner-contact-group-container eea-bs-details-container" style="display:none">
 		<?php if ( ! empty( $other_regs ) ) : ?>
 			<h4 class="eea-bs-subtitle-label eea-bs-group-header"><?php _e('Other people in this group:', 'event_espresso'); ?></h4>
 			<table class="eea-bs-group-table eea-bs-table widefat">
@@ -113,7 +113,7 @@ $answers = $registration->answers();
 						<tr class="alternate">
 							<td><?php echo $att->fname(); ?></td>
 							<td><?php echo $att->lname(); ?></td>
-							<td><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j "@ "', 'h:i a' ) : ''; ?><span class="eea-bs-check-icon ee-icon<?php echo $checkin_class; ?>"></span></td>
+							<td><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a' ) : ''; ?><span class="eea-bs-check-icon ee-icon<?php echo $checkin_class; ?>"></span></td>
 							<td><button class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $chkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
 						</tr>
 					<?php endforeach; ?>
