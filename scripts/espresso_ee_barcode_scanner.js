@@ -541,6 +541,7 @@ jQuery(document).ready(function($) {
 		e.stopPropagation();
 		var action = $(this).val();
 		eebsHelper.lookUp = action == 'auto' ? false : true;
+		eebsHelper.scannerField.focus();
 	} );
 
 
