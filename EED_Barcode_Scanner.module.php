@@ -383,10 +383,15 @@ class EED_Barcode_Scanner extends EED_Module {
 				break;
 			case 2 :
 				$last_checkin = sprintf( __("Last checked out on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a') );
-				$checkin_button_text = __( 'Check In', 'evnet_espresso' );
+				$checkin_button_text = __( 'Check In', 'event_espresso' );
 				$all_checkin_button_text = __( 'Check In All Registrations ', 'event_espresso' );
 				$checkin_color = ' ee-green';
 				break;
+			case false :
+				$last_checkin = __('Has access to datetime, but not approved.', 'event_espresso');
+				$checkin_button_text = __( 'Check In Anyways', 'event_espresso' );
+				$all_checkin_button_text = __( 'Check In All Registrations', 'event_espresso' );
+				$checkin_color = ' ee-yellow';
 		}
 
 		//made it here so time pull the attendee lookup template and fill it out and return
