@@ -355,28 +355,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return string
 	 */
 	protected function _scanner_action_lookup_attendee() {
-		//have required request var
-		if ( empty( $this->_response['data']['regcode'] ) ) {
-			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
-			return '';
-		}
-
-		//valid registration?
-		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( strtolower( $this->_response['data']['regcode'] ) );
-		if ( ! $registration instanceof EE_Registration ) {
-			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
-			return '';
-		}
-
-
-		//k let's make sure this registration has access to the given datetime.
-		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
-			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['success'] = TRUE;
-			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
-		}
+		$registration = $this->_validate_incoming_data();
 
 		//alright there IS a registration.  Let's get the template and return.
 		EE_Registry::instance()->load_helper( 'Template' );
