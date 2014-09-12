@@ -366,7 +366,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//first related checking for the given datetime.
 		$checkin = $registration->get_first_related( 'Checkin', array( array( 'DTT_ID' => $this->_response['data']['DTT_ID'] ), 'order_by' => array( 'CHK_timestamp' => 'DESC' ) ) );
-		$checkin_status = $registration->check_in_status_for_datetime( 0, $checkin );
+		$checkin_status = $registration->check_in_status_for_datetime( $this->_response['data']['DTT_ID'], $checkin );
 
 		switch( $checkin_status ) {
 			case 0 :
