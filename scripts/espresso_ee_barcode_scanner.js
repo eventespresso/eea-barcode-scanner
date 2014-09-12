@@ -18,8 +18,8 @@ jQuery(document).ready(function($) {
 		scannerLoaded : false,
 		attendeeLookup : null,
 		isAdmin : true,
+		currentButtonEl : '',
 		spinner : null,
-		addedEventAjaxCallback : false,
 		data : {
 			ee_reg_code : '',
 			evtName : '',
@@ -29,7 +29,8 @@ jQuery(document).ready(function($) {
 			dttCount : 0,
 			dttselector : '',
 			action : 'ee_barcode_scanner_main_action',
-			ee_scanner_action : ''
+			ee_scanner_action : '',
+			checkinContext : 0
 		},
 		noticesContainer : $('.eea-barcode-notices'),
 
@@ -76,6 +77,9 @@ jQuery(document).ready(function($) {
 			this.currentStep = 1;
 			this.selectorDivider = $('.eea-bs-ed-selector-divider');
 			this.data._wpnonce = $('#eea-barcode-scan-nonce').val();
+
+			//ajax callbacks that should only be set once.
+			this.registerAjaxCallbacks();
 		},
 
 
@@ -146,6 +150,7 @@ jQuery(document).ready(function($) {
 		scannerComplete : function( event, data ) {
 			this.data.ee_reg_code = data.string;
 			this.data.ee_scanner_action = this.lookUp ? 'lookup_attendee' : 'toggle_attendee';
+			$(this.spinner, '.eea-barcode-scanner-form-container').show();
 			this.doAjax( this.attendeeLookup );
 			return;
 		},
@@ -224,34 +229,6 @@ jQuery(document).ready(function($) {
 				//grab the event id and grab dtt selector or name via ajax
 				this.data.EVT_ID = this.eventSelector.val();
 				this.data.ee_scanner_action = 'retrieve_datetimes';
-
-				//put/replace DTTselector in dom and then loadChosen.
-				if ( ! this.addedEventAjaxCallback ) {
-					this.addedEventAjaxCallback = true;
-					$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
-						//we can get the response from xhr
-						var ct = xhr.getResponseHeader("content-type") || "";
-						if ( ct.indexOf('json') > -1 ) {
-							var resp = xhr.responseText;
-							resp = $.parseJSON(resp);
-							//if we've got ee_scanner_action and it does NOT equal this action... let's get out.
-							if ( typeof resp.data === 'undefined' || typeof resp.data.ee_scanner_action === 'undefined' || resp.data.ee_scanner_action != 'retrieve_datetimes' ) {
-								return;
-							}
-							//let's handle toggling all the elements if we had a successful switch!
-							if ( resp.success ) {
-								eebsHelper.data.dttName = typeof resp.data.dtt_name !== 'undefined' ? resp.data.dtt_name : '';
-								eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID : 0;
-								eebsHelper.data.dttCount = typeof resp.data.dtt_count !== 'undefined' ? resp.data.dtt_count  : 0;
-								eebsHelper.data.dttselector = typeof resp.content !== 'undefined' ? resp.content : '';
-								eebsHelper.toggleDTTSelector();
-							} else {
-								eebsHelper.toggleEventSelector();
-								return;
-							}
-						}
-					} );
-				}
 				this.doAjax();
 			}
 			return;
@@ -332,6 +309,105 @@ jQuery(document).ready(function($) {
 			$('.eea-bs-step-' + this.currentStep ).addClass( 'eea-bs-step-active' );
 			return;
 		},
+
+
+
+
+		/**
+		 * This parses the checkin button pressed from attendee lookup results and carries out the correct checkin/checkout action via ajax.
+		 *
+		 * @param {string} buttonEl The button element that was clicked
+		 *
+		 * @return {void}
+		 */
+		checkinButton : function( buttonEl ) {
+			if ( typeof buttonEl === 'undefined' ) {
+				return;
+			}
+
+			var button = $(buttonEl);
+			var data = button.data();
+
+			this.data.ee_reg_code = data.regUrlLnk;
+			this.currentButtonEl = buttonEl;
+
+
+			switch ( button.checkinButton ) {
+				case 'main' :
+					eebsHelper.data.ee_scanner_action = 'toggle_attendee';
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
+					eebsHelper.doAjax( eebsHelper.attendeeLookup );
+					break;
+				case 'secondary' :
+					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container'.show() );
+					eebsHelper.doAjax();
+					break;
+				case 'all'
+					eebsHelper.data.ee_scanner_action = 'checkin_in_or_out_all_attendees';
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
+					eebsHelper.doAjax( eebsHelper.attendeeLookup );
+					break;
+			}
+			return;
+		},
+
+
+
+
+		registerAjaxCallbacks : function() {
+
+			//callback for secondary_attendee toggle checkin
+			$(document).ajaxSuccess( function( event, xhr, ajaxoptions ) {
+				//we can get the response from xhr
+				var ct = xhr.getResponseHeader("content-type") || "";
+				if ( ct.indexOf('json') > -1 ) {
+					var resp = xhr.responseText;
+					resp = $.parseJSON(resp);
+					//if we've got ee_scanner_action and it does NOT equal this action... let's get out.
+					if ( typeof resp.data === 'undefined' || typeof resp.data.ee_scanner_action === 'undefined' ) {
+						return;
+					}
+
+					switch ( resp.data.ee_scanner_action ) {
+						case 'retrieve_datetimes' :
+							if ( resp.success ) {
+								eebsHelper.data.dttName = typeof resp.data.dtt_name !== 'undefined' ? resp.data.dtt_name : '';
+								eebsHelper.data.DTT_ID = typeof resp.data.DTT_ID !== 'undefined' ? resp.data.DTT_ID : 0;
+								eebsHelper.data.dttCount = typeof resp.data.dtt_count !== 'undefined' ? resp.data.dtt_count  : 0;
+								eebsHelper.data.dttselector = typeof resp.content !== 'undefined' ? resp.content : '';
+								eebsHelper.toggleDTTSelector();
+							} else {
+								eebsHelper.toggleEventSelector();
+								return;
+							}
+							break;
+						case 'toggle_secondary_attendee' :
+							if ( resp.success ) {
+								var parentRow = $(eebsHelper.currentButtonEl).parent().parent();
+								$('.eea-bs-secondary-att-datetime', parentRow ).text( resp.data.last_update);
+								$('.eea-bs-check-icon', parentRow ).removeClass().addClass( 'eea-bs-check-icon ee-icon ' + resp.data.checkout_icon_class );
+								$(eebsHelper.currentButtonEl).text( resp.data.buttonText );
+								$(eebsHelper.currentButtonEl).removeClass().addClass( 'eea-bs-checkout-action-button ee-roundish ee-button ' + resp.data.checkout_button_class );
+							} else {
+								return;
+							}
+							break;
+						case 'checkin_in_or_out_all_attendees' :
+							if ( resp.success ) {
+								$(eebsHelper.currentButtonEl).removeClass().addClass( 'eea-bs-checkout-action-button ee-roundish ee-button ' + resp.data.checkout_button_class );
+								$(eebsHelper.currentButtonEl).text( resp.data.buttonText );
+							} else {
+								return;
+							}
+							break;
+					}
+					return;
+				}
+			} );
+
+		},
+
 
 
 
@@ -501,5 +577,11 @@ jQuery(document).ready(function($) {
 	});
 
 
+
+	$('.eea-barcode-scanning-results').on('click', '.eea-bs-checkout-action-button', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		eebsHelper.checkinButton( this );
+	});
 
 });
