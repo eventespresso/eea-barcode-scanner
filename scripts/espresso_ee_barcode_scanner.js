@@ -14,6 +14,7 @@ jQuery(document).ready(function($) {
 		dttName : null,
 		selectorDivider : null,
 		scanner : null,
+		scannerField: null,
 		scannerLoaded : false,
 		attendeeLookup : null,
 		isAdmin : true,
@@ -49,7 +50,7 @@ jQuery(document).ready(function($) {
 			//Stop immediate propagation on keypress event
 			stopPropagation : true,
 			//Prevent default action on keypress event
-			preventDefault : true
+			preventDefault : false
 		},
 
 
@@ -69,6 +70,7 @@ jQuery(document).ready(function($) {
 			this.eventName = $('.eea-bs-ed-selected-event-text');
 			this.dttName = $('.eea-bs-ed-selected-dtt-text');
 			this.scanner = $('.eea-barcode-scanner-form-container');
+			this.scannerField = $('.eea-barcode-scan-code');
 			this.attendeeLookup = $('.eea-barcode-scanning-results');
 			this.spinner = '.spinner';
 			this.currentStep = 1;
@@ -115,12 +117,13 @@ jQuery(document).ready(function($) {
 		loadScanner : function() {
 			this.advanceStep();
 			this.scanner.show();
+			this.scannerField.focus();
 
 			//iniitalizeScanner (if it hasn't been already).
 			if ( ! this.scannerLoaded ) {
-				this.scanner.scannerDetection( this.scannerOptions );
+				this.scannerField.scannerDetection( this.scannerOptions );
 				//register callbacks.
-				this.scanner
+				this.scannerField
 					.bind( 'scannerDetectionComplete', function( e, data ) { eebsHelper.scannerComplete( e, data ); } )
 					.bind( 'scannerDetectionError', function( e, data ) { eebsHelper.scannerError( e, data ); } )
 					.bind( 'scannerDetectionReceive', function( e, data ) { eebsHelper.scannerReceive(e, data); } );
@@ -354,11 +357,36 @@ jQuery(document).ready(function($) {
 					eebsHelper.toggleEventSelector();
 					break;
 				case 2 :
-					eebsHelper.toggleDTTSelector();
+					if ( eebsHelper.data.dttName === '' && eebsHelper.dttSelector === null ) {
+						return;
+					} else if ( eebsHelper.data.dttName !== '' && eebsHelper.dttSelector === null ) {
+						return;
+					} else {
+						eebsHelper.toggleDTTSelector();
+					}
 					break;
 			}
 			return;
 
+		},
+
+
+
+
+		/**
+		 * This is the method triggered by clicking a eea-bs-slidetoggle link.
+		 *
+		 * @param {string} contEl The .eea-bs-slidetoggle element clicked.
+		 *
+		 * @return {void}
+		 */
+		toggleContainer : function( contEl ) {
+			if ( typeof contEl === 'undefined' ) {
+				return;
+			}
+			var target = $(contEl).attr('href');
+			$(target).slideToggle();
+			return;
 		},
 
 
@@ -457,5 +485,21 @@ jQuery(document).ready(function($) {
 		eebsHelper.triggerStep( this );
 		return;
 	});
+
+
+
+	/**
+	 * trigger for extra info containers (view group, view answers)
+	 *
+	 * @since %VER%
+	 *
+	 * @return {void}
+	 */
+	$('.eea-barcode-scanning-results').on('click', '.eea-bs-slidetoggle', function() {
+		eebsHelper.toggleContainer( this );
+		return;
+	});
+
+
 
 });
