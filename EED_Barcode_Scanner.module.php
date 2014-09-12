@@ -262,6 +262,9 @@ class EED_Barcode_Scanner extends EED_Module {
 		//add action back into response so ajax_success has an easy way to target success hooks
 		$this->_response['data']['ee_scanner_action'] = $action;
 
+		//check_approved flag set?
+		$this->_response['data']['check_approved'] = EE_Registry::instance()->REQ->get('lookUp') ? false : true;
+
 		//verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
 			EE_Error::add_error( __('Invalid request.  Missing a valid nonce in the request.'), __FILE__, __FUNCTION__, __LINE__ );
@@ -355,7 +358,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return string
 	 */
 	protected function _scanner_action_lookup_attendee() {
-		$registration = $this->_validate_incoming_data();
+		$registration = $this->_validate_incoming_data( false );
 
 		if ( ! $registration instanceof EE_Registration) {
 			return $registration;
@@ -423,9 +426,11 @@ class EED_Barcode_Scanner extends EED_Module {
 	 *
 	 * @since %VER%
 	 *
+	 * @param bool $check_approved Flags whether to consider the registration status for access.  True = check if reg approved.  false = ignore.
+	 *
 	 * @return string
 	 */
-	private function _validate_incoming_data() {
+	private function _validate_incoming_data( $check_approved = true ) {
 		if ( empty( $this->_response['data']['regcode'] ) ) {
 			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['error'] = TRUE;
@@ -449,7 +454,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//k let's make sure this registration has access to the given datetime.
-		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'] ) ) {
+		if ( ! $registration->can_checkin( $this->_response['data']['DTT_ID'], $check_approved ) ) {
 			EE_Error::add_error( __('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
 			$this->_response['success'] = TRUE;
 			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
@@ -467,7 +472,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return string
 	 */
 	protected function _scanner_action_toggle_attendee() {
-		$registration = $this->_validate_incoming_data();
+		$registration = $this->_validate_incoming_data( $this->_response['data']['check_approved'] );
 
 		if ( ! $registration instanceof EE_Registration) {
 			return $registration;
@@ -475,7 +480,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 		//toggle checkin
-		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
+		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
 		switch ( $status ) {
 			case 1 :
 				EE_Error::add_success( __('This registration has been checked in.', 'event_espresso') );

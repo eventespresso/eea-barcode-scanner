@@ -493,6 +493,8 @@ jQuery(document).ready(function($) {
 				this.data.ee_front_ajax = true;
 			}
 
+			this.data.lookUp = this.lookUp ? 1 : 0;
+
 			where = typeof where !== 'object'  ? false : where;
 
 			$.ajax({
