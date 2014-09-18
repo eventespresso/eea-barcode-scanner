@@ -23,7 +23,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit(); }
 define( 'EE_BARCODE_SCANNER_BASENAME', plugin_basename( EE_BARCODE_SCANNER_PLUGIN_FILE ));
 define( 'EE_BARCODE_SCANNER_PATH', plugin_dir_path( __FILE__ ));
 define( 'EE_BARCODE_SCANNER_URL', plugin_dir_url( __FILE__ ));
-define( 'EE_BARCODE_SCANNER_ADMIN', EE_BARCODE_SCANNER_PATH . 'admin' . DS . 'ee_barcode_scanner' . DS );
+define( 'EE_BARCODE_SCANNER_ADMIN', EE_BARCODE_SCANNER_PATH . 'admin' . DS . 'barcode_scanner' . DS );
 Class  EE_Barcode_Scanner extends EE_Addon {
 
 	/**
@@ -35,7 +35,7 @@ Class  EE_Barcode_Scanner extends EE_Addon {
 	public static function register_addon() {
 		// register addon via Plugin API
 		EE_Register_Addon::register(
-			'EE_Barcode_Scanner',
+			'Barcode_Scanner',
 			array(
 				'version' => EE_BARCODE_SCANNER_VERSION,
 				'min_core_version' => '4.5.0.dev.000',
@@ -43,8 +43,8 @@ Class  EE_Barcode_Scanner extends EE_Addon {
 				'admin_path' => EE_BARCODE_SCANNER_ADMIN,
 				'autoloader_paths' => array(
 					'EE_Barcode_Scanner' => EE_BARCODE_SCANNER_PATH . 'EE_Barcode_Scanner.class.php',
-					'EE_Barcode_Scanner_Admin_Page' => EE_BARCODE_SCANNER_ADMIN . 'EE_Barcode_Scanner_Admin_Page.core.php',
-					'EE_Barcode_Scanner_Admin_Page_Init' => EE_BARCODE_SCANNER_ADMIN . 'EE_Barcode_Scanner_Admin_Page_Init.core.php',
+					'Barcode_Scanner_Admin_Page' => EE_BARCODE_SCANNER_ADMIN . 'Barcode_Scanner_Admin_Page.core.php',
+					'Barcode_Scanner_Admin_Page_Init' => EE_BARCODE_SCANNER_ADMIN . 'Barcode_Scanner_Admin_Page_Init.core.php',
 				),
 				'module_paths' => array( EE_BARCODE_SCANNER_PATH . 'EED_Barcode_Scanner.module.php' ),
 				'shortcode_paths' => array( EE_BARCODE_SCANNER_PATH . 'EES_Barcode_Scanner.shortcode.php' ),

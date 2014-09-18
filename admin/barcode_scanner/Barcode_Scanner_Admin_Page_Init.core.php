@@ -17,7 +17,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' ) ) exit( 'No direct script access allo
  * @subpackage admin
  * @author Darren Ethier
  */
-class EE_Barcode_Scanner_Admin_Page_Init extends EE_Admin_Page_Init {
+class Barcode_Scanner_Admin_Page_Init extends EE_Admin_Page_Init {
 
 	public function __construct() {
 		do_action( 'AHEE_log', __FILE__, __FUNCTION__ );

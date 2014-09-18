@@ -17,7 +17,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' ) ) exit( 'No direct script access allo
  * @subpackage admin
  * @author Darren Ethier
  */
-class EE_Barcode_Scanner_Admin_Page extends EE_Admin_Page {
+class Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 
 	protected function _init_page_props() {
 		$this->page_slug = EE_BARCODE_SCANNER_PG_SLUG;
