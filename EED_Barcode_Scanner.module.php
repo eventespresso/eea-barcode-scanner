@@ -445,7 +445,8 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//valid registration?
-		$registration = EEM_Registration::instance()->get_registration_for_reg_url_link( strtolower($this->_response['data']['regcode']) );
+		$reg_code = strtolower( $this->_response['data']['regcode'] );
+		$registration = EEM_Registration::instance()->get_one( array( array( 'OR' => array( 'REG_url_link' => $reg_code, 'REG_code' => $reg_code ) ) ) );
 
 		if ( ! $registration instanceof EE_Registration ) {
 			EE_Error::add_error( __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
