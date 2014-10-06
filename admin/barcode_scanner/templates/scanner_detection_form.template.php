@@ -52,7 +52,7 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 				<?php echo $dtt_selector; ?>
 			</div>
 			<?php if ( ! empty( $dtt_id ) ) : ?>
-				<input type="hidden" name="eea_bs_dtt_selector" value="<?php echo $dtt_id; ?>">
+				<input type="hidden" id="eea_bs_dtt_selector_hidden" name="eea_bs_dtt_selector_hidden" value="<?php echo $dtt_id; ?>">
 			<?php endif; ?>
 			<div class="eea-bs-ed-selector-selected-text">
 				<h3 class="eea-bs-ed-selected-dtt-text"<?php echo $dtt_display; ?>><?php echo $dtt_name; ?></h3>
