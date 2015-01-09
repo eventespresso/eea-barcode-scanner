@@ -1,21 +1,21 @@
 {
-	"versionFile" : "eea-barcode-scanner.php",
-	"versionType" : "rc",
-	"slug" : "eea-barcode-scanner",
-	"archiveBaseUrl" : "http://build.eventespresso.com/",
-	"archiveBasePath" : "~/www/build/",
-	"releaseFilesRemove" : [
-		"src/tests/**",
-		"src/info.json",
-		"src/circle.yml",
-		"src/screenshot*.jpg"
-	],
-	"decafFilesRemove" : [
-		"src/tests**",
-		"src/info.json",
-		"src/circle.yml",
-		"src/screenshot*.jpg",
-	],
-	"awsbucket" : "",
-	"awsregion" : ""
+    "versionFile": "eea-barcode-scanner.php",
+    "versionType": "rc",
+    "slug": "eea-barcode-scanner",
+    "archiveBaseUrl": "http://build.eventespresso.com/",
+    "archiveBasePath": "~/www/build/",
+    "releaseFilesRemove": [
+        "src/tests/**",
+        "src/info.json",
+        "src/circle.yml",
+        "src/screenshot*.jpg"
+    ],
+    "decafFilesRemove": [
+        "src/tests**",
+        "src/info.json",
+        "src/circle.yml",
+        "src/screenshot*.jpg"
+    ],
+    "awsbucket": "",
+    "awsregion": ""
 }
