@@ -1,7 +1,5 @@
 {
     "versionFile": "espresso-barcode-scanner.php",
-    "versionType": "rc",
-    "branch" : "master",
     "name" : "Event Espresso Barcode Scanner",
     "slug": "eea-barcode-scanner",
     "archiveBaseUrl": "http://build.eventespresso.com/",
