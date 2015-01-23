@@ -74,12 +74,18 @@ jQuery(document).ready(function($) {
 			this.scannerField = $('.eea-barcode-scan-code');
 			this.attendeeLookup = $('.eea-barcode-scanning-results');
 			this.spinner = '.spinner';
-			this.currentStep = 1;
+			this.currentStep = parseInt( $('.js-current-step-on-init').text(), 10 );
 			this.selectorDivider = $('.eea-bs-ed-selector-divider');
 			this.data._wpnonce = $('#eea-barcode-scan-nonce').val();
 
 			//initial dtt_ID could be set via hidden field (for cases where there is only one active event) - if not present then will get overridden later anyways.
 			this.data.DTT_ID = $('#eea_bs_dtt_selector_hidden').val();
+
+			//maybe hide selector
+			if ( this.currentStep === 3 ) {
+				this.eventSelectorChosen.hide();
+				this.data.dttName = this.dttName.text();
+			}
 
 			//ajax callbacks that should only be set once.
 			this.registerAjaxCallbacks();
@@ -93,6 +99,7 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		loadChosen : function() {
+
 			if ( this.eventSelector === null && $('#eea_bs_event_selector').length ) {
 				this.eventSelector = $('#eea_bs_event_selector');
 				this.eventSelector.chosen().change( function(){

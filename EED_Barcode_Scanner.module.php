@@ -165,7 +165,6 @@ class EED_Barcode_Scanner extends EED_Module {
 			);
 		$events = EEM_Event::instance()->get_all( $query );
 		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = '';
-		$event_name = '';
 
 		//if only ONE event then let's just return that and the datetime selector.
 		if ( count ( $events ) === 1 ) {
@@ -186,20 +185,64 @@ class EED_Barcode_Scanner extends EED_Module {
 			}
 			$event_selector = EEH_Form_Fields::select_input( 'eea_bs_event_selector', $evt_options, '', 'data-placeholder="Select Event..."', 'eea-bs-ed-selector-select' );
 		}
-		$step = ! empty( $event_name ) ? 2 : 1;
-		$step = !empty( $dtt_selector ) || !empty( $dtt_name ) ? 3 : $step;
+
+		/**
+		 * Set defaults for template args.
+		 *
+		 */
 		$template_args = array(
 			'_wpnonce' => wp_create_nonce( 'ee_banner_scan_form' ),
-			'step' => $step,
+			'step' => 1,
 			'context' => is_admin() ? 'admin' : 'frontend',
 			'event_name' => $event_name,
 			'event_selector' => $event_selector,
 			'dtt_selector' => $dtt_selector,
 			'dtt_name' => $dtt_name,
 			'dtt_id' => $dtt_id,
+			'reg_content' => '',
 			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' ),
 			'button_class' => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button'
 			);
+
+		//First thing to determine is if we have all the details needed to display a specific record.
+		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get( 'EVT_ID' );
+		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get( 'DTT_ID' );
+		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get( 'ee_reg_code' );
+		$doing_lookup = false;
+
+		if ( ! empty( $this->_response['data']['EVT_ID'] ) && ! empty( $this->_response['data']['DTT_ID'] ) && ! empty( $this->_response['data']['regcode'] ) ) {
+			$event = EEM_Event::instance()->get_one_by_ID( $this->_response['data']['EVT_ID'] );
+			$dtt = EEM_Datetime::instance()->get_one_by_ID( $this->_response['data']['DTT_ID'] );
+			$reg_content = $this->_scanner_action_lookup_attendee();
+
+
+			if ( $event instanceof EE_Event && $dtt instanceof EE_Datetime && ( ! isset( $this->_response['error'] ) || ! $this->_response['error'] ) ) {
+				$name = $dtt->name();
+				$datename = !empty( $name ) ? $name . ' - ' : '';
+				$datename .= $dtt->get_dtt_display_name();
+				$targs = array(
+					'step' => 3,
+					'event_name' => $event->name(),
+					'dtt_name' => $datename,
+					'dtt_id' => $dtt->ID(),
+					'reg_content' => $reg_content
+					);
+				$template_args = array_merge( $template_args, $targs );
+				$doing_lookup = true;
+			}
+		}
+
+		if ( ! $doing_lookup ) {
+			//template args has not been setup so let's go ahead and setup the selection form.
+
+			$step = ! empty( $event_name ) ? 2 : 1;
+			$step = !empty( $dtt_selector ) || !empty( $dtt_name ) ? 3 : $step;
+			$targs = array(
+				'step' => $step
+				);
+			$template_args = array_merge( $template_args, $targs );
+		}
+
 		$template = EE_BARCODE_SCANNER_ADMIN . 'templates/scanner_detection_form.template.php';
 
 		if ( $echo ) {
