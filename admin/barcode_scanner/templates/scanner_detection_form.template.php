@@ -23,11 +23,13 @@ $eventdisplay = empty( $event_name ) ? ' style="display:none;"' : '';
 $dtt_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
+$referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 ?>
 <!-- namespace with css -->
 <div class="eea-barcode-scanning-container">
 	<!-- notices -->
 	<div class="eea-barcode-notices"><!--used by js --></div>
+	<span class="js-http-referrer" style="display:none"><?php echo $referrer; ?></span>
 	<!-- step display -->
 	<div class="eea-bs-main-step-container">
 		<hr class="eea-bs-step-line">
