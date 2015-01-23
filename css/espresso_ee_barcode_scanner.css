@@ -68,6 +68,11 @@ Attendee container css
 	padding-left: 0;
 }
 
+.eea-bs-contact-email-container {
+	margin-top: -10px;
+	margin-bottom: 10px
+}
+
 #poststuff h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 	margin: 0;
 	margin-bottom: 5px;

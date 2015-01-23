@@ -35,6 +35,9 @@ $answers = $registration->answers();
 			<h3 class="eea-bs-attendee-name">
 				<?php $contact->e_full_name(); ?><?php if ( $registration->is_primary_registrant() ) : ?><span class="dashicons dashicons-star-filled"></span><?php endif; ?>
 			</h3>
+			<section class="eea-bs-contact-email-container">
+				<span class="eea-bs-contact-email"><?php echo $contact->email(); ?></span>
+			</section>
 			<section class="eea-bs-status-container">
 				<span class="eea-bs-status-label eea-bs-status-txn"><?php _e('Owing:', 'event_espresso'); ?></span><?php echo $transaction->remaining(); ?><span class="eea-bs-status-circle txn-status-bg-<?php echo $transaction->status_ID(); ?>"></span>
 			</section>
