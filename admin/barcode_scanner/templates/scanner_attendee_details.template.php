@@ -67,7 +67,7 @@ $answers = $registration->answers();
 						<tr>
 							<td>
 								<span class="eea-bs-question"><?php echo $question->display_text(); ?></span><br>
-								<span class="eea-bs-admin-label"><? echo $question->admin_label(); ?></span>
+								<span class="eea-bs-admin-label"><?php echo $question->admin_label(); ?></span>
 							</td>
 							<td>
 								<?php echo $answer->pretty_value(); ?>

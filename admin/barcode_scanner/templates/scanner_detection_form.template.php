@@ -23,17 +23,20 @@ $eventdisplay = empty( $event_name ) ? ' style="display:none;"' : '';
 $dtt_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
+$referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 ?>
 <!-- namespace with css -->
 <div class="eea-barcode-scanning-container">
 	<!-- notices -->
 	<div class="eea-barcode-notices"><!--used by js --></div>
+	<span class="js-http-referrer" style="display:none"><?php echo $referrer; ?></span>
 	<!-- step display -->
 	<div class="eea-bs-main-step-container">
 		<hr class="eea-bs-step-line">
 		<div data-step-num="1" class="eea-bs-step-number eea-bs-step-1<?php echo $eeactivestep1; ?>"><div class="eea-step-bubble"><p>1</p></div><span class="eea-bs-step-text"><?php _e('Choose Event', 'event_espresso'); ?></span></div>
 		<div data-step-num="2" class="eea-bs-step-number eea-bs-step-2<?php echo $eeactivestep2; ?>"><div class="eea-step-bubble"><p>2</p></div><span class="eea-bs-step-text"><?php _e('Choose Date-time', 'event_espresso'); ?></span></div>
 		<div data-step-num="3" class="eea-bs-step-number eea-bs-step-3<?php echo $eeactivestep3; ?>"><div class="eea-step-bubble"><p>3</p></div><span class="eea-bs-step-text"><?php _e('Scan', 'event_espresso'); ?></span></div>
+		<span class="js-current-step-on-init" style="display:none;"><?php echo $step; ?></span>
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
@@ -75,5 +78,9 @@ $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style=
 	</div>
 	<div class="eea-barcode-scanning-results">
 		<!-- used by js -->
+		<?php if ( !empty( $reg_content ) ) {
+			echo $reg_content;
+		}
+		?>
 	</div>
 </div>
