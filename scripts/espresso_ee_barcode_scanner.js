@@ -30,7 +30,8 @@ jQuery(document).ready(function($) {
 			dttselector : '',
 			action : 'ee_barcode_scanner_main_action',
 			ee_scanner_action : '',
-			checkinContext : 0
+			checkinContext : 0,
+			httpReferrer : ''
 		},
 		noticesContainer : $('.eea-barcode-notices'),
 
@@ -76,6 +77,7 @@ jQuery(document).ready(function($) {
 			this.spinner = '.spinner';
 			this.currentStep = parseInt( $('.js-current-step-on-init').text(), 10 );
 			this.selectorDivider = $('.eea-bs-ed-selector-divider');
+			this.data.httpReferrer = $('.js-http-referrer').text();
 			this.data._wpnonce = $('#eea-barcode-scan-nonce').val();
 
 			//initial dtt_ID could be set via hidden field (for cases where there is only one active event) - if not present then will get overridden later anyways.
