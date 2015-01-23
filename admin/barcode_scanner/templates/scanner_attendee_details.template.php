@@ -19,6 +19,24 @@
  * @type string $checkin_color Class text for the checkin button color.
  */
 $answers = $registration->answers();
+
+/**
+ * links to registration details, and contact details pages.
+ */
+$base_url = admin_url( 'admin.php?page=espresso_registrations' );
+
+$reg_url = add_query_arg( array(
+	'action' => 'view_registration',
+	'_REG_ID' => $registration->ID()
+	), $base_url );
+$att_url = add_query_arg( array(
+	'action' => 'edit_attendee',
+	'post' => $contact->ID()
+	), $base_url );
+
+$reg_link = sprintf( __( '%1$sView Registration Details%2$s', 'event_espresso'), '<a href="' . $reg_url . '">', '</a>' );
+$att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a href="' . $att_url . '">', '</a>' );
+
 ?>
 <div class="eea-barcode-scanner-attendee-container">
 	<div class="eea-barcode-scanner-contact-header-container">
@@ -52,6 +70,9 @@ $answers = $registration->answers();
 				<button data-checkin-button="main" data-reg-url-lnk="<?php echo $registration->reg_url_link(); ?>" class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?>"><?php echo $checkin_button_text; ?></button>
 			</section>
 			<div style="clear:both">
+			<section class="eea-bs-external-links-container">
+				<?php echo $reg_link . ' | ' . $att_link; ?>
+			</section>
 		</div>
 		<div style="clear:both"></div>
 	</div>
