@@ -1,8 +1,8 @@
 <?php
 /*
-  Plugin Name: Event Espresso - EE Barcode Scanner
+  Plugin Name: Event Espresso - EE Barcode Scanner (EE 4.5.0+)
   Plugin URI: http://www.eventespresso.com
-  Description: Add a barcode scanner for checking in or checkout out attendees.  Requires Event Espresso 4 Core.  This will work with any barcode that contains the special encoded registration_url_link or the form can be used for manual entry without a scanner.
+  Description: Add a barcode scanner for checking in or checkout out attendees.  This will work with any barcode that contains the special encoded registration_url_link or the form can be used for manual entry without a scanner.
   Version: 1.0.0.rc.009
 
   Author: Event Espresso
