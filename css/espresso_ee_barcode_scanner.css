@@ -209,9 +209,9 @@ Attendee container css
 
 /** steps **/
 .eea-bs-main-step-container {
-	width: 75%;
+	/*width: 75%;*/
 	position: relative;
-	height: 80px;
+	/*height: 80px;*/
 	margin: auto;
 	margin-bottom: 50px;
 
@@ -226,8 +226,8 @@ Attendee container css
 
 .eea-bs-step-number {
 	display: inline-block;
-	margin-right: 70px;
-	margin-left: 30px;
+	margin-right: 30px;
+	/*margin-left: 30px;*/
 	margin-top: 20px;
 	text-align: center;
 	cursor: pointer;
@@ -349,5 +349,8 @@ Attendee container css
 }
 
 @media only screen and (max-width: 480px) {
+	.eea-bs-main-step-container {
+		visibility: hidden;
+	}
 }
 
