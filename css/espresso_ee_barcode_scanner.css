@@ -372,6 +372,9 @@ Attendee container css
 	.eea-bs-step-active .eea-step-bubble p {
 		font-size: 1.7em;
 	}
+	.eea-bs-step-text {
+		font-size: 0.9em;
+	}
 	.eea-barcode-scanner-avatar-container {
 		visibility: hidden;
 		width: 0px;
