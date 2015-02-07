@@ -358,10 +358,12 @@ Attendee container css
 }
 
 @media only screen and (max-width: 480px) {
-	.eea-bs-main-step-container {
-		visibility: hidden;
-		width: 0px;
-		height: 0px;
+	.eea-step-bubble {
+		height: 30px;
+		width: 30px;
+	}
+	.eea-step-bubble p {
+		font-size: 1.5em;
 	}
 	.eea-barcode-scanner-avatar-container {
 		visibility: hidden;
