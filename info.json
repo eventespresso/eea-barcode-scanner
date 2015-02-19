@@ -17,5 +17,7 @@
         "src/screenshot*.jpg"
     ],
     "awsbucket": "",
-    "awsregion": ""
+    "awsregion": "",
+    "srcBuildFolderName" : "eea-barcode-scanner",
+    "textDomain" : "event_espresso"
 }
