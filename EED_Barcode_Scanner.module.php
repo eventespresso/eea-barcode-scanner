@@ -161,7 +161,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		//getting events that are published but not expired.
 		$query[0] = array(
 			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '>', current_time('mysql') )
+			'Datetime.DTT_EVT_end' => array( '>', current_time('timestamp') )
 			);
 		$events = EEM_Event::instance()->get_all( $query );
 		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = '';
