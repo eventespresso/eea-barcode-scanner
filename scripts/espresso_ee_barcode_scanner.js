@@ -369,7 +369,7 @@ jQuery(document).ready(function($) {
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
 					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
-					eebsHelper.doAjax();
+					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'all' :
 					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
