@@ -85,7 +85,9 @@ jQuery(document).ready(function($) {
 
 			//maybe hide selector
 			if ( this.currentStep === 3 ) {
-				this.eventSelectorChosen.hide();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.hide();
+				}
 				this.data.dttName = this.dttName.text();
 			}
 
@@ -218,8 +220,9 @@ jQuery(document).ready(function($) {
 				this.advanceStep( true );
 				//hide the event name and show the event selector.
 				this.eventName.hide();
-
-				this.eventSelectorChosen.show();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.show();
+				}
 
 				//toggle the dtt selector (hide) (and the dtt name)
 				this.toggleDTTSelector( false );
@@ -233,7 +236,9 @@ jQuery(document).ready(function($) {
 				this.eventName.text( this.data.evtName ).show();
 
 				//hide the event selector
-				this.eventSelectorChosen.hide();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.hide();
+				}
 
 				this.selectorDivider.show();
 
@@ -364,7 +369,7 @@ jQuery(document).ready(function($) {
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
 					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
-					eebsHelper.doAjax();
+					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'all' :
 					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
@@ -453,7 +458,9 @@ jQuery(document).ready(function($) {
 
 			switch ( stepnum ) {
 				case 1 :
-					eebsHelper.toggleEventSelector();
+					if ( this.eventSelectorChosen !== null ) {
+						eebsHelper.toggleEventSelector();
+					}
 					break;
 				case 2 :
 					if ( eebsHelper.data.dttName !== '' && eebsHelper.dttSelector === null ) {

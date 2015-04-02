@@ -596,7 +596,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$registration = $this->_validate_incoming_data();
 
 		if ( ! $registration instanceof EE_Registration) {
-			return $valid;
+			return $registration;
 		}
 
 
