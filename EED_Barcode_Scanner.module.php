@@ -510,14 +510,15 @@ class EED_Barcode_Scanner extends EED_Module {
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
 		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
 		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
-		$url = add_query_arg( array(
-			'EVT_ID' => $registration->event_ID(),
-			'DTT_ID' => $this->_response['data']['DTT_ID'],
-			'ee_reg_code' => $registration->reg_code(),
-			'page' => 'eea_barcode_scanner'
+		$url = esc_url( add_query_arg(
+			array(
+				'EVT_ID' => $registration->event_ID(),
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				'ee_reg_code' => $registration->reg_code(),
+				'page' => 'eea_barcode_scanner'
 			),
 			$base_url
-			);
+		));
 
 		$view_link = ! empty( $base_url ) ? sprintf( __('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>' ) : '';
 
