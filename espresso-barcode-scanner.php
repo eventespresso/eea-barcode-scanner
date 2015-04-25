@@ -30,7 +30,7 @@
  *
  * @ package		EE4 Barcode Scanner
  * @ author			Event Espresso
- * @ copyright	(c) 2008-2014 Event Espresso  All Rights Reserved.
+ * @ copyright	    (c) 2008-2014 Event Espresso  All Rights Reserved.
  * @ license		http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
  * @ link			http://www.eventespresso.com
  * @ version	 	1.0.0
