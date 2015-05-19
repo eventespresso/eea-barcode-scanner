@@ -35,8 +35,13 @@ General Styles
 }
 
 .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
-	width: 12%;
-	margin-right: 0px;
+    width: 12%;
+    margin-right: 0px;
+}
+
+.eea-bs-ed-checkin-link-container {
+    float: right;
+    margin-top: 12px;
 }
 
 /**

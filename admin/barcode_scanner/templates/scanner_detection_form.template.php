@@ -15,12 +15,14 @@
  * @type int     $dtt_id 		If there is only one datetime then this will have the id of the dtt.
  * @type string $action_selector A selector for indicating the default actions when submitted.
  * @type string $button_class The class for the submit button.
+ * @type string $checkin_link The link to the check in list table for this event and datetime.
  */
 $eeactivestep1 = $step === 1 ? ' eea-bs-step-active' : '';
 $eeactivestep2 = $step === 2 ? ' eea-bs-step-active' : '';
 $eeactivestep3 = $step === 3 ? ' eea-bs-step-active' : '';
 $eventdisplay = empty( $event_name ) ? ' style="display:none;"' : '';
 $dtt_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
+$checkin_link_display = empty( $checkin_link ) ? ' style="display:none;"' : '';
 $divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
 $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
@@ -61,6 +63,9 @@ $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 				<h3 class="eea-bs-ed-selected-dtt-text"<?php echo $dtt_display; ?>><?php echo $dtt_name; ?></h3>
 			</div>
 		</div>
+		<div class="eea-bs-ed-checkin-link-container">
+			<a target="_blank" href="<?php echo $checkin_link; ?>" class="eea-bs-ed-checkin-link"<?php echo $checkin_link_display; ?>><?php _e('View All Registrations', 'event_espresso'); ?></a>
+		</div>
 	</div>
 	<!-- barcode scanning form -->
 	<div class="eea-barcode-scanner-form-container"<?php echo $scanner_display; ?>>
@@ -68,6 +73,7 @@ $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			<!-- hidden inputs -->
 			<input type="hidden" id="eea-barcode-scan-nonce" name="eea_barcode_scan_nonce" value="<?php echo $_wpnonce; ?>">
 			<input type="hidden" id="eea-barcode-scan-context" name="eea_barcode_scan_context" value="<?php echo $context; ?>">
+			<input type="hidden" id="eea-barcode-scan-base-url" name="eea-barcode_scan_base_url" value="<?php echo admin_url(); ?>">
 
 			<!-- on with the form -->
 			<?php echo $action_selector; ?>

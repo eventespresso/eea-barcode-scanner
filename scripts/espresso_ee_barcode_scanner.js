@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 		dttSelector : null,
 		dttSelectorChosen : null,
 		dttName : null,
+        checkinLink : null,
 		selectorDivider : null,
 		scanner : null,
 		scannerField: null,
@@ -71,6 +72,7 @@ jQuery(document).ready(function($) {
 			this.isAdmin = $('#eea-barcode-scan-context').val() == 'admin' ? true : false;
 			this.eventName = $('.eea-bs-ed-selected-event-text');
 			this.dttName = $('.eea-bs-ed-selected-dtt-text');
+            this.checkinLink = $('.eea-bs-ed-checkin-link');
 			this.scanner = $('.eea-barcode-scanner-form-container');
 			this.scannerField = $('.eea-barcode-scan-code');
 			this.attendeeLookup = $('.eea-barcode-scanning-results');
@@ -303,20 +305,37 @@ jQuery(document).ready(function($) {
 				if ( this.data.dttName === ''  ) {
 					this.data.dttName = $(this.dttSelector.selector + ' option[value="' + this.dttSelector.val() + '"]').text();
 					this.data.DTT_ID = this.dttSelector.val();
+                    this.toggleCheckinLink( false );
 				}
 				if ( this.dttSelector !== null ) {
 					this.dttSelector.hide();
 					this.dttSelectorChosen.hide();
 				}
+                this.toggleCheckinLink();
 				this.dttName.html(this.data.dttName).show();
 				this.loadScanner();
 			} else {
 				this.dttName.html('').hide();
 				this.data.DTT_ID = 0;
 				this.data.dttName = '';
+                this.toggleCheckinLink( false );
 			}
 			return;
 		},
+
+
+
+
+        toggleCheckinLink : function( show ) {
+            show = typeof show === 'undefined' ? true : show;
+            if ( show ) {
+                //generate what the link is.
+                var url = $('#eea-barcode-scan-base-url').val() + 'admin.php?page=espresso_registrations&action=event_registrations&event_id=' + this.data.EVT_ID + '&DTT_ID=' + this.data.DTT_ID;
+                this.checkinLink.attr('href', url).show();
+            } else {
+                this.checkinLink.hide();
+            }
+        },
 
 
 
