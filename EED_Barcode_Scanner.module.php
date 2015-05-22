@@ -160,11 +160,15 @@ class EED_Barcode_Scanner extends EED_Module {
 		//events selector for step one!
 		//getting events that are published but not expired.
 		//need to use a value for time() depending on what method is available
-		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? EEM_Datetime::instance()->current_time_for_query( 'DTT_EVT_end' ) : current_time('timestamp');
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
 		$query = array(
 			0 => array(
 				'status' => 'publish',
-				'Datetime.DTT_EVT_end' => array( '>', $current_time - HOUR_IN_SECONDS )
+				'Datetime.DTT_EVT_end' => array( '>', $current_time + $filtered_time_window )
 				),
 			'order_by' => array( 'Datetime.DTT_EVT_start' => 'ASC' )
 		);
