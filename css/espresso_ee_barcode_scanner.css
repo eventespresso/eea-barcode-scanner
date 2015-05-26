@@ -284,6 +284,10 @@ Attendee container css
 	margin:auto;
 }
 
+.eea-bs-ed-selection-container .spinner {
+	float: none;
+}
+
 .eea-bs-ed-selector {
 	display: inline-block;
 	vertical-align: middle;
