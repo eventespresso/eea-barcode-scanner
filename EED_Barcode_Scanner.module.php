@@ -344,7 +344,21 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//get all datetimes
-		$datetimes = EEM_Datetime::instance()->get_datetimes_for_event_ordered_by_DTT_order( $this->_response['data']['EVT_ID'], FALSE, FALSE );
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
+		$query_args = array(
+			0 => array(
+				'Event.EVT_ID' => $this->_response['data']['EVT_ID'],
+				'DTT_EVT_end' => array( '>', $current_time + $filtered_time_window ),
+				'DTT_deleted' => false
+			),
+			'default_where_conditions' => 'none',
+			'order_by' => array( 'DTT_order' => 'ASC' )
+		);
+		$datetimes = EEM_Datetime::instance()->get_all( $query_args );
 
 		$this->_response['data']['dtt_count'] = count( $datetimes );
 
