@@ -146,6 +146,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		//selector for the different default actions after a scan.
 		EE_Registry::instance()->load_helper('Form_Fields');
 		EE_Registry::instance()->load_helper('Template');
+		EE_Registry::instance()->load_helper( 'URL' );
 		$action_options = array(
 			0 => array(
 				'text' => __('Lookup Attendee', 'event_espresso'),
@@ -173,7 +174,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			'order_by' => array( 'Datetime.DTT_EVT_start' => 'ASC' )
 		);
 		$events = EEM_Event::instance()->get_all( $query );
-		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = '';
+		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = $checkin_link = '';
 
 		//if only ONE event then let's just return that and the datetime selector.
 		if ( count ( $events ) === 1 ) {
@@ -183,6 +184,12 @@ class EED_Barcode_Scanner extends EED_Module {
 			$dtt_selector = $this->_scanner_action_retrieve_datetimes();
 			$dtt_name = empty( $dtt_selector ) && ! empty( $this->_response['data']['dtt_name'] ) ? $this->_response['data']['dtt_name'] : '';
 			$dtt_id = empty( $this->_response['data']['DTT_ID'] ) ? '' : $this->_response['data']['DTT_ID'];
+			$checkin_link = ! empty( $dtt_id ) ? EEH_URL::add_query_args_and_nonce( array(
+				'page' => 'espresso_registrations',
+				'action' => 'event_registrations',
+				'event_id' => $event->ID(),
+				'DTT_ID' => $dtt_id
+			)) : '';
 		} else {
 			//setup event selector.
 			$evt_options[] = array( 'text' => '', 'id' => '' );
@@ -208,6 +215,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			'dtt_selector' => $dtt_selector,
 			'dtt_name' => $dtt_name,
 			'dtt_id' => $dtt_id,
+			'checkin_link' => $checkin_link,
 			'reg_content' => '',
 			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' ),
 			'button_class' => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button'
