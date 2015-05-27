@@ -41,7 +41,7 @@ General Styles
 
 .eea-bs-ed-checkin-link-container {
     float: right;
-    margin-top: 12px;
+    margin-top: 35px;
 }
 
 /**
@@ -286,11 +286,11 @@ Attendee container css
 .eea-bs-ed-selection-container {
     padding-top: 10px;
     padding-bottom: 10px;
-	margin:auto;
+    margin:auto;
 }
 
 .eea-bs-ed-selection-container .spinner {
-	float: none;
+    float: none;
 }
 
 .eea-bs-ed-selector {
@@ -316,16 +316,16 @@ Attendee container css
 }
 
 .eea-bs-ed-selector-divider {
-	display:block;
-	width: 7px;
-	height: 7px;
-	margin: 20px auto 0;
-	-webkit-border-radius: 7px;
-	-moz-border-radius: 7px;
-	-ms-border-radius: 7px;
-	-o-border-radius: 7px;
-	border-radius: 7px;
-	background-color: #666;
+    display:block;
+    width: 7px;
+    height: 7px;
+    margin: 20px auto 0;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+    background-color: #666;
 }
 
 .eea-bs-ed-selector-select {
@@ -350,9 +350,9 @@ Attendee container css
 ---------------------------------------------------------------------------------------------------- */
 
 @media only screen and (max-width: 767px) {
-	.eea-bs-ed-selector-divider {
-		display: none;
-	}
+    .eea-bs-ed-selector-divider {
+        display: none;
+    }
 }
 
 @media only screen and (max-width: 600px) and (min-width: 481px) {
