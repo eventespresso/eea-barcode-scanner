@@ -161,11 +161,18 @@ class EED_Barcode_Scanner extends EED_Module {
 		//events selector for step one!
 		//getting events that are published but not expired.
 		//need to use a value for time() depending on what method is available
-		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? EEM_Datetime::instance()->current_time_for_query( 'DTT_EVT_end' ) : current_time('timestamp');
-		$query[0] = array(
-			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '>', $current_time )
-			);
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
+		$query = array(
+			0 => array(
+				'status' => 'publish',
+				'Datetime.DTT_EVT_end' => array( '>', $current_time + $filtered_time_window )
+				),
+			'order_by' => array( 'Datetime.DTT_EVT_start' => 'ASC' )
+		);
 		$events = EEM_Event::instance()->get_all( $query );
 		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = $checkin_link = '';
 
@@ -345,7 +352,21 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//get all datetimes
-		$datetimes = EEM_Datetime::instance()->get_datetimes_for_event_ordered_by_DTT_order( $this->_response['data']['EVT_ID'], FALSE, FALSE );
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
+		$query_args = array(
+			0 => array(
+				'Event.EVT_ID' => $this->_response['data']['EVT_ID'],
+				'DTT_EVT_end' => array( '>', $current_time + $filtered_time_window ),
+				'DTT_deleted' => false
+			),
+			'default_where_conditions' => 'none',
+			'order_by' => array( 'DTT_order' => 'ASC' )
+		);
+		$datetimes = EEM_Datetime::instance()->get_all( $query_args );
 
 		$this->_response['data']['dtt_count'] = count( $datetimes );
 
