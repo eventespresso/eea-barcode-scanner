@@ -554,10 +554,10 @@ class EED_Barcode_Scanner extends EED_Module {
 		//toggle checkin
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
 		switch ( $status ) {
-			case EE_Registration::checkin_status_in :
+			case 1 :
 				EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
 				break;
-			case EE_Registration::checkin_status_out :
+			case 2 :
 				EE_Error::add_success( sprintf( __( 'This registration has been checked out. %s', 'event_espresso' ), $view_link ) );
 				break;
 		}
@@ -587,12 +587,12 @@ class EED_Barcode_Scanner extends EED_Module {
 		//first let's toggle the main registration, and that way we'll know what status we need to set the others to
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
 		switch ( $status ) {
-			case EE_Registration::checkin_status_in :
+			case 1 :
 				EE_Error::add_success( __('All registrations in the group have been checked in.', 'event_espresso') );
 				$this->_response['data']['checkout_button_class'] = 'ee-red';
 				$this->_response['data']['buttonText'] = __('Check Out All Registrations', 'event_espresso');
 				break;
-			case EE_Registration::checkin_status_out :
+			case 2 :
 				EE_Error::add_success( __( 'All registrations in the group have been checked out', 'event_espresso' ) );
 				$this->_response['data']['checkout_button_class'] = 'ee-green';
 				$this->_response['data']['buttonText'] = __('Check In All Registrations', 'event_espresso');
@@ -637,13 +637,13 @@ class EED_Barcode_Scanner extends EED_Module {
 		$checkin = $registration->get_first_related( 'Checkin' );
 		$this->_response['data']['last_update'] = $checkin->get_datetime( 'CHK_timestamp', 'M j @', 'h:i a');
 		switch ( $status ) {
-			case EE_Registration::checkin_status_in :
+			case 1 :
 				EE_Error::add_success( __('This group registration has been checked in.', 'event_espresso') );
 				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-in';
 				$this->_response['data']['buttonText'] = __('Check Out', 'event_espresso');
 				$this->_response['data']['checkout_button_class'] = 'ee-red';
 				break;
-			case EE_Registration::checkin_status_out :
+			case 2 :
 				EE_Error::add_success( __( 'This group registration has been checked out', 'event_espresso' ) );
 				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-out';
 				$this->_response['data']['buttonText'] = __('Check In', 'event_espresso');
