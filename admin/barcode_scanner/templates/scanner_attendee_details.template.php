@@ -120,16 +120,24 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 						$att = $reg->attendee();
 						$checkin_button_text = $checkin_status === 1 ? __(' Check Out', 'event_espresso' ) : __('Check In', 'event_espresso');
 						$reg_url_link = $reg->reg_url_link();
+
+						/**
+						 * The reason for these conditionals is for backward compat with versions of EE core that do not have the check-in status constants defined.
+						 */
+						$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Registration::checkin_status_in : 1;
+						$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Registration::checkin_status_out : 2;
+						$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Registration::checkin_status_never : 0;
+
 						switch ( $checkin_status ) {
-							case 0 :
+							case $never_checked :
 								$checkin_class = ' dashicons-no';
 								$chkin_color = ' ee-green';
 								break;
-							case 1 :
+							case $checked_in :
 								$checkin_class = ' ee-icon-check-in';
 								$chkin_color = ' ee-red';
 								break;
-							case 2 :
+							case $checked_out :
 								$checkin_class = ' ee-icon-check-out';
 								$chkin_color = ' ee-green';
 								break;
