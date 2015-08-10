@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
 		 * scanner detection options
 		 */
 		//scanning complete activity, true means scan triggers look up of registration.  False, means scan toggles registration check in status for scan.
-		scanningAction : 'toggle_attendee',
+		scanningAction : 'lookup_attendee',
 		scannerOptions : {
 			//Callback after receive a char (original keypress event in parameter)
 			timeBeforeScanTest : 100,
