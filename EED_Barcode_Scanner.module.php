@@ -18,6 +18,30 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' ) ) exit( 'No direct script access allo
  */
 class EED_Barcode_Scanner extends EED_Module {
 
+
+	/**
+	 * The constant used for referencing the lookup action
+	 * @type string
+	 */
+	const action_lookup = 'lookup_attendee';
+
+
+	/**
+	 * The constant used for referencing the continuous auto check-in/check-out scanning.
+	 * @type string
+	 */
+	const action_auto = 'toggle_attendee';
+
+
+	/**
+	 * The constant used for referencing the continuous check-in with no check-out's allowed scanning.
+	 * @type string
+	 */
+	const action_no_checkout = 'toggle_attendee_no_checkout';
+
+
+
+
 	/**
 	 * @var 		bool
 	 * @access 	public
@@ -33,6 +57,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @var array
 	 */
 	protected $_response = array();
+
 
 
 
@@ -150,11 +175,15 @@ class EED_Barcode_Scanner extends EED_Module {
 		$action_options = array(
 			0 => array(
 				'text' => __('Lookup Attendee', 'event_espresso'),
-				'id' => 'confirm'
+				'id' => self::action_lookup
 				),
 			1 => array(
 				'text' => __('Continuous Scanning', 'event_espresso' ),
-				'id' => 'auto'
+				'id' => self::action_auto
+				),
+			2 => array(
+				'text' => __('Continuous Check-in Only', 'event_espresso' ),
+				'id' => self::action_no_checkout
 				)
 			);
 
@@ -304,7 +333,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$this->_response['data']['ee_scanner_action'] = $action;
 
 		//check_approved flag set?
-		$this->_response['data']['check_approved'] = EE_Registry::instance()->REQ->get('lookUp') ? false : true;
+		$this->_response['data']['check_approved'] = $action != 'lookup_attendee';
 
 		//verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
@@ -567,6 +596,60 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 		$this->_response['success'] = TRUE;
 		return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
+	}
+
+
+
+
+
+	/**
+	 * Toggles checkin status for a registration
+	 *
+	 * @since 1.0.6
+	 *
+	 * @return string
+	 */
+	protected function _scanner_action_toggle_attendee_no_checkout() {
+		$registration = $this->_validate_incoming_data( $this->_response['data']['check_approved'] );
+
+		if ( ! $registration instanceof EE_Registration) {
+			return $registration;
+		}
+
+
+		//generate the url for this view for returning to if necessary.
+		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
+		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$url = esc_url( add_query_arg(
+			array(
+				'EVT_ID' => $registration->event_ID(),
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				'ee_reg_code' => $registration->reg_code(),
+				'page' => 'eea_barcode_scanner'
+			),
+			$base_url
+		));
+
+		$view_link = ! empty( $base_url ) ? sprintf( __('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>' ) : '';
+
+		//first verify whether the registration has ever been checked-in.  If so, then return false because we're not allowing
+		//check-outs on this route.
+		$checkin_status = $registration->check_in_status_for_datetime( $this->_response['data']['DTT_ID'] );
+
+		if ( $checkin_status !== EE_Registration::checkin_status_never ) {
+			EE_Error::add_error( sprintf( __( 'This registration has already been checked-in. %s', 'event_espresso' ), $view_link ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['success'] = true;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		} else {
+			//toggle checkin
+			$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
+			if ( $status === 1 ) {
+				EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
+			}
+			$this->_response['success'] = true;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
+		}
 	}
 
 

@@ -40,7 +40,7 @@ jQuery(document).ready(function($) {
 		 * scanner detection options
 		 */
 		//scanning complete activity, true means scan triggers look up of registration.  False, means scan toggles registration check in status for scan.
-		lookUp : true,
+		scanningAction : 'toggle_attendee',
 		scannerOptions : {
 			//Callback after receive a char (original keypress event in parameter)
 			timeBeforeScanTest : 100,
@@ -167,7 +167,7 @@ jQuery(document).ready(function($) {
 		 */
 		scannerComplete : function( event, data ) {
 			this.data.ee_reg_code = data.string;
-			this.data.ee_scanner_action = this.lookUp ? 'lookup_attendee' : 'toggle_attendee';
+			this.data.ee_scanner_action = this.scanningAction;
 			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 			this.doAjax( this.attendeeLookup );
 			return;
@@ -531,7 +531,7 @@ jQuery(document).ready(function($) {
 				this.data.ee_front_ajax = true;
 			}
 
-			this.data.lookUp = this.lookUp ? 1 : 0;
+			this.data.scanningAction = this.scanningAction;
 
 			where = typeof where !== 'object'  ? false : where;
 
@@ -580,7 +580,7 @@ jQuery(document).ready(function($) {
 	$('.eea-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
 		e.stopPropagation();
 		var action = $(this).val();
-		eebsHelper.lookUp = action == 'auto' ? false : true;
+		eebsHelper.scanningAction = action;
 		eebsHelper.scannerField.focus();
 	} );
 
