@@ -591,11 +591,15 @@ class EED_Barcode_Scanner extends EED_Module {
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
 		if ( $status === 1 ) {
 			EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
+			$checked_in_out_text = __( 'Checked In', 'event_espresso' );
+			$checked_in_out_class = ' ee-bs-barcode-checkedin';
 		} else {
 			EE_Error::add_success( sprintf( __( 'This registration has been checked out. %s', 'event_espresso' ), $view_link ) );
+			$checked_in_out_text = __( 'Checked Out', 'event_espresso' );
+			$checked_in_out_class = ' ee-bs-barcode-checkedout';
 		}
 		$this->_response['success'] = TRUE;
-		return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
+		return '<div class="ee-bs-barcode-scanner-checked-status-container"><span class="ee-bs-barcode-checkin-result dashicons dashicons-yes' . $checked_in_out_class . '"></span><p>' . $checked_in_out_text . '</p></div>';
 	}
 
 

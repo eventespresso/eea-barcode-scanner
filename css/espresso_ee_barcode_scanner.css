@@ -333,6 +333,13 @@ Attendee container css
     margin-right: 10px;
 }
 
+.ee-bs-barcode-scanner-checked-status-container p {
+    text-align: center;
+    font-size: 2em;
+    margin: 0;
+    margin-top: -20px;
+}
+
 
 /**checkin result feedback**/
 .ee-bs-barcode-checkin-result.dashicons-no, .ee-bs-barcode-checkin-result.dashicons-yes {
@@ -344,6 +351,10 @@ Attendee container css
 
 .ee-bs-barcode-checkin-result.dashicons-yes {
     color: green;
+}
+
+.ee-bs-barcode-checkin-result.ee-bs-barcode-checkedout.dashicons-yes {
+    color: orange;
 }
 
 /* Media Query for screens smaller then 768px (iPad portrait)
