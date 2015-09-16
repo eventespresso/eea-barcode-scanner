@@ -448,6 +448,10 @@ jQuery(document).ready(function($) {
 								return;
 							}
 							break;
+						case 'search_by_keyword' :
+							if ( resp.success && resp.redirect ) {
+								window.location.href = resp.redirect;
+							}
 					}
 					return;
 				}
