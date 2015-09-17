@@ -551,7 +551,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
 		}
 
-		if ( empty( $this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get('EVT_ID') ) ) {
+		if ( empty( $this->_response['data']['EVT_ID'] ) ) {
 			$event = EEM_Event::instance()->get_one( array( array( 'Datetime.DTT_ID' => $this->_response['data']['DTT_ID'] ) ) );
 			$EVT_ID = $event->ID();
 		} else {
