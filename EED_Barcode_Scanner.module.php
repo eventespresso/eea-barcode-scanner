@@ -43,6 +43,15 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 	/**
+	 * The constant used for searching by keyword
+	 * @type string
+	 */
+	const action_search_by_keyword = 'search_by_keyword';
+
+
+
+
+	/**
 	 * @var 		bool
 	 * @access 	public
 	 */
@@ -186,6 +195,14 @@ class EED_Barcode_Scanner extends EED_Module {
 				'id' => self::action_no_checkout
 				)
 			);
+
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_read_checkins', 'barcode_scanner_simple_lookup' ) ) {
+			$action_options[3] =
+				array(
+					'text' => __('Search by Keyword', 'event_espresso' ),
+					'id' => self::action_search_by_keyword
+				);
+		}
 
 		//events selector for step one!
 		//getting events that are published but not expired.
@@ -512,6 +529,54 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 
+
+	/**
+	 * This will recieve the incoming keyword and will use that to trigger a search on the Checkin list table page for this event
+	 * and datetime
+	 * @return string
+	 */
+	protected function _scanner_action_search_by_keyword() {
+		//make sure we have a valid reg_code
+		if ( empty( $this->_response['data']['regcode'] ) ) {
+			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//verify we have a DTT_ID
+		//do we have a dtt_id?
+		if ( empty( $this->_response['data']['DTT_ID'] ) ) {
+			EE_Error::add_error( __('Missing required datetime ID from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		if ( empty( $this->_response['data']['EVT_ID'] ) ) {
+			$event = EEM_Event::instance()->get_one( array( array( 'Datetime.DTT_ID' => $this->_response['data']['DTT_ID'] ) ) );
+			$EVT_ID = $event->ID();
+		} else {
+			$EVT_ID = $this->_response['data']['EVT_ID'];
+		}
+
+		//k those are all we need for the search
+		$this->_response['success'] = true;
+
+		EE_Registry::instance()->load_helper( 'URL' );
+		$this->_response['redirect'] = EEH_URL::add_query_args_and_nonce(
+			array(
+				'action' => 'event_registrations',
+				'page' => 'espresso_registrations',
+				'event_id' => $EVT_ID,
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				's' => $this->_response['data']['regcode']
+			),
+			admin_url( 'admin.php' )
+		);
+		return '';
+	}
+
+
+
 	/**
 	 * This just validates incoming data for registration toggle actions
 	 *
@@ -739,6 +804,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		return '';
 
 	}
+
 
 
 
