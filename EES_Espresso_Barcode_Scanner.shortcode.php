@@ -24,7 +24,7 @@
  *
  * ------------------------------------------------------------------------
  */
-class EES_Barcode_Scanner  extends EES_Shortcode {
+class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 
 
 
@@ -100,5 +100,5 @@ class EES_Barcode_Scanner  extends EES_Shortcode {
 
 
 }
-// End of file EES_Barcode_Scanner.shortcode.php
-// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EES_Barcode_Scanner.shortcode.php
+// End of file EES_Espresso_Barcode_Scanner.shortcode.php
+// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EES_Espresso_Barcode_Scanner.shortcode.php
