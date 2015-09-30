@@ -553,7 +553,13 @@ jQuery(document).ready(function($) {
 						var resp = response;
 						//note that there should be registered ajaxSuccess callbacks for methods doing anything different.  However, below are the common actions.
 						eebsHelper.noticesContainer.html( resp.notices );
-						$('.espresso-notices').show();
+						if ( ! resp.isFrontend ) {
+							$('.espresso-notices').show();
+						} else {
+							$('#espresso-notices').eeCenter();
+							$('.espresso-notices').slideDown();
+							$('.espresso-notices.fade-away').delay(5000).slideUp();
+						}
 						if ( where && typeof resp.content !== 'undefined' ) {
 							where.html( resp.content );
 							where.show();

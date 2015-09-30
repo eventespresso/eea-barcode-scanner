@@ -150,7 +150,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			$scanner_css_dep = 'espresso_default';
 		}
 		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array($scanner_css_dep, 'eea-bs-chosen-css'), EE_BARCODE_SCANNER_VERSION );
-		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen' ), EE_BARCODE_SCANNER_VERSION, true );
+		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen', 'espresso_core' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		// is the shortcode or widget in play || is_admin?
 		if ( EED_Barcode_Scanner::$shortcode_active || ( is_admin() && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner' ) ) {
@@ -640,7 +640,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//generate the url for this view for returning to if necessary.
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
-		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) && ! empty( $this->_response['data']['httpReferrer'] ) && is_array( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
 		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
 		$url = esc_url( add_query_arg(
 			array(
@@ -829,15 +829,26 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 	private function _return_json() {
+		//temporarily force `is_admin()` to return true if we're in frontend ajax then reset after.
+		$cached_screen = null;
+		if ( EE_FRONT_AJAX ) {
+			$cached_screen = isset( $GLOBALS['current_screen'] ) ? $GLOBALS['current_screen'] : null;
+			$GLOBALS['current_screen'] = WP_Screen::get('front');
+		}
 		$default_response = array(
 			'error' => FALSE,
 			'success' => FALSE,
 			'notices' => EE_Error::get_notices(),
 			'content' => '',
 			'data' => array(),
-			'isEEajax' => TRUE
+			'isEEajax' => TRUE,
+			'isFrontend' => EE_FRONT_AJAX && is_admin() || ! is_admin()
 			);
 		$this->_response = array_merge( $default_response, $this->_response );
+		//restore current screen global
+		if ( EE_FRONT_AJAX ) {
+			$GLOBALS['current_screen'] = $cached_screen;
+		}
 
 		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
 		if ( NULL === error_get_last() || ! headers_sent() ) {
