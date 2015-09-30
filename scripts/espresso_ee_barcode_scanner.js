@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 		dttSelector : null,
 		dttSelectorChosen : null,
 		dttName : null,
+        checkinLink : null,
 		selectorDivider : null,
 		scanner : null,
 		scannerField: null,
@@ -39,7 +40,7 @@ jQuery(document).ready(function($) {
 		 * scanner detection options
 		 */
 		//scanning complete activity, true means scan triggers look up of registration.  False, means scan toggles registration check in status for scan.
-		lookUp : true,
+		scanningAction : 'lookup_attendee',
 		scannerOptions : {
 			//Callback after receive a char (original keypress event in parameter)
 			timeBeforeScanTest : 100,
@@ -71,6 +72,7 @@ jQuery(document).ready(function($) {
 			this.isAdmin = $('#eea-barcode-scan-context').val() == 'admin' ? true : false;
 			this.eventName = $('.eea-bs-ed-selected-event-text');
 			this.dttName = $('.eea-bs-ed-selected-dtt-text');
+            this.checkinLink = $('.eea-bs-ed-checkin-link');
 			this.scanner = $('.eea-barcode-scanner-form-container');
 			this.scannerField = $('.eea-barcode-scan-code');
 			this.attendeeLookup = $('.eea-barcode-scanning-results');
@@ -85,7 +87,9 @@ jQuery(document).ready(function($) {
 
 			//maybe hide selector
 			if ( this.currentStep === 3 ) {
-				this.eventSelectorChosen.hide();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.hide();
+				}
 				this.data.dttName = this.dttName.text();
 			}
 
@@ -163,8 +167,8 @@ jQuery(document).ready(function($) {
 		 */
 		scannerComplete : function( event, data ) {
 			this.data.ee_reg_code = data.string;
-			this.data.ee_scanner_action = this.lookUp ? 'lookup_attendee' : 'toggle_attendee';
-			$(this.spinner, '.eea-barcode-scanner-form-container').show();
+			this.data.ee_scanner_action = this.scanningAction;
+			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 			this.doAjax( this.attendeeLookup );
 			return;
 		},
@@ -196,7 +200,7 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		scannerReceive : function( event, data ) {
-			$(this.spinner, '.eea-barcode-scanner-form-container').show();
+			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 			this.attendeeLookup.html('').hide();
 			return;
 		},
@@ -218,8 +222,9 @@ jQuery(document).ready(function($) {
 				this.advanceStep( true );
 				//hide the event name and show the event selector.
 				this.eventName.hide();
-
-				this.eventSelectorChosen.show();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.show();
+				}
 
 				//toggle the dtt selector (hide) (and the dtt name)
 				this.toggleDTTSelector( false );
@@ -233,12 +238,14 @@ jQuery(document).ready(function($) {
 				this.eventName.text( this.data.evtName ).show();
 
 				//hide the event selector
-				this.eventSelectorChosen.hide();
+				if ( this.eventSelectorChosen !== null ) {
+					this.eventSelectorChosen.hide();
+				}
 
 				this.selectorDivider.show();
 
 				//show ajax spinner
-				$( this.spinner, '.eea-bs-dtt-selection' ).show();
+				$( this.spinner, '.eea-bs-dtt-selection' ).css('visibility', 'visible' );
 
 				//grab the event id and grab dtt selector or name via ajax
 				this.data.EVT_ID = this.eventSelector.val();
@@ -298,20 +305,37 @@ jQuery(document).ready(function($) {
 				if ( this.data.dttName === ''  ) {
 					this.data.dttName = $(this.dttSelector.selector + ' option[value="' + this.dttSelector.val() + '"]').text();
 					this.data.DTT_ID = this.dttSelector.val();
+                    this.toggleCheckinLink( false );
 				}
 				if ( this.dttSelector !== null ) {
 					this.dttSelector.hide();
 					this.dttSelectorChosen.hide();
 				}
+                this.toggleCheckinLink();
 				this.dttName.html(this.data.dttName).show();
 				this.loadScanner();
 			} else {
 				this.dttName.html('').hide();
 				this.data.DTT_ID = 0;
 				this.data.dttName = '';
+                this.toggleCheckinLink( false );
 			}
 			return;
 		},
+
+
+
+
+        toggleCheckinLink : function( show ) {
+            show = typeof show === 'undefined' ? true : show;
+            if ( show ) {
+                //generate what the link is.
+                var url = $('#eea-barcode-scan-base-url').val() + 'admin.php?page=espresso_registrations&action=event_registrations&event_id=' + this.data.EVT_ID + '&DTT_ID=' + this.data.DTT_ID;
+                this.checkinLink.attr('href', url).show();
+            } else {
+                this.checkinLink.hide();
+            }
+        },
 
 
 
@@ -358,17 +382,17 @@ jQuery(document).ready(function($) {
 			switch ( data.checkinButton ) {
 				case 'main' :
 					eebsHelper.data.ee_scanner_action = 'toggle_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
-					eebsHelper.doAjax();
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'all' :
 					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').show();
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 			}
@@ -424,6 +448,10 @@ jQuery(document).ready(function($) {
 								return;
 							}
 							break;
+						case 'search_by_keyword' :
+							if ( resp.success && resp.redirect ) {
+								window.location.href = resp.redirect;
+							}
 					}
 					return;
 				}
@@ -453,7 +481,9 @@ jQuery(document).ready(function($) {
 
 			switch ( stepnum ) {
 				case 1 :
-					eebsHelper.toggleEventSelector();
+					if ( this.eventSelectorChosen !== null ) {
+						eebsHelper.toggleEventSelector();
+					}
 					break;
 				case 2 :
 					if ( eebsHelper.data.dttName !== '' && eebsHelper.dttSelector === null ) {
@@ -505,7 +535,7 @@ jQuery(document).ready(function($) {
 				this.data.ee_front_ajax = true;
 			}
 
-			this.data.lookUp = this.lookUp ? 1 : 0;
+			this.data.scanningAction = this.scanningAction;
 
 			where = typeof where !== 'object'  ? false : where;
 
@@ -530,7 +560,7 @@ jQuery(document).ready(function($) {
 							eebsHelper.scannerField.val('');
 							eebsHelper.scannerField.focus();
 						}
-						$(eebsHelper.spinner).hide();
+						$(eebsHelper.spinner).css('visibility', 'hidden' );
 					}
 				}
 			});
@@ -554,7 +584,7 @@ jQuery(document).ready(function($) {
 	$('.eea-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
 		e.stopPropagation();
 		var action = $(this).val();
-		eebsHelper.lookUp = action == 'auto' ? false : true;
+		eebsHelper.scanningAction = action;
 		eebsHelper.scannerField.focus();
 	} );
 

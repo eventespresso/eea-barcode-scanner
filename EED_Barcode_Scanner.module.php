@@ -18,6 +18,39 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' ) ) exit( 'No direct script access allo
  */
 class EED_Barcode_Scanner extends EED_Module {
 
+
+	/**
+	 * The constant used for referencing the lookup action
+	 * @type string
+	 */
+	const action_lookup = 'lookup_attendee';
+
+
+	/**
+	 * The constant used for referencing the continuous auto check-in/check-out scanning.
+	 * @type string
+	 */
+	const action_auto = 'toggle_attendee';
+
+
+	/**
+	 * The constant used for referencing the continuous check-in with no check-out's allowed scanning.
+	 * @type string
+	 */
+	const action_no_checkout = 'toggle_attendee_no_checkout';
+
+
+
+
+	/**
+	 * The constant used for searching by keyword
+	 * @type string
+	 */
+	const action_search_by_keyword = 'search_by_keyword';
+
+
+
+
 	/**
 	 * @var 		bool
 	 * @access 	public
@@ -33,6 +66,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @var array
 	 */
 	protected $_response = array();
+
 
 
 
@@ -148,25 +182,47 @@ class EED_Barcode_Scanner extends EED_Module {
 		//selector for the different default actions after a scan.
 		EE_Registry::instance()->load_helper('Form_Fields');
 		EE_Registry::instance()->load_helper('Template');
+		EE_Registry::instance()->load_helper( 'URL' );
 		$action_options = array(
 			0 => array(
 				'text' => __('Lookup Attendee', 'event_espresso'),
-				'id' => 'confirm'
+				'id' => self::action_lookup
 				),
 			1 => array(
 				'text' => __('Continuous Scanning', 'event_espresso' ),
-				'id' => 'auto'
+				'id' => self::action_auto
+				),
+			2 => array(
+				'text' => __('Continuous Check-in Only', 'event_espresso' ),
+				'id' => self::action_no_checkout
 				)
 			);
 
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_read_checkins', 'barcode_scanner_simple_lookup' ) ) {
+			$action_options[3] =
+				array(
+					'text' => __('Search by Keyword', 'event_espresso' ),
+					'id' => self::action_search_by_keyword
+				);
+		}
+
 		//events selector for step one!
 		//getting events that are published but not expired.
-		$query[0] = array(
-			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '>', current_time('timestamp') )
-			);
+		//need to use a value for time() depending on what method is available
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
+		$query = array(
+			0 => array(
+				'status' => 'publish',
+				'Datetime.DTT_EVT_end' => array( '>', $current_time + $filtered_time_window )
+				),
+			'order_by' => array( 'Datetime.DTT_EVT_start' => 'ASC' )
+		);
 		$events = EEM_Event::instance()->get_all( $query );
-		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = '';
+		$event_selector = $event_name = $dtt_selector = $dtt_name = $dtt_id = $checkin_link = '';
 
 		//if only ONE event then let's just return that and the datetime selector.
 		if ( count ( $events ) === 1 ) {
@@ -176,6 +232,12 @@ class EED_Barcode_Scanner extends EED_Module {
 			$dtt_selector = $this->_scanner_action_retrieve_datetimes();
 			$dtt_name = empty( $dtt_selector ) && ! empty( $this->_response['data']['dtt_name'] ) ? $this->_response['data']['dtt_name'] : '';
 			$dtt_id = empty( $this->_response['data']['DTT_ID'] ) ? '' : $this->_response['data']['DTT_ID'];
+			$checkin_link = ! empty( $dtt_id ) ? EEH_URL::add_query_args_and_nonce( array(
+				'page' => 'espresso_registrations',
+				'action' => 'event_registrations',
+				'event_id' => $event->ID(),
+				'DTT_ID' => $dtt_id
+			)) : '';
 		} else {
 			//setup event selector.
 			$evt_options[] = array( 'text' => '', 'id' => '' );
@@ -201,6 +263,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			'dtt_selector' => $dtt_selector,
 			'dtt_name' => $dtt_name,
 			'dtt_id' => $dtt_id,
+			'checkin_link' => $checkin_link,
 			'reg_content' => '',
 			'action_selector' => EEH_Form_Fields::select_input( 'scanner_form_default_action', $action_options, 'confirm', '', 'eea-banner-scanner-action-select' ),
 			'button_class' => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button'
@@ -289,7 +352,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$this->_response['data']['ee_scanner_action'] = $action;
 
 		//check_approved flag set?
-		$this->_response['data']['check_approved'] = EE_Registry::instance()->REQ->get('lookUp') ? false : true;
+		$this->_response['data']['check_approved'] = $action != 'lookup_attendee';
 
 		//verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
@@ -337,7 +400,21 @@ class EED_Barcode_Scanner extends EED_Module {
 		}
 
 		//get all datetimes
-		$datetimes = EEM_Datetime::instance()->get_datetimes_for_event_ordered_by_DTT_order( $this->_response['data']['EVT_ID'], FALSE, FALSE );
+		$current_time = method_exists( 'EEM_Datetime', 'current_time_for_query' ) ? time() : current_time('timestamp');
+		$filtered_time_window = apply_filters(
+			'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
+			-HOUR_IN_SECONDS
+		);
+		$query_args = array(
+			0 => array(
+				'Event.EVT_ID' => $this->_response['data']['EVT_ID'],
+				'DTT_EVT_end' => array( '>', $current_time + $filtered_time_window ),
+				'DTT_deleted' => false
+			),
+			'default_where_conditions' => 'none',
+			'order_by' => array( 'DTT_order' => 'ASC' )
+		);
+		$datetimes = EEM_Datetime::instance()->get_all( $query_args );
 
 		$this->_response['data']['dtt_count'] = count( $datetimes );
 
@@ -401,20 +478,27 @@ class EED_Barcode_Scanner extends EED_Module {
 		$checkin = $registration->get_first_related( 'Checkin', array( array( 'DTT_ID' => $this->_response['data']['DTT_ID'] ), 'order_by' => array( 'CHK_timestamp' => 'DESC' ) ) );
 		$checkin_status = $registration->check_in_status_for_datetime( $this->_response['data']['DTT_ID'], $checkin );
 
+		/**
+		 * The reason for these conditionals is for backward compat with versions of EE core that do not have the check-in status constants defined.
+		 */
+		$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Registration::checkin_status_in : 1;
+		$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Registration::checkin_status_out : 2;
+		$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Registration::checkin_status_never : 0;
+
 		switch( $checkin_status ) {
-			case 0 :
+			case $never_checked :
 				$last_checkin = __('Has not been checked in yet.', 'event_espresso');
 				$checkin_button_text = __('Check In', 'event_espresso');
 				$all_checkin_button_text = __( 'Check In All Registrations', 'event_espresso' );
 				$checkin_color = ' ee-green';
 				break;
-			case 1 :
+			case $checked_in :
 				$last_checkin = sprintf( __("Last checked in on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j @', 'h:i a') );
 				$checkin_button_text = __( 'Check Out', 'event_espresso' );
 				$all_checkin_button_text = __( 'Check Out All Registrations', 'event_espresso' );
 				$checkin_color = ' ee-red';
 				break;
-			case 2 :
+			case $checked_out :
 				$last_checkin = sprintf( __("Last checked out on %s", 'event_espresso'), $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a') );
 				$checkin_button_text = __( 'Check In', 'event_espresso' );
 				$all_checkin_button_text = __( 'Check In All Registrations ', 'event_espresso' );
@@ -443,6 +527,54 @@ class EED_Barcode_Scanner extends EED_Module {
 		$template = $template = EE_BARCODE_SCANNER_ADMIN . 'templates/scanner_attendee_details.template.php';
 		$this->_response['success'] = TRUE;
 		return EEH_Template::display_template( $template, $template_args, TRUE );
+	}
+
+
+
+
+	/**
+	 * This will recieve the incoming keyword and will use that to trigger a search on the Checkin list table page for this event
+	 * and datetime
+	 * @return string
+	 */
+	protected function _scanner_action_search_by_keyword() {
+		//make sure we have a valid reg_code
+		if ( empty( $this->_response['data']['regcode'] ) ) {
+			EE_Error::add_error( __('Missing required registration url link code from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		//verify we have a DTT_ID
+		//do we have a dtt_id?
+		if ( empty( $this->_response['data']['DTT_ID'] ) ) {
+			EE_Error::add_error( __('Missing required datetime ID from the request.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = TRUE;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		}
+
+		if ( empty( $this->_response['data']['EVT_ID'] ) ) {
+			$event = EEM_Event::instance()->get_one( array( array( 'Datetime.DTT_ID' => $this->_response['data']['DTT_ID'] ) ) );
+			$EVT_ID = $event->ID();
+		} else {
+			$EVT_ID = $this->_response['data']['EVT_ID'];
+		}
+
+		//k those are all we need for the search
+		$this->_response['success'] = true;
+
+		EE_Registry::instance()->load_helper( 'URL' );
+		$this->_response['redirect'] = EEH_URL::add_query_args_and_nonce(
+			array(
+				'action' => 'event_registrations',
+				'page' => 'espresso_registrations',
+				'event_id' => $EVT_ID,
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				's' => $this->_response['data']['regcode']
+			),
+			admin_url( 'admin.php' )
+		);
+		return '';
 	}
 
 
@@ -510,29 +642,85 @@ class EED_Barcode_Scanner extends EED_Module {
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
 		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
 		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
-		$url = add_query_arg( array(
-			'EVT_ID' => $registration->event_ID(),
-			'DTT_ID' => $this->_response['data']['DTT_ID'],
-			'ee_reg_code' => $registration->reg_code(),
-			'page' => 'eea_barcode_scanner'
+		$url = esc_url( add_query_arg(
+			array(
+				'EVT_ID' => $registration->event_ID(),
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				'ee_reg_code' => $registration->reg_code(),
+				'page' => 'eea_barcode_scanner'
 			),
 			$base_url
-			);
+		));
 
 		$view_link = ! empty( $base_url ) ? sprintf( __('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>' ) : '';
 
 		//toggle checkin
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
-		switch ( $status ) {
-			case 1 :
-				EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
-				break;
-			case 2 :
-				EE_Error::add_success( sprintf( __( 'This registration has been checked out. %s', 'event_espresso' ), $view_link ) );
-				break;
+		if ( $status === 1 ) {
+			EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
+			$checked_in_out_text = __( 'Checked In', 'event_espresso' );
+			$checked_in_out_class = ' ee-bs-barcode-checkedin';
+		} else {
+			EE_Error::add_success( sprintf( __( 'This registration has been checked out. %s', 'event_espresso' ), $view_link ) );
+			$checked_in_out_text = __( 'Checked Out', 'event_espresso' );
+			$checked_in_out_class = ' ee-bs-barcode-checkedout';
 		}
 		$this->_response['success'] = TRUE;
-		return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
+		return '<div class="ee-bs-barcode-scanner-checked-status-container"><span class="ee-bs-barcode-checkin-result dashicons dashicons-yes' . $checked_in_out_class . '"></span><p>' . $checked_in_out_text . '</p></div>';
+	}
+
+
+
+
+
+	/**
+	 * Toggles checkin status for a registration
+	 *
+	 * @since 1.0.6
+	 *
+	 * @return string
+	 */
+	protected function _scanner_action_toggle_attendee_no_checkout() {
+		$registration = $this->_validate_incoming_data( $this->_response['data']['check_approved'] );
+
+		if ( ! $registration instanceof EE_Registration) {
+			return $registration;
+		}
+
+
+		//generate the url for this view for returning to if necessary.
+		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
+		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$url = esc_url( add_query_arg(
+			array(
+				'EVT_ID' => $registration->event_ID(),
+				'DTT_ID' => $this->_response['data']['DTT_ID'],
+				'ee_reg_code' => $registration->reg_code(),
+				'page' => 'eea_barcode_scanner'
+			),
+			$base_url
+		));
+
+		$view_link = ! empty( $base_url ) ? sprintf( __('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>' ) : '';
+
+		//first verify whether the registration has ever been checked-in.  If so, then return false because we're not allowing
+		//check-outs on this route.
+		$checkin_status = $registration->check_in_status_for_datetime( $this->_response['data']['DTT_ID'] );
+
+		if ( $checkin_status !== EE_Registration::checkin_status_never ) {
+			EE_Error::add_error( sprintf( __( 'This registration has already been checked-in. %s', 'event_espresso' ), $view_link ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['success'] = true;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
+		} else {
+			//toggle checkin
+			$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'], $this->_response['data']['check_approved'] );
+			if ( $status === 1 ) {
+				EE_Error::add_success( sprintf( __('This registration has been checked in. %s', 'event_espresso'), $view_link ) );
+			}
+			$this->_response['success'] = true;
+			return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
+		}
 	}
 
 
@@ -556,17 +744,14 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//first let's toggle the main registration, and that way we'll know what status we need to set the others to
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
-		switch ( $status ) {
-			case 1 :
-				EE_Error::add_success( __('All registrations in the group have been checked in.', 'event_espresso') );
-				$this->_response['data']['checkout_button_class'] = 'ee-red';
-				$this->_response['data']['buttonText'] = __('Check Out All Registrations', 'event_espresso');
-				break;
-			case 2 :
-				EE_Error::add_success( __( 'All registrations in the group have been checked out', 'event_espresso' ) );
-				$this->_response['data']['checkout_button_class'] = 'ee-green';
-				$this->_response['data']['buttonText'] = __('Check In All Registrations', 'event_espresso');
-				break;
+		if ( $status === 1 ) {
+			EE_Error::add_success( __('All registrations in the group have been checked in.', 'event_espresso') );
+			$this->_response['data']['checkout_button_class'] = 'ee-red';
+			$this->_response['data']['buttonText'] = __('Check Out All Registrations', 'event_espresso');
+		} else {
+			EE_Error::add_success( __( 'All registrations in the group have been checked out', 'event_espresso' ) );
+			$this->_response['data']['checkout_button_class'] = 'ee-green';
+			$this->_response['data']['buttonText'] = __('Check In All Registrations', 'event_espresso');
 		}
 		$this->_response['success'] = TRUE;
 		$content = '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
@@ -598,7 +783,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$registration = $this->_validate_incoming_data();
 
 		if ( ! $registration instanceof EE_Registration) {
-			return $valid;
+			return $registration;
 		}
 
 
@@ -606,24 +791,22 @@ class EED_Barcode_Scanner extends EED_Module {
 		$status = $registration->toggle_checkin_status( $this->_response['data']['DTT_ID'] );
 		$checkin = $registration->get_first_related( 'Checkin' );
 		$this->_response['data']['last_update'] = $checkin->get_datetime( 'CHK_timestamp', 'M j @', 'h:i a');
-		switch ( $status ) {
-			case 1 :
-				EE_Error::add_success( __('This group registration has been checked in.', 'event_espresso') );
-				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-in';
-				$this->_response['data']['buttonText'] = __('Check Out', 'event_espresso');
-				$this->_response['data']['checkout_button_class'] = 'ee-red';
-				break;
-			case 2 :
-				EE_Error::add_success( __( 'This group registration has been checked out', 'event_espresso' ) );
-				$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-out';
-				$this->_response['data']['buttonText'] = __('Check In', 'event_espresso');
-				$this->_response['data']['checkout_button_class'] = 'ee-green';
-				break;
+		if ( $status === 1 ) {
+			EE_Error::add_success( __('This group registration has been checked in.', 'event_espresso') );
+			$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-in';
+			$this->_response['data']['buttonText'] = __('Check Out', 'event_espresso');
+			$this->_response['data']['checkout_button_class'] = 'ee-red';
+		} else {
+			EE_Error::add_success( __( 'This group registration has been checked out', 'event_espresso' ) );
+			$this->_response['data']['checkout_icon_class'] = 'ee-icon-check-out';
+			$this->_response['data']['buttonText'] = __('Check In', 'event_espresso');
+			$this->_response['data']['checkout_button_class'] = 'ee-green';
 		}
 		$this->_response['success'] = TRUE;
 		return '';
 
 	}
+
 
 
 

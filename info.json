@@ -16,6 +16,8 @@
         "src/circle.yml",
         "src/screenshot*.jpg"
     ],
+    "github" : false,
+    "demoee" : true,
     "awsbucket": "",
     "awsregion": "",
     "srcBuildFolderName" : "eea-barcode-scanner",
