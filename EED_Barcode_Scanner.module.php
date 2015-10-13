@@ -214,7 +214,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		);
 		$query = array(
 			0 => array(
-				'status' => 'publish',
+				'status' => array( 'IN', array( 'publish', EEM_Event::sold_out ) ),
 				'Datetime.DTT_EVT_end' => array( '>', $current_time + $filtered_time_window )
 				),
 			'order_by' => array( 'Datetime.DTT_EVT_start' => 'ASC' )
