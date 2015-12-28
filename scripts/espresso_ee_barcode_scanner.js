@@ -168,7 +168,7 @@ jQuery(document).ready(function($) {
 		scannerComplete : function( event, data ) {
 			this.data.ee_reg_code = data.string;
 			this.data.ee_scanner_action = this.scanningAction;
-			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+			$(this.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 			this.doAjax( this.attendeeLookup );
 			return;
 		},
@@ -200,7 +200,7 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		scannerReceive : function( event, data ) {
-			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+			$(this.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 			this.attendeeLookup.html('').hide();
 			return;
 		},
@@ -245,7 +245,7 @@ jQuery(document).ready(function($) {
 				this.selectorDivider.show();
 
 				//show ajax spinner
-				$( this.spinner, '.eea-bs-dtt-selection' ).css('visibility', 'visible' );
+				$( this.spinner, '.eea-bs-dtt-selection' ).addClass('is-active');
 
 				//grab the event id and grab dtt selector or name via ajax
 				this.data.EVT_ID = this.eventSelector.val();
@@ -382,17 +382,17 @@ jQuery(document).ready(function($) {
 			switch ( data.checkinButton ) {
 				case 'main' :
 					eebsHelper.data.ee_scanner_action = 'toggle_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'all' :
 					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 			}
@@ -566,7 +566,7 @@ jQuery(document).ready(function($) {
 							eebsHelper.scannerField.val('');
 							eebsHelper.scannerField.focus();
 						}
-						$(eebsHelper.spinner).css('visibility', 'hidden' );
+						$(eebsHelper.spinner).removeClass('is-active');
 					}
 				}
 			});

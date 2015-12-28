@@ -13,6 +13,10 @@ General Styles
     font-family: "Open Sans", sans-serif;
 }
 
+.eea-barcode-scanning-container.eea-barcode-scanner-frontend {
+    width: 100%;
+}
+
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
     width: 100%;
     background-color: #ddd;
@@ -36,13 +40,19 @@ General Styles
 }
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
-    width: 12%;
+    width: 10%;
     margin-right: 0px;
+}
+
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container #eea-barcode-scanner-form {
+    display: inline-block;
+    width: 93%;
+    float: left;
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-checkin-link-container {
     float: right;
-    margin-top: 35px;
+    margin-top: 20px;
 }
 
 /**
@@ -68,7 +78,7 @@ Attendee container css
     margin-left: 20px;
 }
 
-#poststuff h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
+h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
     font-size: 2em;
     margin: 0;
     margin-top: -10px;
@@ -80,7 +90,7 @@ Attendee container css
     margin-bottom: 10px
 }
 
-#poststuff h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
+h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     margin: 0;
     margin-bottom: 5px;
     padding: 0;
@@ -220,8 +230,7 @@ Attendee container css
     position: relative;
     /*height: 80px;*/
     margin: auto;
-    margin-bottom: 50px;
-
+    /*margin-bottom: 50px;**/
 }
 
 .eea-barcode-scanning-container .eea-bs-step-line {
@@ -292,27 +301,33 @@ Attendee container css
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selection-container .spinner {
-    float: none;
+    /*float: none;*/
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selector {
     display: inline-block;
-    vertical-align: middle;
 }
 
-#poststuff .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
+.eea-barcode-scanning-container .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
     font-size: 2.5em;
-    font-weight: 999;
-    margin-bottom: 0px;
+    font-weight: 900;
+    margin-bottom: 0;
+    margin-top: 10px;
     padding-bottom: 0;
     padding-top: 0;
 }
 
-#poststuff .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
+.eea-barcode-scanning-container .eea-bs-ed-selector-selected-text {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
     font-size: 1.5em;
-    font-weight: 999;
+    font-weight: 900;
     color: #666;
     margin-bottom: 0;
+    margin-top: 0;
     padding-bottom: 0;
     padding-top: 0;
 }
@@ -330,7 +345,7 @@ Attendee container css
     background-color: #666;
 }
 
-#poststuff .eea-barcode-scanning-container .eea-bs-ed-selector-divider {
+.eea-barcode-scanning-container .eea-bs-ed-selector-divider {
     margin: 20px auto 0;
 }
 
@@ -361,6 +376,27 @@ Attendee container css
 
 .eea-barcode-scanning-container .ee-bs-barcode-checkin-result.ee-bs-barcode-checkedout.dashicons-yes {
     color: orange;
+}
+
+
+/* spinner stuff copied form common.css in wp because we need on frontend as well */
+.spinner {
+    background: url(../../../../../wp-admin/images/spinner.gif) no-repeat;
+    -webkit-background-size: 20px 20px;
+    background-size: 20px 20px;
+    display: inline-block;
+    visibility: hidden;
+    float: right;
+    vertical-align: middle;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    width: 20px;
+    height: 20px;
+    margin: 4px 10px 0;
+}
+
+.spinner.is-active {
+    visibility: visible;
 }
 
 /* Media Query for screens smaller then 768px (iPad portrait)

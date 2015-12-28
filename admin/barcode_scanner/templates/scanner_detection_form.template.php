@@ -26,9 +26,10 @@ $checkin_link_display = empty( $checkin_link ) ? ' style="display:none;"' : '';
 $divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
 $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+$frontend_class = is_admin() ? '' : ' eea-barcode-scanner-frontend';
 ?>
 <!-- namespace with css -->
-<div class="eea-barcode-scanning-container">
+<div class="eea-barcode-scanning-container<?php echo $frontend_class; ?>">
 	<!-- notices -->
 	<div class="eea-barcode-notices"><!--used by js --></div>
 	<span class="js-http-referrer" style="display:none"><?php echo $referrer; ?></span>
@@ -41,17 +42,16 @@ $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 	</div>
 	<div class="eea-bs-ed-selection-container">
 		<div class="eea-bs-ed-selector eea-bs-event-selection">
-			<span class="spinner"></span>
 			<?php echo $event_selector; ?>
 			<div class="eea-bs-ed-selector-selected-text">
 				<h3 class="eea-bs-ed-selected-event-text"<?php echo $eventdisplay; ?>><?php echo $event_name; ?></h3>
 			</div>
-		</div>
-		<div class="eea-bs-ed-selector">
-			<span class="eea-bs-ed-selector-divider"<?php echo $divider_display; ?>></span>
-		</div>
-		<div class="eea-bs-ed-selector eea-bs-dtt-selection">
 			<span class="spinner"></span>
+		</div>
+		<!--<div class="eea-bs-ed-selector">
+			<span class="eea-bs-ed-selector-divider"<?php echo $divider_display; ?>></span>
+		</div> -->
+		<div class="eea-bs-ed-selector eea-bs-dtt-selection">
 			<div class="eea-bs-dtt-selection-container">
 				<?php echo $dtt_selector; ?>
 			</div>
@@ -61,10 +61,13 @@ $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			<div class="eea-bs-ed-selector-selected-text">
 				<h3 class="eea-bs-ed-selected-dtt-text"<?php echo $dtt_display; ?>><?php echo $dtt_name; ?></h3>
 			</div>
+			<span class="spinner"></span>
 		</div>
-		<div class="eea-bs-ed-checkin-link-container">
-			<a target="_blank" href="<?php echo $checkin_link; ?>" class="eea-bs-ed-checkin-link"<?php echo $checkin_link_display; ?>><?php _e('View All Registrations', 'event_espresso'); ?></a>
-		</div>
+		<?php if ( is_admin() ) : ?>
+			<div class="eea-bs-ed-checkin-link-container">
+				<a target="_blank" href="<?php echo $checkin_link; ?>" class="eea-bs-ed-checkin-link"<?php echo $checkin_link_display; ?>><?php _e('View All Registrations', 'event_espresso'); ?></a>
+			</div>
+		<?php endif; ?>
 	</div>
 	<!-- barcode scanning form -->
 	<div class="eea-barcode-scanner-form-container"<?php echo $scanner_display; ?>>
@@ -77,9 +80,10 @@ $referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			<!-- on with the form -->
 			<?php echo $action_selector; ?>
 			<input type="text" class="eea-barcode-scan-code" name="eea_barcode_scan_code" value="" placeholder="<?php _e('Scan or enter barcode here.', 'event_espresso' ); ?>">
-			<input class="<?php echo $button_class; ?>" type="submit" value="<?php _e('Go', 'event_espresso'); ?>"
-			<span class="spinner"></span>
+			<input class="<?php echo $button_class; ?>" type="submit" value="<?php _e('Go', 'event_espresso'); ?>">
 		</form>
+		<span class="spinner"></span>
+		<div style="clear:both"></div>
 	</div>
 	<div class="eea-barcode-scanning-results">
 		<!-- used by js -->
