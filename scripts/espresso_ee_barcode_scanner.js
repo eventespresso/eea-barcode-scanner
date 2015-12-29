@@ -538,10 +538,11 @@ jQuery(document).ready(function($) {
 			this.data.scanningAction = this.scanningAction;
 
 			where = typeof where !== 'object'  ? false : where;
+			ajaxUrl = typeof ajaxurl === 'undefined' ? eei18n.ajax_url : ajaxurl;
 
 			$.ajax({
 				type: "POST",
-				url: ajaxurl,
+				url: ajaxUrl,
 				data: this.data,
 				success: function(response, status, xhr) {
 					var ct = xhr.getResponseHeader("content-type") || "";
