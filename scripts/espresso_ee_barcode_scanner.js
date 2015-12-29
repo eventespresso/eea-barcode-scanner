@@ -108,7 +108,8 @@ jQuery(document).ready(function($) {
 
 			if ( this.eventSelector === null && $('#eea_bs_event_selector').length ) {
 				this.eventSelector = $('#eea_bs_event_selector');
-				this.eventSelector.chosen().change( function(){
+				this.eventSelector.chosen().change( function(e){
+					e.stopPropagation();
 					eebsHelper.toggleEventSelector(false);
 				});
 				this.eventSelectorChosen = $('#eea_bs_event_selector_chosen');
@@ -116,12 +117,12 @@ jQuery(document).ready(function($) {
 
 			if ( this.dttSelector === null && $('#eea_bs_dtt_selector').length ) {
 				this.dttSelector = $('#eea_bs_dtt_selector');
-				this.dttSelector.chosen().change( function() {
+				this.dttSelector.chosen().change( function(e) {
+					e.stopPropagation();
 					eebsHelper.dttSelectorChosen = $('#eea_bs_dtt_selector_chosen');
 					eebsHelper.toggleDTTname();
 				});
 			} else if ( this.dttSelector !== null ) {
-				console.log('chosen_update_trigger');
 				this.dttSelector.trigger("chosen:updated");
 			}
 		},
@@ -200,7 +201,6 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		scannerReceive : function( event, data ) {
-			$(this.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 			this.attendeeLookup.html('').hide();
 			return;
 		},
@@ -589,6 +589,7 @@ jQuery(document).ready(function($) {
 	 * @return {void}
 	 */
 	$('.eea-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
+		e.preventDefault();
 		e.stopPropagation();
 		var action = $(this).val();
 		eebsHelper.scanningAction = action;
