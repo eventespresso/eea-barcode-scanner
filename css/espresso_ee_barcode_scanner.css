@@ -19,7 +19,7 @@ General Styles
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
     width: 100%;
-    background-color: #ddd;
+    background-color: #fff;
     border: 2px #dfdfdf solid;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -76,8 +76,8 @@ General Styles
     box-shadow: none !important;
     color: #555;
     display: block;
-    font-size: 16px;
-    height: 40px;
+    font-size: 14px;
+    height: 50px;
     line-height: 1.625;
     padding-bottom: 6px;
     padding-left: 12px;
