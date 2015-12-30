@@ -514,5 +514,8 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
         width: 70%;
     }
+    .eea-barcode-notices #espresso-notices, .eea-barcode-notices #espresso-ajax-notices {
+        left: 90%;
+    }
 }
 
