@@ -30,18 +30,67 @@ General Styles
 }
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
-    width: 55%;
+    width: 50%;
     vertical-align: middle;
+    float: left;
+    margin-right: 10px;
+    height: 50px;
 }
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
     width: 30%;
     margin-left: 0px;
-}
+    float: left;
+    margin-right: 10px;
 
+    border: 2px #dfdfdf solid;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+
+    background-color: #fff;
+    background-image: none;
+    border-bottom-color: #ccc;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-image-outset: 0 0 0 0;
+    border-image-repeat: stretch stretch;
+    border-image-slice: 100% 100% 100% 100%;
+    border-image-source: none;
+    border-image-width: 1 1 1 1;
+    border-left-color: #ccc;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: #ccc;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: #ccc;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-shadow: none !important;
+    color: #555;
+    display: block;
+    font-size: 16px;
+    height: 40px;
+    line-height: 1.625;
+    padding-bottom: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+
+   
+}
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
-    width: 10%;
+    width: auto;
+    height: 50px;
     margin-right: 0px;
+
 }
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container #eea-barcode-scanner-form {
@@ -277,15 +326,18 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 .eea-barcode-scanning-container .eea-step-bubble p {
-    font-size: 2.5em;
+    font-size: 32px;
     padding: 0;
     margin: 0;
     font-weight: bold;
     line-height: 1.4;
+    text-align: center;
+    padding-top: 3px;
 }
 
 .eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble p {
-    font-size: 2.8em;
+    font-size: 38px;
+    padding-top: 2px;
 }
 
 .eea-barcode-scanning-container .eea-bs-step-text {
@@ -424,25 +476,43 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 
 @media only screen and (max-width: 480px) {
     .eea-barcode-scanning-container .eea-step-bubble {
-        height: 30px;
-        width: 30px;
+        height: 20px;
+        width: 20px;
     }
     .eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble {
-        height: 35px;
-        width: 35px;
+        height: 25px;
+        width: 25px;
     }
     .eea-barcode-scanning-container .eea-step-bubble p {
-        font-size: 1.5em;
+        font-size: 11px;
     }
     .eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble p {
-        font-size: 1.7em;
+        font-size: 12px;
+        padding-top: 4px;
     }
     .eea-barcode-scanning-container .eea-bs-step-text {
-        font-size: 0.9em;
+        font-size: 11px;
     }
     .eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
         visibility: hidden;
         width: 0px;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
+        width: 70%;
+       
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
+        font-size: 12px;
+        margin-right: 0;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 10px;
+        width: 25%;
+        float: right;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
+        width: 70%;
     }
 }
 
