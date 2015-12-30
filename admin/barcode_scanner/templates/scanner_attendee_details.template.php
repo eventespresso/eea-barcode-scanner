@@ -70,9 +70,11 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 				<button data-checkin-button="main" data-reg-url-lnk="<?php echo $registration->reg_url_link(); ?>" class="eea-bs-checkout-action-button big ee-roundish ee-button<?php echo $checkin_color; ?>"><?php echo $checkin_button_text; ?></button>
 			</section>
 			<div style="clear:both">
-			<section class="eea-bs-external-links-container">
-				<?php echo $reg_link . ' | ' . $att_link; ?>
-			</section>
+				<?php if ( is_user_logged_in() ) : ?>
+					<section class="eea-bs-external-links-container">
+						<?php echo $reg_link . ' | ' . $att_link; ?>
+					</section>
+				<?php endif; ?>
 		</div>
 		<div style="clear:both"></div>
 	</div>
