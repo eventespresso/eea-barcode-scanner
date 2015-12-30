@@ -331,21 +331,22 @@ class EED_Barcode_Scanner extends EED_Module {
 	public function ee_barcode_scanner_main_action() {
 		//verify user has basic access.
 		if ( ! $this->_user_check() ) {
-			EE_Error::add_error( __('You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
+			EE_Error::add_error( __( 'You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = true;
 			$this->_return_json();
 		}
 
 		//verify incoming package.
-		$nonce = EE_Registry::instance()->REQ->get('_wpnonce');
-		$action = EE_Registry::instance()->REQ->get('ee_scanner_action');
-		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
-		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get('EVT_ID');
-		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get('DTT_ID');
+		$nonce = EE_Registry::instance()->REQ->get( '_wpnonce' );
+		$action = EE_Registry::instance()->REQ->get( 'ee_scanner_action' );
+		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get( 'ee_reg_code' );
+		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get( 'EVT_ID' );
+		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get( 'DTT_ID' );
+		$this->_response['data']['httpReferrer'] = EE_Registry::instance()->REQ->get( 'httpReferrer' );
 
 		if ( empty( $nonce ) || empty( $action ) ) {
-			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
+			EE_Error::add_error( __( 'Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = true;
 			$this->_return_json();
 		}
 
@@ -641,8 +642,8 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//generate the url for this view for returning to if necessary.
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
-		$base_url = empty( $base_url ) && ! empty( $this->_response['data']['httpReferrer'] ) && is_array( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
-		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$base_url = empty( $base_url ) && ! empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? site_url( esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : $base_url;
 		$url = esc_url( add_query_arg(
 			array(
 				'EVT_ID' => $registration->event_ID(),
@@ -691,8 +692,8 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//generate the url for this view for returning to if necessary.
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
-		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
-		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$base_url = empty( $base_url ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? site_url( esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : $base_url;
 		$url = esc_url( add_query_arg(
 			array(
 				'EVT_ID' => $registration->event_ID(),

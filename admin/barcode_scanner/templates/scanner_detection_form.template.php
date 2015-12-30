@@ -25,7 +25,7 @@ $dtt_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $checkin_link_display = empty( $checkin_link ) ? ' style="display:none;"' : '';
 $divider_display = empty( $dtt_name ) ? ' style="display:none;"' : '';
 $scanner_display = !empty( $dtt_name ) && ! empty( $event_name ) ? '' : ' style="display:none;"';
-$referrer = esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+$referrer = site_url( esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 $frontend_class = is_admin() ? '' : ' eea-barcode-scanner-frontend';
 ?>
 <!-- namespace with css -->
