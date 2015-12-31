@@ -16,6 +16,9 @@ General Styles
 .eea-barcode-scanning-container.eea-barcode-scanner-frontend {
     width: 100%;
 }
+.eea-barcode-scanner-contact-header-container {
+    min-width: 500px;
+}
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
     width: 100%;
@@ -30,7 +33,7 @@ General Styles
 }
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
-    width: 50%;
+    width: 48%;
     vertical-align: middle;
     float: left;
     margin-right: 10px;
@@ -97,7 +100,7 @@ General Styles
 
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container #eea-barcode-scanner-form {
     display: inline-block;
-    width: 93%;
+    width: 100%;
     float: left;
 }
 
@@ -496,6 +499,9 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     }
     .eea-barcode-scanning-container .eea-bs-step-text {
         font-size: 11px;
+    }
+    .eea-barcode-scanner-contact-header-container {
+        min-width: 100%;
     }
     .eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
         visibility: hidden;
