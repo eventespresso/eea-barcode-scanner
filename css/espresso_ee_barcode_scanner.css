@@ -102,7 +102,7 @@ General Styles
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-checkin-link-container {
-    float: right;
+    /*float: right;*/
     margin-top: 20px;
 }
 
@@ -134,6 +134,7 @@ h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
     margin: 0;
     margin-top: -10px;
     padding-left: 0;
+    line-height: 120%;
 }
 
 .eea-barcode-scanning-container .eea-bs-contact-email-container {
@@ -187,6 +188,7 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     background-color: #ddd;
     padding: 4px 10px;
     font-size: .8em;
+    white-space: nowrap;
 }
 
 .eea-barcode-scanning-container .eea-bs-checkout-action-button.big {
@@ -244,17 +246,17 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 .eea-barcode-scanning-container .eea-bs-table td:nth-child(3), .eea-bs-table th:nth-child(3) {
-    width: 35%;
+    width: 20%;
 }
 
 .eea-barcode-scanning-container .eea-bs-check-icon {
-    float: right;
+    /*float: right;*/
     font-size: 20px;
     vertical-align: middle;
 }
 
 .eea-barcode-scanning-container .eea-bs-check-icon.dashicons {
-    margin-right: 20px;
+    /*margin-right: 20px;*/
 }
 
 .eea-barcode-scanning-container .eea-bs-table .eea-bs-checkout-action-button {
@@ -499,25 +501,41 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
         visibility: hidden;
         width: 0px;
     }
+    .eea-barcode-scanning-container {
+        width: 100%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
+        width: 98%;
+    }
     .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
         width: 70%;
-       
+        margin-top: 20px;
     }
     .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
         font-size: 12px;
         margin-right: 0;
+        margin-top: 20px;
         padding-bottom: 10px;
         padding-left: 10px;
         padding-right: 10px;
         padding-top: 10px;
         width: 25%;
-        float: right;
+        float: left;
     }
     .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
         width: 70%;
     }
     .eea-barcode-notices #espresso-notices, .eea-barcode-notices #espresso-ajax-notices {
         left: 90%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-contact-group-container .eea-bs-checkout-action-button {
+        text-indent:-100000px;
+    }
+    .checkin-all-button {
+        text-indent:0 !important;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-attendee-details-container {
+        margin-left: 0px;
     }
 }
 
