@@ -361,7 +361,7 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selector {
-    display: inline-block;
+    /*display: inline-block;*/
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
