@@ -279,6 +279,9 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     border-radius: 128px;
 }
 
+.eea-bs-external-links-container {
+    font-size: 16px;
+}
 
 /** steps **/
 .eea-barcode-scanning-container .eea-bs-main-step-container {
