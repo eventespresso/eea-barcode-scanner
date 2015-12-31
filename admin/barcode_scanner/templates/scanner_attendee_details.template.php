@@ -136,11 +136,11 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 								$chkin_color = ' ee-green';
 								break;
 							case $checked_in :
-								$checkin_class = ' ee-icon-check-in';
+								$checkin_class = ' ee-icon ee-icon-check-in';
 								$chkin_color = ' ee-red';
 								break;
 							case $checked_out :
-								$checkin_class = ' ee-icon-check-out';
+								$checkin_class = ' ee-icon ee-icon-check-out';
 								$chkin_color = ' ee-green';
 								break;
 						}
@@ -148,7 +148,7 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 						<tr class="alternate">
 							<td><?php echo $att->fname(); ?></td>
 							<td><?php echo $att->lname(); ?></td>
-							<td><span class="eea-bs-secondary-att-datetime"><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a' ) : ''; ?></span><span class="eea-bs-check-icon ee-icon<?php echo $checkin_class; ?>"></span></td>
+							<td><span class="eea-bs-secondary-att-datetime"><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a' ) : ''; ?></span><span class="eea-bs-check-icon dashicons <?php echo $checkin_class; ?>"></span></td>
 							<td><button data-checkin-button="secondary" data-reg-url-lnk="<?php echo $reg_url_link; ?>" class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $chkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
 						</tr>
 					<?php endforeach; ?>
