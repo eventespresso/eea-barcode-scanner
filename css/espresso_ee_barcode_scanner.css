@@ -194,6 +194,10 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     white-space: nowrap;
 }
 
+.chosen-container .chosen-drop {
+    position: relative;
+}
+
 .eea-barcode-scanning-container .eea-bs-checkout-action-button.big {
     margin-top: -10px;
     margin-left: 20px;
