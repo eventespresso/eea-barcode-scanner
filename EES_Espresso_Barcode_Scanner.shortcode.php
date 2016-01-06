@@ -24,7 +24,7 @@
  *
  * ------------------------------------------------------------------------
  */
-class EES_Barcode_Scanner  extends EES_Shortcode {
+class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 
 
 
@@ -73,7 +73,7 @@ class EES_Barcode_Scanner  extends EES_Shortcode {
 		// this will trigger the EED_Barcode_Scanner module's run() method during the pre_get_posts hook point,
 		// this allows us to initialize things, enqueue assets, etc,
 		// as well, this saves an instantiation of the module in an array, using 'ee_barcode_scanner' as the key, so that we can retrieve it
-		EE_Registry::instance()->REQ->set( 'ee', 'ee_barcode_scanner' );
+		EE_Registry::instance()->REQ->set( 'ee', 'barcode_scanner' );
 		EED_Barcode_Scanner::$shortcode_active = TRUE;
 	}
 
@@ -95,10 +95,10 @@ class EES_Barcode_Scanner  extends EES_Shortcode {
 			array(),
 			(array)$attributes
 		);
-		return EE_Registry::instance()->modules['ee_barcode_scanner']->display_ee_barcode_scanner( $attributes );
+		return EED_Barcode_Scanner::instance()->scanner_form();
 	}
 
 
 }
-// End of file EES_Barcode_Scanner.shortcode.php
-// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EES_Barcode_Scanner.shortcode.php
+// End of file EES_Espresso_Barcode_Scanner.shortcode.php
+// Location: /wp-content/plugins/espresso-ee-barcode-scanner/EES_Espresso_Barcode_Scanner.shortcode.php

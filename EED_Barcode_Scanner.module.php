@@ -89,6 +89,8 @@ class EED_Barcode_Scanner extends EED_Module {
 	 	 // ajax hooks
 		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
 		 add_action( 'wp_ajax_nopriv_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
+
+		 EE_config::register_route('barcode_scanner', 'Barcode_Scanner', 'run' );
 	 }
 
 
@@ -104,6 +106,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		 // ajax hooks
 		 $bs = self::instance();
 		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( $bs, 'ee_barcode_scanner_main_action' ) );
+		 add_action( 'wp_ajax_nopriv_ee_barcode_scanner_main_action', array( $bs, 'ee_barcode_scanner_main_action' ) );
 	 }
 
 
@@ -148,7 +151,7 @@ class EED_Barcode_Scanner extends EED_Module {
 			$scanner_css_dep = 'espresso_default';
 		}
 		wp_register_style( 'eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css', array($scanner_css_dep, 'eea-bs-chosen-css'), EE_BARCODE_SCANNER_VERSION );
-		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen' ), EE_BARCODE_SCANNER_VERSION, true );
+		wp_register_script( 'eea-scanner-detection-core', EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js', array( 'eea-scanner-detection', 'eea-bs-chosen', 'espresso_core' ), EE_BARCODE_SCANNER_VERSION, true );
 
 		// is the shortcode or widget in play || is_admin?
 		if ( EED_Barcode_Scanner::$shortcode_active || ( is_admin() && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner' ) ) {
@@ -328,21 +331,22 @@ class EED_Barcode_Scanner extends EED_Module {
 	public function ee_barcode_scanner_main_action() {
 		//verify user has basic access.
 		if ( ! $this->_user_check() ) {
-			EE_Error::add_error( __('You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
+			EE_Error::add_error( __( 'You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = true;
 			$this->_return_json();
 		}
 
 		//verify incoming package.
-		$nonce = EE_Registry::instance()->REQ->get('_wpnonce');
-		$action = EE_Registry::instance()->REQ->get('ee_scanner_action');
-		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
-		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get('EVT_ID');
-		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get('DTT_ID');
+		$nonce = EE_Registry::instance()->REQ->get( '_wpnonce' );
+		$action = EE_Registry::instance()->REQ->get( 'ee_scanner_action' );
+		$this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get( 'ee_reg_code' );
+		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get( 'EVT_ID' );
+		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get( 'DTT_ID' );
+		$this->_response['data']['httpReferrer'] = EE_Registry::instance()->REQ->get( 'httpReferrer' );
 
 		if ( empty( $nonce ) || empty( $action ) ) {
-			EE_Error::add_error( __('Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__ );
-			$this->_response['error'] = TRUE;
+			EE_Error::add_error( __( 'Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+			$this->_response['error'] = true;
 			$this->_return_json();
 		}
 
@@ -638,8 +642,8 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//generate the url for this view for returning to if necessary.
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
-		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
-		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$base_url = empty( $base_url ) && ! empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? site_url( esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : $base_url;
 		$url = esc_url( add_query_arg(
 			array(
 				'EVT_ID' => $registration->event_ID(),
@@ -688,8 +692,8 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		//generate the url for this view for returning to if necessary.
 		$base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url( 'admin.php' ) : null;
-		$base_url = empty( $base_url ) && is_array( $this->_response['data']['httpReferrer'] ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
-		$base_url = empty( $base_url ) ? esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : $base_url;
+		$base_url = empty( $base_url ) && !empty( $this->_response['data']['httpReferrer'] ) ? $this->_response['data']['httpReferrer'] : $base_url;
+		$base_url = empty( $base_url ) ? site_url( esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : $base_url;
 		$url = esc_url( add_query_arg(
 			array(
 				'EVT_ID' => $registration->event_ID(),
@@ -820,22 +824,33 @@ class EED_Barcode_Scanner extends EED_Module {
 	 * @return bool  yes if user can, no if user can't.
 	 */
 	private function _user_check() {
-		return is_admin() ? EE_Capabilities::instance()->current_user_can( 'ee_edit_checkin', 'do_barcode_scan' ) : apply_filters( 'EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true );
+		return is_admin() && ! EE_FRONT_AJAX ? EE_Capabilities::instance()->current_user_can( 'ee_edit_checkin', 'do_barcode_scan' ) : apply_filters( 'EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true );
 	}
 
 
 
 
 	private function _return_json() {
+		//temporarily force `is_admin()` to return true if we're in frontend ajax then reset after.
+		$cached_screen = null;
+		if ( EE_FRONT_AJAX ) {
+			$cached_screen = isset( $GLOBALS['current_screen'] ) ? $GLOBALS['current_screen'] : null;
+			$GLOBALS['current_screen'] = WP_Screen::get('front');
+		}
 		$default_response = array(
 			'error' => FALSE,
 			'success' => FALSE,
 			'notices' => EE_Error::get_notices(),
 			'content' => '',
 			'data' => array(),
-			'isEEajax' => TRUE
+			'isEEajax' => TRUE,
+			'isFrontend' => EE_FRONT_AJAX && is_admin() || ! is_admin()
 			);
 		$this->_response = array_merge( $default_response, $this->_response );
+		//restore current screen global
+		if ( EE_FRONT_AJAX ) {
+			$GLOBALS['current_screen'] = $cached_screen;
+		}
 
 		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
 		if ( NULL === error_get_last() || ! headers_sent() ) {

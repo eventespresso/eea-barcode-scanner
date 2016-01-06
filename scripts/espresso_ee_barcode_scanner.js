@@ -108,7 +108,8 @@ jQuery(document).ready(function($) {
 
 			if ( this.eventSelector === null && $('#eea_bs_event_selector').length ) {
 				this.eventSelector = $('#eea_bs_event_selector');
-				this.eventSelector.chosen().change( function(){
+				this.eventSelector.chosen().change( function(e){
+					e.stopPropagation();
 					eebsHelper.toggleEventSelector(false);
 				});
 				this.eventSelectorChosen = $('#eea_bs_event_selector_chosen');
@@ -116,12 +117,12 @@ jQuery(document).ready(function($) {
 
 			if ( this.dttSelector === null && $('#eea_bs_dtt_selector').length ) {
 				this.dttSelector = $('#eea_bs_dtt_selector');
-				this.dttSelector.chosen().change( function() {
+				this.dttSelector.chosen().change( function(e) {
+					e.stopPropagation();
 					eebsHelper.dttSelectorChosen = $('#eea_bs_dtt_selector_chosen');
 					eebsHelper.toggleDTTname();
 				});
 			} else if ( this.dttSelector !== null ) {
-				console.log('chosen_update_trigger');
 				this.dttSelector.trigger("chosen:updated");
 			}
 		},
@@ -168,7 +169,7 @@ jQuery(document).ready(function($) {
 		scannerComplete : function( event, data ) {
 			this.data.ee_reg_code = data.string;
 			this.data.ee_scanner_action = this.scanningAction;
-			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+			$(this.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 			this.doAjax( this.attendeeLookup );
 			return;
 		},
@@ -200,7 +201,6 @@ jQuery(document).ready(function($) {
 		 * @return {void}
 		 */
 		scannerReceive : function( event, data ) {
-			$(this.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
 			this.attendeeLookup.html('').hide();
 			return;
 		},
@@ -245,7 +245,7 @@ jQuery(document).ready(function($) {
 				this.selectorDivider.show();
 
 				//show ajax spinner
-				$( this.spinner, '.eea-bs-dtt-selection' ).css('visibility', 'visible' );
+				$( this.spinner, '.eea-bs-dtt-selection' ).addClass('is-active');
 
 				//grab the event id and grab dtt selector or name via ajax
 				this.data.EVT_ID = this.eventSelector.val();
@@ -382,17 +382,17 @@ jQuery(document).ready(function($) {
 			switch ( data.checkinButton ) {
 				case 'main' :
 					eebsHelper.data.ee_scanner_action = 'toggle_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'secondary' :
 					eebsHelper.data.ee_scanner_action = 'toggle_secondary_attendee';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 				case 'all' :
 					eebsHelper.data.ee_scanner_action = 'check_in_or_out_all_attendees';
-					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').css('visibility', 'visible' );
+					$(eebsHelper.spinner, '.eea-barcode-scanner-form-container').addClass('is-active');
 					eebsHelper.doAjax( eebsHelper.attendeeLookup );
 					break;
 			}
@@ -538,10 +538,11 @@ jQuery(document).ready(function($) {
 			this.data.scanningAction = this.scanningAction;
 
 			where = typeof where !== 'object'  ? false : where;
+			ajaxUrl = typeof ajaxurl === 'undefined' ? eei18n.ajax_url : ajaxurl;
 
 			$.ajax({
 				type: "POST",
-				url: ajaxurl,
+				url: ajaxUrl,
 				data: this.data,
 				success: function(response, status, xhr) {
 					var ct = xhr.getResponseHeader("content-type") || "";
@@ -553,14 +554,20 @@ jQuery(document).ready(function($) {
 						var resp = response;
 						//note that there should be registered ajaxSuccess callbacks for methods doing anything different.  However, below are the common actions.
 						eebsHelper.noticesContainer.html( resp.notices );
-						$('.espresso-notices').show();
+						if ( ! resp.isFrontend ) {
+							$('.espresso-notices').show();
+						} else {
+							$('#espresso-notices').eeCenter();
+							$('.espresso-notices').slideDown();
+							$('.espresso-notices.fade-away').delay(5000).slideUp();
+						}
 						if ( where && typeof resp.content !== 'undefined' ) {
 							where.html( resp.content );
 							where.show();
 							eebsHelper.scannerField.val('');
 							eebsHelper.scannerField.focus();
 						}
-						$(eebsHelper.spinner).css('visibility', 'hidden' );
+						$(eebsHelper.spinner).removeClass('is-active');
 					}
 				}
 			});
@@ -582,6 +589,7 @@ jQuery(document).ready(function($) {
 	 * @return {void}
 	 */
 	$('.eea-barcode-scanner-form-container').on( 'change', '#scanner_form_default_action', function(e) {
+		e.preventDefault();
 		e.stopPropagation();
 		var action = $(this).val();
 		eebsHelper.scanningAction = action;

@@ -10,11 +10,19 @@ General Styles
     width: 80%;
     margin: auto;
     margin-top: 20px;
+    font-family: "Open Sans", sans-serif;
 }
 
-.eea-barcode-scanner-form-container {
+.eea-barcode-scanning-container.eea-barcode-scanner-frontend {
     width: 100%;
-    background-color: #ddd;
+}
+.eea-barcode-scanner-contact-header-container {
+    min-width: 500px;
+}
+
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container {
+    width: 100%;
+    background-color: #fff;
     border: 2px #dfdfdf solid;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -24,69 +32,127 @@ General Styles
     padding: 10px;
 }
 
-.eea-barcode-scanner-form-container .eea-barcode-scan-code {
-    width: 55%;
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
+    width: 48%;
     vertical-align: middle;
+    float: left;
+    margin-right: 10px;
+    height: 50px;
+    padding: 0;
+    padding-left: 10px;
 }
 
-.eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
     width: 30%;
     margin-left: 0px;
-}
+    float: left;
+    margin-right: 10px;
 
-.eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
-    width: 12%;
+    border: 2px #dfdfdf solid;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+
+    background-color: #fff;
+    background-image: none;
+    border-bottom-color: #ccc;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-image-outset: 0 0 0 0;
+    border-image-repeat: stretch stretch;
+    border-image-slice: 100% 100% 100% 100%;
+    border-image-source: none;
+    border-image-width: 1 1 1 1;
+    border-left-color: #ccc;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: #ccc;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: #ccc;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-shadow: none !important;
+    color: #555;
+    display: block;
+    font-size: 14px;
+    height: 50px;
+    line-height: 1.625;
+    padding-bottom: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+
+   
+}
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
+    width: auto;
+    height: 50px;
     margin-right: 0px;
+
 }
 
-.eea-bs-ed-checkin-link-container {
-    float: right;
-    margin-top: 35px;
+.eea-barcode-scanning-container .eea-barcode-scanner-form-container #eea-barcode-scanner-form {
+    display: inline-block;
+    width: 100%;
+    float: left;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-checkin-link-container {
+    /*float: right;*/
+    margin-top: 20px;
 }
 
 /**
 Attendee container css
 **/
 
-.eea-barcode-scanner-attendee-container {
+.eea-barcode-scanning-container .eea-barcode-scanner-attendee-container {
     width: 100%;
     margin-top: 20px;
 }
 
-.eea-barcode-scanner-avatar-container {
+.eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
     display: inline-block;
     float: right;
     /*width: 20%;*/
     text-align: center;
 }
 
-.eea-barcode-scanner-attendee-details-container {
+.eea-barcode-scanning-container .eea-barcode-scanner-attendee-details-container {
     display: inline-block;
     float: left;
     width: 70%;
     margin-left: 20px;
 }
 
-#poststuff h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
+h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
     font-size: 2em;
     margin: 0;
     margin-top: -10px;
     padding-left: 0;
+    line-height: 120%;
 }
 
-.eea-bs-contact-email-container {
-    margin-top: -10px;
+.eea-barcode-scanning-container .eea-bs-contact-email-container {
+    /*margin-top: -10px;*/
     margin-bottom: 10px
 }
 
-#poststuff h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
+h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
     margin: 0;
     margin-bottom: 5px;
     padding: 0;
     font-size: 1.5em;
 }
 
-.eea-bs-status-container, .eea-bs-checkout-action-container {
+.eea-barcode-scanning-container .eea-bs-status-container, .eea-bs-checkout-action-container {
     min-width: 25%;
     display: inline-block;
     float: left;
@@ -94,17 +160,17 @@ Attendee container css
     margin-top: 8px;
 }
 
-.eea-bs-status-label {
+.eea-barcode-scanning-container .eea-bs-status-label {
     margin-right: 4px;
     font-weight: bold;
 }
 
-.eea-bs-status-circle {
+.eea-barcode-scanning-container .eea-bs-status-circle {
     display: inline-block;
     height: 20px;
     width: 20px;
     margin-left: 8px;
-    vertical-align: middle;
+    vertical-align: top;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     -ms-border-radius: 20px;
@@ -112,11 +178,11 @@ Attendee container css
     border-radius: 20px;
 }
 
-.eea-bs-checkout-action-container {
+.eea-barcode-scanning-container .eea-bs-checkout-action-container {
     margin-top: 20px;
 }
 
-.eea-bs-checkout-status-date {
+.eea-barcode-scanning-container .eea-bs-checkout-status-date {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     -ms-border-radius: 5px;
@@ -125,15 +191,20 @@ Attendee container css
     background-color: #ddd;
     padding: 4px 10px;
     font-size: .8em;
+    white-space: nowrap;
 }
 
-.eea-bs-checkout-action-button.big {
+.chosen-container .chosen-drop {
+    position: relative;
+}
+
+.eea-barcode-scanning-container .eea-bs-checkout-action-button.big {
     margin-top: -10px;
     margin-left: 20px;
     font-weight: 900;
 }
 
-.eea-bs-details-container {
+.eea-barcode-scanning-container .eea-bs-details-container {
     width: 100%;
     margin-top: 20px;
     padding: 10px;
@@ -145,66 +216,66 @@ Attendee container css
     border-radius: 5px;
 }
 
-.eea-barcode-scanner-contact-group-container {
+.eea-barcode-scanning-container .eea-barcode-scanner-contact-group-container {
     background-color: transparent;
 }
 
-.eea-bs-custom-answers-table {
+.eea-barcode-scanning-container .eea-bs-custom-answers-table {
     width: 100%;
 }
 
-.eea-bs-custom-answers-table td:first-child {
+.eea-barcode-scanning-container .eea-bs-custom-answers-table td:first-child {
     min-width: 30%;
 }
 
-.eea-bs-custom-answers-table td:last-child {
+.eea-barcode-scanning-container .eea-bs-custom-answers-table td:last-child {
     width: 70%;
 }
 
 
-.eea-bs-admin-label {
+.eea-barcode-scanning-container .eea-bs-admin-label {
     font-size: .85em;
     font-style: italic;
 }
 
-.eea-bs-table {
+.eea-barcode-scanning-container .eea-bs-table {
     width: 100%;
     margin-top: 20px;
     text-align: left;
 }
 
-.eea-bs-table td {
+.eea-barcode-scanning-container .eea-bs-table td {
     vertical-align: middle;
 }
 
-.eea-bs-table td:first-child, .eea-bs-table th:first-child, .eea-bs-table td:nth-child(2), .eea-bs-table th:nth-child(2) {
+.eea-barcode-scanning-container .eea-bs-table td:first-child, .eea-bs-table th:first-child, .eea-bs-table td:nth-child(2), .eea-bs-table th:nth-child(2) {
     width: 25%;
 }
 
-.eea-bs-table td:nth-child(3), .eea-bs-table th:nth-child(3) {
-    width: 35%;
+.eea-barcode-scanning-container .eea-bs-table td:nth-child(3), .eea-bs-table th:nth-child(3) {
+    width: 20%;
 }
 
-.eea-bs-check-icon {
-    float: right;
+.eea-barcode-scanning-container .eea-bs-check-icon {
+    /*float: right;*/
     font-size: 20px;
     vertical-align: middle;
 }
 
-.eea-bs-check-icon.dashicons {
-    margin-right: 20px;
+.eea-barcode-scanning-container .eea-bs-check-icon.dashicons {
+    /*margin-right: 20px;*/
 }
 
-.eea-bs-table .eea-bs-checkout-action-button {
+.eea-barcode-scanning-container .eea-bs-table .eea-bs-checkout-action-button {
     width: 100%;
 }
 
-.eea-barcode-scanner-contact-group-container .eea-bs-checkout-action-button {
+.eea-barcode-scanning-container .eea-barcode-scanner-contact-group-container .eea-bs-checkout-action-button {
     margin-top: 20px;
     float: right;
 }
 
-.eea-barcode-scanner-avatar-container .avatar {
+.eea-barcode-scanning-container .eea-barcode-scanner-avatar-container .avatar {
     -webkit-border-radius: 128px;
     -moz-border-radius: 128px;
     -ms-border-radius: 128px;
@@ -212,25 +283,27 @@ Attendee container css
     border-radius: 128px;
 }
 
+.eea-bs-external-links-container {
+    font-size: 16px;
+}
 
 /** steps **/
-.eea-bs-main-step-container {
+.eea-barcode-scanning-container .eea-bs-main-step-container {
     /*width: 75%;*/
     position: relative;
     /*height: 80px;*/
     margin: auto;
-    margin-bottom: 50px;
-
+    /*margin-bottom: 50px;**/
 }
 
-.eea-bs-step-line {
+.eea-barcode-scanning-container .eea-bs-step-line {
     position: absolute;
     z-index: -1;
     width: 100%;
     top: 50%;
 }
 
-.eea-bs-step-number {
+.eea-barcode-scanning-container .eea-bs-step-number {
     display: inline-block;
     margin-right: 30px;
     /*margin-left: 30px;*/
@@ -239,7 +312,7 @@ Attendee container css
     cursor: pointer;
 }
 
-.eea-step-bubble {
+.eea-barcode-scanning-container .eea-step-bubble {
     width: 50px;
     height: 50px;
     margin: auto;
@@ -253,7 +326,7 @@ Attendee container css
     text-align: center;
 }
 
-.eea-bs-step-active .eea-step-bubble {
+.eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble {
     color: #fff;
     background-color: #666;
     width: 55px;
@@ -266,60 +339,70 @@ Attendee container css
     border-radius: 55px;
 }
 
-.eea-step-bubble p {
-    font-size: 2.5em;
+.eea-barcode-scanning-container .eea-step-bubble p {
+    font-size: 32px;
     padding: 0;
     margin: 0;
     font-weight: bold;
+    line-height: 1.4;
+    text-align: center;
+    padding-top: 3px;
 }
 
-.eea-bs-step-active .eea-step-bubble p {
-    font-size: 2.8em;
+.eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble p {
+    font-size: 38px;
+    padding-top: 2px;
 }
 
-.eea-bs-step-text {
+.eea-barcode-scanning-container .eea-bs-step-text {
     display:block;
     margin-top: 15px;
     font-size: 1.3em;
 }
 
-.eea-bs-ed-selection-container {
+.eea-barcode-scanning-container .eea-bs-ed-selection-container {
     padding-top: 10px;
     padding-bottom: 10px;
     margin:auto;
 }
 
-.eea-bs-ed-selection-container .spinner {
-    float: none;
+.eea-barcode-scanning-container .eea-bs-ed-selection-container .spinner {
+    /*float: none;*/
 }
 
-.eea-bs-ed-selector {
-    display: inline-block;
-    vertical-align: middle;
+.eea-barcode-scanning-container .eea-bs-ed-selector {
+    /*display: inline-block;*/
 }
 
-#poststuff .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
+.eea-barcode-scanning-container .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
     font-size: 2.5em;
-    font-weight: 999;
-    margin-bottom: 0px;
+    font-weight: 900;
+    margin-bottom: 0;
+    margin-top: 10px;
     padding-bottom: 0;
     padding-top: 0;
 }
 
-#poststuff .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
+.eea-barcode-scanning-container .eea-bs-ed-selector-selected-text {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
     font-size: 1.5em;
-    font-weight: 999;
+    font-weight: 900;
     color: #666;
     margin-bottom: 0;
+    margin-top: 0;
     padding-bottom: 0;
     padding-top: 0;
 }
 
-.eea-bs-ed-selector-divider {
+.eea-barcode-scanning-container .eea-bs-ed-selector-divider {
     display:block;
     width: 7px;
     height: 7px;
-    margin: 20px auto 0;
+    vertical-align: middle;
     -webkit-border-radius: 7px;
     -moz-border-radius: 7px;
     -ms-border-radius: 7px;
@@ -328,12 +411,16 @@ Attendee container css
     background-color: #666;
 }
 
-.eea-bs-ed-selector-select {
+.eea-barcode-scanning-container .eea-bs-ed-selector-divider {
+    margin: 20px auto 0;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-selector-select {
     margin-left: 10px;
     margin-right: 10px;
 }
 
-.ee-bs-barcode-scanner-checked-status-container p {
+.eea-barcode-scanning-container .ee-bs-barcode-scanner-checked-status-container p {
     text-align: center;
     font-size: 2em;
     margin: 0;
@@ -342,65 +429,126 @@ Attendee container css
 
 
 /**checkin result feedback**/
-.ee-bs-barcode-checkin-result.dashicons-no, .ee-bs-barcode-checkin-result.dashicons-yes {
+.eea-barcode-scanning-container .ee-bs-barcode-checkin-result.dashicons-no, .ee-bs-barcode-checkin-result.dashicons-yes {
     display: block;
     font-size: 10em;
     margin: auto;
     color: red;
 }
 
-.ee-bs-barcode-checkin-result.dashicons-yes {
+.eea-barcode-scanning-container .ee-bs-barcode-checkin-result.dashicons-yes {
     color: green;
 }
 
-.ee-bs-barcode-checkin-result.ee-bs-barcode-checkedout.dashicons-yes {
+.eea-barcode-scanning-container .ee-bs-barcode-checkin-result.ee-bs-barcode-checkedout.dashicons-yes {
     color: orange;
+}
+
+
+/* spinner stuff copied form common.css in wp because we need on frontend as well */
+.spinner {
+    background: url(../../../../../wp-admin/images/spinner.gif) no-repeat;
+    -webkit-background-size: 20px 20px;
+    background-size: 20px 20px;
+    display: inline-block;
+    visibility: hidden;
+    float: right;
+    vertical-align: middle;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    width: 20px;
+    height: 20px;
+    margin: 4px 10px 0;
+}
+
+.spinner.is-active {
+    visibility: visible;
 }
 
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
 
 @media only screen and (max-width: 767px) {
-    .eea-bs-ed-selector-divider {
+    .eea-barcode-scanning-container .eea-bs-ed-selector-divider {
         display: none;
     }
 }
 
 @media only screen and (max-width: 600px) and (min-width: 481px) {
-    .eea-barcode-scanner-avatar-container {
+    .eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
         visibility: hidden;
         width: 0px;
     }
 }
 
 @media only screen and (max-width: 540px) and (min-width: 480px) {
-    .eea-barcode-scanner-avatar-container {
+    .eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
         visibility: hidden;
         width: 0px;
     }
 }
 
 @media only screen and (max-width: 480px) {
-    .eea-step-bubble {
-        height: 30px;
-        width: 30px;
+    .eea-barcode-scanning-container .eea-step-bubble {
+        height: 20px;
+        width: 20px;
     }
-    .eea-bs-step-active .eea-step-bubble {
-        height: 35px;
-        width: 35px;
+    .eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble {
+        height: 25px;
+        width: 25px;
     }
-    .eea-step-bubble p {
-        font-size: 1.5em;
+    .eea-barcode-scanning-container .eea-step-bubble p {
+        font-size: 11px;
     }
-    .eea-bs-step-active .eea-step-bubble p {
-        font-size: 1.7em;
+    .eea-barcode-scanning-container .eea-bs-step-active .eea-step-bubble p {
+        font-size: 12px;
+        padding-top: 4px;
     }
-    .eea-bs-step-text {
-        font-size: 0.9em;
+    .eea-barcode-scanning-container .eea-bs-step-text {
+        font-size: 11px;
     }
-    .eea-barcode-scanner-avatar-container {
+    .eea-barcode-scanner-contact-header-container {
+        min-width: 100%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-avatar-container {
         visibility: hidden;
         width: 0px;
+    }
+    .eea-barcode-scanning-container {
+        width: 100%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
+        width: 98%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-barcode-scan-code {
+        width: 70%;
+        margin-top: 20px;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
+        font-size: 12px;
+        margin-right: 0;
+        margin-top: 20px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 10px;
+        width: 25%;
+        float: left;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-form-container .eea-banner-scanner-action-select {
+        width: 70%;
+    }
+    .eea-barcode-notices #espresso-notices, .eea-barcode-notices #espresso-ajax-notices {
+        left: 90%;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-contact-group-container .eea-bs-checkout-action-button {
+        text-indent:-100000px;
+    }
+    .checkin-all-button {
+        text-indent:0 !important;
+    }
+    .eea-barcode-scanning-container .eea-barcode-scanner-attendee-details-container {
+        margin-left: 0px;
     }
 }
 
