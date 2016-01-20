@@ -20,6 +20,6 @@
 	'<code>EED_Barcode_Scanner__scanner_form__user_can_from_shortcode</code>'
 ); ?></p>
 <p><?php printf( __( 'For more details and examples, please %sview the detailed documentation%s for this feature.', 'event_espresso' ),
-	'<a href="https://eventespresso.com/wiki/barcode-scanner-add-on/">',
+	'<a href="https://eventespresso.com/wiki/barcode-scanner-add-on/?ee_ver=ee4&utm_source=ee4_plugin_admin&utm_medium=link&utm_campaign=ee_support_tab&utm_content=barcode_scanner_admin">',
 	'</a>'
 ); ?></p>
