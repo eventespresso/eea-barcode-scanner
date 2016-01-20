@@ -55,6 +55,10 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page {
 					'barcode_scanning_overview_help_tab' => array(
 						'title' => __('Overview', 'event_espresso'),
 						'filename' => 'barcode_scanner_overview'
+						),
+					'barcode_scanning_shortcode_help_tab' => array(
+						'title' => __('Front-end Ticket Scanning', 'event_espresso'),
+						'filename' => 'barcode_scanner_shortcode'
 						)
 					)
 				)
