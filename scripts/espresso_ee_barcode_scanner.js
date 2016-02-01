@@ -31,6 +31,7 @@ jQuery(document).ready(function($) {
 			dttselector : '',
 			action : 'ee_barcode_scanner_main_action',
 			ee_scanner_action : '',
+			ee_scanner_checkin_trigger : 'form',
 			checkinContext : 0,
 			httpReferrer : ''
 		},
@@ -377,6 +378,7 @@ jQuery(document).ready(function($) {
 
 			this.data.ee_reg_code = data.regUrlLnk;
 			this.currentButtonEl = buttonEl;
+			eebsHelper.data.ee_scanner_checkin_trigger = 'button';
 
 
 			switch ( data.checkinButton ) {
