@@ -343,6 +343,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$this->_response['data']['EVT_ID'] = EE_Registry::instance()->REQ->get( 'EVT_ID' );
 		$this->_response['data']['DTT_ID'] = EE_Registry::instance()->REQ->get( 'DTT_ID' );
 		$this->_response['data']['httpReferrer'] = EE_Registry::instance()->REQ->get( 'httpReferrer' );
+		$this->_response['data']['ee_scanner_checkin_trigger'] = EE_Registry::instance()->REQ->get( 'ee_scanner_checkin_trigger' );
 
 		if ( empty( $nonce ) || empty( $action ) ) {
 			EE_Error::add_error( __( 'Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
@@ -354,7 +355,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$this->_response['data']['ee_scanner_action'] = $action;
 
 		//check_approved flag set?
-		$this->_response['data']['check_approved'] = $action != 'lookup_attendee';
+		$this->_response['data']['check_approved'] = apply_filters( 'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__check_approved', $action != 'lookup_attendee', $this->_response );
 
 		//verify nonce
 		if ( ! wp_verify_nonce( $nonce, 'ee_banner_scan_form' ) ) {
