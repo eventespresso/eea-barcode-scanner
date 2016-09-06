@@ -90,7 +90,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		 add_action( 'wp_ajax_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
 		 add_action( 'wp_ajax_nopriv_ee_barcode_scanner_main_action', array( 'EED_Barcode_Scanner', 'ee_barcode_scanner_main_action' ) );
 
-		 EE_config::register_route('barcode_scanner', 'Barcode_Scanner', 'run' );
+		 EE_Config::register_route('barcode_scanner', 'Barcode_Scanner', 'run' );
 	 }
 
 
@@ -313,9 +313,9 @@ class EED_Barcode_Scanner extends EED_Module {
 
 		if ( $echo ) {
 			EEH_Template::display_template( $template, $template_args );
-		} else {
-			return EEH_Template::display_template( $template, $template_args, TRUE );
+			return '';
 		}
+		return EEH_Template::display_template( $template, $template_args, TRUE );
 	}
 
 
@@ -326,7 +326,7 @@ class EED_Barcode_Scanner extends EED_Module {
 	 *
 	 * @since %VER%
 	 *
-	 * @return string  html response.
+	 * @return void
 	 */
 	public function ee_barcode_scanner_main_action() {
 		//verify user has basic access.
@@ -438,14 +438,16 @@ class EED_Barcode_Scanner extends EED_Module {
 			'text' => '',
 			'id' => ''
 			);
-		foreach ( $datetimes as $dtt ) {
-			$name = $dtt->name();
-			$datename = !empty( $name ) ? $name . ' - ' : '';
-			$datename .= $dtt->get_dtt_display_name();
-			$options[] = array(
-				'text' => $datename,
-				'id' => $dtt->ID()
+		foreach ( $datetimes as $datetime ) {
+			if ( $datetime instanceof EE_Datetime ) {
+				$name = $datetime->name();
+				$datename = ! empty( $name ) ? $name . ' - ' : '';
+				$datename .= $datetime->get_dtt_display_name();
+				$options[] = array(
+					'text' => $datename,
+					'id'   => $datetime->ID()
 				);
+			}
 		}
 		$this->_response['success'] = TRUE;
 		return EEH_Form_Fields::select_input( 'eea_bs_dtt_selector', $options, '', 'data-placeholder="Select Datetime..."', 'eea-bs-ed-selector-select' );
@@ -487,6 +489,7 @@ class EED_Barcode_Scanner extends EED_Module {
 		$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Registration::checkin_status_in : 1;
 		$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Registration::checkin_status_out : 2;
 		$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Registration::checkin_status_never : 0;
+		$last_checkin = $checkin_button_text = $all_checkin_button_text = $checkin_color = '';
 
 		switch( $checkin_status ) {
 			case $never_checked :
@@ -536,7 +539,7 @@ class EED_Barcode_Scanner extends EED_Module {
 
 
 	/**
-	 * This will recieve the incoming keyword and will use that to trigger a search on the Checkin list table page for this event
+	 * This will receive the incoming keyword and will use that to trigger a search on the Checkin list table page for this event
 	 * and datetime
 	 * @return string
 	 */
