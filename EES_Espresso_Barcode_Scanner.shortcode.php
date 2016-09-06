@@ -1,14 +1,13 @@
 <?php if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit(); }
-/*
- *
- * EES_Barcode_Scanner
+/**
+ * Class EES_Espresso_Barcode_Scanner
  *
  * @package			Event Espresso
  * @subpackage		espresso-ee-barcode-scanner
  * @author 			Darren Ethier
  * @ version		$VID:$
  */
-class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
+class EES_Espresso_Barcode_Scanner extends EES_Shortcode {
 
 
 
@@ -54,11 +53,10 @@ class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 	 *  @return 	void
 	 */
 	public function run( WP $WP ) {
-		// this will trigger the EED_Barcode_Scanner module's run() method during the pre_get_posts hook point,
+		EED_Barcode_Scanner::$shortcode_active = true;
+		// trigger the EED_Barcode_Scanner module's run() method,
 		// this allows us to initialize things, enqueue assets, etc,
-		// as well, this saves an instantiation of the module in an array, using 'ee_barcode_scanner' as the key, so that we can retrieve it
 		EED_Barcode_Scanner::instance()->run( $WP );
-		EED_Barcode_Scanner::$shortcode_active = TRUE;
 	}
 
 
