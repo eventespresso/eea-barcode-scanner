@@ -1,28 +1,12 @@
 <?php if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit(); }
 /*
- * ------------------------------------------------------------------------
- *
- * Event Espresso
- *
- * Event Registration and Management Plugin for WordPress
- *
- * @ package			Event Espresso
- * @ author				Seth Shoultes
- * @ copyright		(c) 2008-2014 Event Espresso  All Rights Reserved.
- * @ license			http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
- * @ link					http://www.eventespresso.com
- * @ version		 	EE4
- *
- * ------------------------------------------------------------------------
  *
  * EES_Barcode_Scanner
  *
  * @package			Event Espresso
  * @subpackage		espresso-ee-barcode-scanner
- * @author 				Brent Christensen
- * @ version		 	$VID:$
- *
- * ------------------------------------------------------------------------
+ * @author 			Darren Ethier
+ * @ version		$VID:$
  */
 class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 
@@ -73,7 +57,7 @@ class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 		// this will trigger the EED_Barcode_Scanner module's run() method during the pre_get_posts hook point,
 		// this allows us to initialize things, enqueue assets, etc,
 		// as well, this saves an instantiation of the module in an array, using 'ee_barcode_scanner' as the key, so that we can retrieve it
-		EE_Registry::instance()->REQ->set( 'ee', 'barcode_scanner' );
+		EED_Barcode_Scanner::instance()->run( $WP );
 		EED_Barcode_Scanner::$shortcode_active = TRUE;
 	}
 
@@ -89,13 +73,7 @@ class EES_Espresso_Barcode_Scanner  extends EES_Shortcode {
 	 * @return 	void
 	 */
 	public function process_shortcode( $attributes = array() ) {
-		// make sure $attributes is an array
-		$attributes = array_merge(
-			// defaults
-			array(),
-			(array)$attributes
-		);
-		return EED_Barcode_Scanner::instance()->scanner_form();
+		EED_Barcode_Scanner::instance()->scanner_form();
 	}
 
 
