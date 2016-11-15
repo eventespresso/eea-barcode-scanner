@@ -207,6 +207,8 @@ class EED_Barcode_Scanner extends EED_Module {
 				);
 		}
 
+		$action_options = apply_filters( 'FHEE__EED_Barcode_Scanner__scanner_form__action_options', $action_options );
+
 		//events selector for step one!
 		//getting events that are published but not expired.
 		//need to use a value for time() depending on what method is available
