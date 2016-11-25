@@ -277,6 +277,15 @@ class EED_Barcode_Scanner extends EED_Module
             ),
             'order_by' => array('Datetime.DTT_EVT_start' => 'ASC'),
         );
+
+        //add cap restrictions in the admin
+        if (is_admin() && ! (defined('DOING_AJAX') && DOING_AJAX)) {
+            $query['caps'] = EEM_Event::caps_read_admin;
+        }
+
+        //filter the query so people can add their own conditions if they want.
+        $query = apply_filters('FHEE__EED_Barcode_Scanner__scanner_form__event_query', $query);
+
         $events               = EEM_Event::instance()->get_all($query);
         $event_selector       = $event_name = $dtt_selector = $dtt_name = $dtt_id = $checkin_link = '';
 
