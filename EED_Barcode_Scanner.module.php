@@ -6,7 +6,7 @@
  * @package    EE4 Barcode Scanner
  * @subpackage module
  */
-if ( ! defined('EVENT_ESPRESSO_VERSION')) {
+if (! defined('EVENT_ESPRESSO_VERSION')) {
     exit('No direct script access allowed');
 }
 
@@ -88,10 +88,14 @@ class EED_Barcode_Scanner extends EED_Module
     public static function set_hooks()
     {
         // ajax hooks
-        add_action('wp_ajax_ee_barcode_scanner_main_action',
-            array('EED_Barcode_Scanner', 'ee_barcode_scanner_main_action'));
-        add_action('wp_ajax_nopriv_ee_barcode_scanner_main_action',
-            array('EED_Barcode_Scanner', 'ee_barcode_scanner_main_action'));
+        add_action(
+            'wp_ajax_ee_barcode_scanner_main_action',
+            array('EED_Barcode_Scanner', 'ee_barcode_scanner_main_action')
+        );
+        add_action(
+            'wp_ajax_nopriv_ee_barcode_scanner_main_action',
+            array('EED_Barcode_Scanner', 'ee_barcode_scanner_main_action')
+        );
 
         EE_Config::register_route('barcode_scanner', 'Barcode_Scanner', 'run');
     }
@@ -135,36 +139,68 @@ class EED_Barcode_Scanner extends EED_Module
     {
         //scanner library
         $script_min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : 'min.';
-        wp_register_script('eea-scanner-detection-cps',
+        wp_register_script(
+            'eea-scanner-detection-cps',
             EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.compatibility.' . $script_min . 'js',
-            array('jquery'), EE_BARCODE_SCANNER_VERSION, true);
-        wp_register_script('eea-scanner-detection',
+            array('jquery'),
+            EE_BARCODE_SCANNER_VERSION,
+            true
+        );
+        wp_register_script(
+            'eea-scanner-detection',
             EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.' . $script_min . 'js',
-            array('eea-scanner-detection-cps'), EE_BARCODE_SCANNER_VERSION, true);
+            array('eea-scanner-detection-cps'),
+            EE_BARCODE_SCANNER_VERSION,
+            true
+        );
 
         //chosen
-        wp_register_script('eea-bs-chosen',
+        wp_register_script(
+            'eea-bs-chosen',
             EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.jquery.' . $script_min . 'js',
-            array('jquery'), EE_BARCODE_SCANNER_VERSION, true);
-        wp_register_style('eea-bs-chosen-css',
-            EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css', array(),
-            EE_BARCODE_SCANNER_VERSION);
+            array('jquery'),
+            EE_BARCODE_SCANNER_VERSION,
+            true
+        );
+        wp_register_style(
+            'eea-bs-chosen-css',
+            EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css',
+            array(),
+            EE_BARCODE_SCANNER_VERSION
+        );
 
         //addon js/css
         $scanner_css_dep = 'ee-admin-css';
-        if ( ! is_admin()) {
-            wp_register_style('espresso_default', EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css', array('dashicons'),
-                EVENT_ESPRESSO_VERSION);
+        if (! is_admin()) {
+            wp_register_style(
+                'espresso_default',
+                EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css',
+                array('dashicons'),
+                EVENT_ESPRESSO_VERSION
+            );
             $scanner_css_dep = 'espresso_default';
         }
-        wp_register_style('eea-scanner-detection-css', EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css',
-            array($scanner_css_dep, 'eea-bs-chosen-css'), EE_BARCODE_SCANNER_VERSION);
-        wp_register_script('eea-scanner-detection-core',
+        wp_register_style(
+            'eea-scanner-detection-css',
+            EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css',
+            array($scanner_css_dep, 'eea-bs-chosen-css'),
+            EE_BARCODE_SCANNER_VERSION
+        );
+        wp_register_script(
+            'eea-scanner-detection-core',
             EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js',
-            array('eea-scanner-detection', 'eea-bs-chosen', 'espresso_core'), EE_BARCODE_SCANNER_VERSION, true);
+            array('eea-scanner-detection', 'eea-bs-chosen', 'espresso_core'),
+            EE_BARCODE_SCANNER_VERSION,
+            true
+        );
 
         // is the shortcode or widget in play || is_admin?
-        if (EED_Barcode_Scanner::$shortcode_active || (is_admin() && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner')) {
+        if (EED_Barcode_Scanner::$shortcode_active
+            || (
+                is_admin()
+                && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner'
+            )
+        ) {
             wp_enqueue_style('eea-scanner-detection-css');
             wp_enqueue_script('eea-scanner-detection-core');
         }
@@ -182,9 +218,16 @@ class EED_Barcode_Scanner extends EED_Module
     {
 
         //user permission check first
-        if ( ! $this->_user_check()) {
-            EE_Error::add_error(__('Sorry, but you do not have permissions to access the barcode scanner form.  Please see the site administrator about gaining access',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+        if (! $this->_user_check()) {
+            EE_Error::add_error(
+                __(
+                    'Sorry, but you do not have permissions to access the barcode scanner form.  Please see the site administrator about gaining access',
+                    'event_espresso'
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             return '';
         }
 
@@ -220,13 +263,14 @@ class EED_Barcode_Scanner extends EED_Module
         //events selector for step one!
         //getting events that are published but not expired.
         //need to use a value for time() depending on what method is available
-        $current_time         = method_exists('EEM_Datetime',
-            'current_time_for_query') ? time() : current_time('timestamp');
+        $current_time         = method_exists('EEM_Datetime', 'current_time_for_query')
+            ? time()
+            : current_time('timestamp');
         $filtered_time_window = apply_filters(
             'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
             -HOUR_IN_SECONDS
         );
-        $query                = array(
+        $query = array(
             0          => array(
                 'status'               => array('IN', array('publish', EEM_Event::sold_out)),
                 'Datetime.DTT_EVT_end' => array('>', $current_time + $filtered_time_window),
@@ -242,8 +286,12 @@ class EED_Barcode_Scanner extends EED_Module
             $this->_response['data']['EVT_ID'] = $event->ID();
             $event_name                        = $event->name();
             $dtt_selector                      = $this->_scanner_action_retrieve_datetimes();
-            $dtt_name                          = empty($dtt_selector) && ! empty($this->_response['data']['dtt_name']) ? $this->_response['data']['dtt_name'] : '';
-            $dtt_id                            = empty($this->_response['data']['DTT_ID']) ? '' : $this->_response['data']['DTT_ID'];
+            $dtt_name                          = empty($dtt_selector) && ! empty($this->_response['data']['dtt_name'])
+                ? $this->_response['data']['dtt_name']
+                : '';
+            $dtt_id                            = empty($this->_response['data']['DTT_ID'])
+                ? ''
+                : $this->_response['data']['DTT_ID'];
             $checkin_link                      = ! empty($dtt_id) ? EEH_URL::add_query_args_and_nonce(array(
                 'page'     => 'espresso_registrations',
                 'action'   => 'event_registrations',
@@ -259,8 +307,13 @@ class EED_Barcode_Scanner extends EED_Module
                     'id'   => $event->ID(),
                 );
             }
-            $event_selector = EEH_Form_Fields::select_input('eea_bs_event_selector', $evt_options, '',
-                'data-placeholder="Select Event..."', 'eea-bs-ed-selector-select');
+            $event_selector = EEH_Form_Fields::select_input(
+                'eea_bs_event_selector',
+                $evt_options,
+                '',
+                'data-placeholder="Select Event..."',
+                'eea-bs-ed-selector-select'
+            );
         }
 
         /**
@@ -278,8 +331,13 @@ class EED_Barcode_Scanner extends EED_Module
             'dtt_id'          => $dtt_id,
             'checkin_link'    => $checkin_link,
             'reg_content'     => '',
-            'action_selector' => EEH_Form_Fields::select_input('scanner_form_default_action', $action_options,
-                'confirm', '', 'eea-banner-scanner-action-select'),
+            'action_selector' => EEH_Form_Fields::select_input(
+                'scanner_form_default_action',
+                $action_options,
+                'confirm',
+                '',
+                'eea-banner-scanner-action-select'
+            ),
             'button_class'    => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button',
         );
 
@@ -289,13 +347,22 @@ class EED_Barcode_Scanner extends EED_Module
         $this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
         $doing_lookup                       = false;
 
-        if ( ! empty($this->_response['data']['EVT_ID']) && ! empty($this->_response['data']['DTT_ID']) && ! empty($this->_response['data']['regcode'])) {
+        if (! empty($this->_response['data']['EVT_ID'])
+            && ! empty($this->_response['data']['DTT_ID'])
+            && ! empty($this->_response['data']['regcode'])
+        ) {
             $event       = EEM_Event::instance()->get_one_by_ID($this->_response['data']['EVT_ID']);
             $dtt         = EEM_Datetime::instance()->get_one_by_ID($this->_response['data']['DTT_ID']);
             $reg_content = $this->_scanner_action_lookup_attendee();
 
 
-            if ($event instanceof EE_Event && $dtt instanceof EE_Datetime && ( ! isset($this->_response['error']) || ! $this->_response['error'])) {
+            if ($event instanceof EE_Event
+                && $dtt instanceof EE_Datetime
+                && (
+                    ! isset($this->_response['error'])
+                    || ! $this->_response['error']
+                )
+            ) {
                 $name     = $dtt->name();
                 $datename = ! empty($name) ? $name . ' - ' : '';
                 $datename .= $dtt->get_dtt_display_name();
@@ -311,7 +378,7 @@ class EED_Barcode_Scanner extends EED_Module
             }
         }
 
-        if ( ! $doing_lookup) {
+        if (! $doing_lookup) {
             //template args has not been setup so let's go ahead and setup the selection form.
 
             $step          = ! empty($event_name) ? 2 : 1;
@@ -341,9 +408,16 @@ class EED_Barcode_Scanner extends EED_Module
     public function ee_barcode_scanner_main_action()
     {
         //verify user has basic access.
-        if ( ! $this->_user_check()) {
-            EE_Error::add_error(__('You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+        if (! $this->_user_check()) {
+            EE_Error::add_error(
+                __(
+                    'You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.',
+                    'event_espresso'
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             $this->_return_json();
         }
@@ -358,8 +432,15 @@ class EED_Barcode_Scanner extends EED_Module
         $this->_response['data']['ee_scanner_checkin_trigger'] = EE_Registry::instance()->REQ->get('ee_scanner_checkin_trigger');
 
         if (empty($nonce) || empty($action)) {
-            EE_Error::add_error(__('Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __(
+                    'Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.',
+                    'event_espresso'
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             $this->_return_json();
         }
@@ -368,22 +449,39 @@ class EED_Barcode_Scanner extends EED_Module
         $this->_response['data']['ee_scanner_action'] = $action;
 
         //check_approved flag set?
-        $this->_response['data']['check_approved'] = apply_filters('FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__check_approved',
-            $action != 'lookup_attendee', $this->_response);
+        $this->_response['data']['check_approved'] = apply_filters(
+            'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__check_approved',
+            $action != 'lookup_attendee',
+            $this->_response
+        );
 
         //verify nonce
-        if ( ! wp_verify_nonce($nonce, 'ee_banner_scan_form')) {
-            EE_Error::add_error(__('Invalid request.  Missing a valid nonce in the request.'), __FILE__, __FUNCTION__,
-                __LINE__);
+        if (! wp_verify_nonce($nonce, 'ee_banner_scan_form')) {
+            EE_Error::add_error(
+                __('Invalid request.  Missing a valid nonce in the request.'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             $this->_return_json();
         }
 
         //perform action.
         $method = '_scanner_action_' . $action;
-        if ( ! method_exists($this, $method)) {
-            EE_Error::add_error(sprintf(__('The incoming action on the scanner request (%s) is invalid.  Please check the spelling and ensure there is a callback for handling that action defined.',
-                'event_espresso'), $action), __FILE__, __FUNCTION__, __LINE__);
+        if (! method_exists($this, $method)) {
+            EE_Error::add_error(
+                sprintf(
+                    __(
+                        'The incoming action on the scanner request (%s) is invalid.  Please check the spelling and ensure there is a callback for handling that action defined.',
+                        'event_espresso'
+                    ),
+                    $action
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             $this->_return_json();
         }
@@ -396,10 +494,15 @@ class EED_Barcode_Scanner extends EED_Module
         do_action('AHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action', $action, $this->_response);
 
         //filter response
-        $this->_response = apply_filters('FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__' . $action . '__response',
-            $this->_response);
-        $this->_response = apply_filters('FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__response',
-            $this->_response, $action);
+        $this->_response = apply_filters(
+            'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__' . $action . '__response',
+            $this->_response
+        );
+        $this->_response = apply_filters(
+            'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__response',
+            $this->_response,
+            $action
+        );
         $this->_return_json();
     }
 
@@ -414,20 +517,25 @@ class EED_Barcode_Scanner extends EED_Module
     {
         //have required request var
         if (empty($this->_response['data']['EVT_ID'])) {
-            EE_Error::add_error(__('Missing required EVT_ID in the request for the retrieve_datetimes action.',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __('Missing required EVT_ID in the request for the retrieve_datetimes action.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '';
         }
 
         //get all datetimes
-        $current_time         = method_exists('EEM_Datetime',
-            'current_time_for_query') ? time() : current_time('timestamp');
+        $current_time         = method_exists('EEM_Datetime', 'current_time_for_query')
+            ? time()
+            : current_time('timestamp');
         $filtered_time_window = apply_filters(
             'FHEE__EED_Barcode_Scanner__scanner_form__filtered_time_window',
             -HOUR_IN_SECONDS
         );
-        $query_args           = array(
+        $query_args = array(
             0                          => array(
                 'Event.EVT_ID' => $this->_response['data']['EVT_ID'],
                 'DTT_EVT_end'  => array('>', $current_time + $filtered_time_window),
@@ -469,8 +577,13 @@ class EED_Barcode_Scanner extends EED_Module
             }
         }
         $this->_response['success'] = true;
-        return EEH_Form_Fields::select_input('eea_bs_dtt_selector', $options, '',
-            'data-placeholder="Select Datetime..."', 'eea-bs-ed-selector-select');
+        return EEH_Form_Fields::select_input(
+            'eea_bs_dtt_selector',
+            $options,
+            '',
+            'data-placeholder="Select Datetime..."',
+            'eea-bs-ed-selector-select'
+        );
 
     }
 
@@ -485,7 +598,7 @@ class EED_Barcode_Scanner extends EED_Module
     {
         $registration = $this->_validate_incoming_data(false);
 
-        if ( ! $registration instanceof EE_Registration) {
+        if (! $registration instanceof EE_Registration) {
             return $registration;
         }
 
@@ -512,27 +625,31 @@ class EED_Barcode_Scanner extends EED_Module
         $last_checkin  = $checkin_button_text = $all_checkin_button_text = $checkin_color = '';
 
         switch ($checkin_status) {
-            case $never_checked :
+            case $never_checked:
                 $last_checkin            = __('Has not been checked in yet.', 'event_espresso');
                 $checkin_button_text     = __('Check In', 'event_espresso');
                 $all_checkin_button_text = __('Check In All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-green';
                 break;
-            case $checked_in :
-                $last_checkin            = sprintf(__("Last checked in on %s", 'event_espresso'),
-                    $checkin->get_datetime('CHK_timestamp', 'M j @', 'h:i a'));
+            case $checked_in:
+                $last_checkin            = sprintf(
+                    __("Last checked in on %s", 'event_espresso'),
+                    $checkin->get_datetime('CHK_timestamp', 'M j @', 'h:i a')
+                );
                 $checkin_button_text     = __('Check Out', 'event_espresso');
                 $all_checkin_button_text = __('Check Out All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-red';
                 break;
-            case $checked_out :
-                $last_checkin            = sprintf(__("Last checked out on %s", 'event_espresso'),
-                    $checkin->get_datetime('CHK_timestamp', 'M j @ ', 'h:i a'));
+            case $checked_out:
+                $last_checkin            = sprintf(
+                    __("Last checked out on %s", 'event_espresso'),
+                    $checkin->get_datetime('CHK_timestamp', 'M j @ ', 'h:i a')
+                );
                 $checkin_button_text     = __('Check In', 'event_espresso');
                 $all_checkin_button_text = __('Check In All Registrations ', 'event_espresso');
                 $checkin_color           = ' ee-green';
                 break;
-            case false :
+            case false:
                 $last_checkin            = __('Has access to datetime, but not approved.', 'event_espresso');
                 $checkin_button_text     = __('Check In Anyways', 'event_espresso');
                 $all_checkin_button_text = __('Check In All Registrations', 'event_espresso');
@@ -568,8 +685,12 @@ class EED_Barcode_Scanner extends EED_Module
     {
         //make sure we have a valid reg_code
         if (empty($this->_response['data']['regcode'])) {
-            EE_Error::add_error(__('Missing required registration url link code from the request.', 'event_espresso'),
-                __FILE__, __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __('Missing required registration url link code from the request.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
@@ -577,8 +698,12 @@ class EED_Barcode_Scanner extends EED_Module
         //verify we have a DTT_ID
         //do we have a dtt_id?
         if (empty($this->_response['data']['DTT_ID'])) {
-            EE_Error::add_error(__('Missing required datetime ID from the request.', 'event_espresso'), __FILE__,
-                __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __('Missing required datetime ID from the request.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
@@ -619,16 +744,24 @@ class EED_Barcode_Scanner extends EED_Module
     private function _validate_incoming_data($check_approved = true)
     {
         if (empty($this->_response['data']['regcode'])) {
-            EE_Error::add_error(__('Missing required registration url link code from the request.', 'event_espresso'),
-                __FILE__, __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __('Missing required registration url link code from the request.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
 
         //do we have a dtt_id?
         if (empty($this->_response['data']['DTT_ID'])) {
-            EE_Error::add_error(__('Missing required datetime ID from the request.', 'event_espresso'), __FILE__,
-                __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                __('Missing required datetime ID from the request.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
@@ -644,17 +777,28 @@ class EED_Barcode_Scanner extends EED_Module
             ),
         ));
 
-        if ( ! $registration instanceof EE_Registration) {
-            EE_Error::add_error(__('Sorry, but the given registration code does not match a valid registration.',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+        if (! $registration instanceof EE_Registration) {
+            EE_Error::add_error(
+                __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso'),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['error'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
 
         //k let's make sure this registration has access to the given datetime.
-        if ( ! $registration->can_checkin($this->_response['data']['DTT_ID'], $check_approved)) {
-            EE_Error::add_error(__('Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.',
-                'event_espresso'), __FILE__, __FUNCTION__, __LINE__);
+        if (! $registration->can_checkin($this->_response['data']['DTT_ID'], $check_approved)) {
+            EE_Error::add_error(
+                __(
+                    'Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.',
+                    'event_espresso'
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['success'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
@@ -672,14 +816,16 @@ class EED_Barcode_Scanner extends EED_Module
     {
         $registration = $this->_validate_incoming_data($this->_response['data']['check_approved']);
 
-        if ( ! $registration instanceof EE_Registration) {
+        if (! $registration instanceof EE_Registration) {
             return $registration;
         }
 
 
         //generate the url for this view for returning to if necessary.
         $base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url('admin.php') : null;
-        $base_url = empty($base_url) && ! empty($this->_response['data']['httpReferrer']) ? $this->_response['data']['httpReferrer'] : $base_url;
+        $base_url = empty($base_url) && ! empty($this->_response['data']['httpReferrer'])
+            ? $this->_response['data']['httpReferrer']
+            : $base_url;
         $base_url = empty($base_url) ? site_url(esc_attr(wp_unslash($_SERVER['REQUEST_URI']))) : $base_url;
         $url      = esc_url(add_query_arg(
             array(
@@ -691,20 +837,31 @@ class EED_Barcode_Scanner extends EED_Module
             $base_url
         ));
 
-        $view_link = ! empty($base_url) ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'),
-            '<a href="' . $url . '">', '</a>') : '';
+        $view_link = ! empty($base_url)
+            ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>')
+            : '';
 
         //toggle checkin
-        $status = $registration->toggle_checkin_status($this->_response['data']['DTT_ID'],
-            $this->_response['data']['check_approved']);
+        $status = $registration->toggle_checkin_status(
+            $this->_response['data']['DTT_ID'],
+            $this->_response['data']['check_approved']
+        );
         if ($status === 1) {
-            EE_Error::add_success(sprintf(__('This registration has been checked in. %s', 'event_espresso'),
-                $view_link));
+            EE_Error::add_success(
+                sprintf(
+                    __('This registration has been checked in. %s', 'event_espresso'),
+                    $view_link
+                )
+            );
             $checked_in_out_text  = __('Checked In', 'event_espresso');
             $checked_in_out_class = ' ee-bs-barcode-checkedin';
         } else {
-            EE_Error::add_success(sprintf(__('This registration has been checked out. %s', 'event_espresso'),
-                $view_link));
+            EE_Error::add_success(
+                sprintf(
+                    __('This registration has been checked out. %s', 'event_espresso'),
+                    $view_link
+                )
+            );
             $checked_in_out_text  = __('Checked Out', 'event_espresso');
             $checked_in_out_class = ' ee-bs-barcode-checkedout';
         }
@@ -723,7 +880,7 @@ class EED_Barcode_Scanner extends EED_Module
     {
         $registration = $this->_validate_incoming_data($this->_response['data']['check_approved']);
 
-        if ( ! $registration instanceof EE_Registration) {
+        if (! $registration instanceof EE_Registration) {
             return $registration;
         }
 
@@ -742,25 +899,33 @@ class EED_Barcode_Scanner extends EED_Module
             $base_url
         ));
 
-        $view_link = ! empty($base_url) ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'),
-            '<a href="' . $url . '">', '</a>') : '';
+        $view_link = ! empty($base_url)
+            ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>')
+            : '';
 
         //first verify whether the registration has ever been checked-in.  If so, then return false because we're not allowing
         //check-outs on this route.
         $checkin_status = $registration->check_in_status_for_datetime($this->_response['data']['DTT_ID']);
 
         if ($checkin_status !== EE_Registration::checkin_status_never) {
-            EE_Error::add_error(sprintf(__('This registration has already been checked-in. %s', 'event_espresso'),
-                $view_link), __FILE__, __FUNCTION__, __LINE__);
+            EE_Error::add_error(
+                sprintf(__('This registration has already been checked-in. %s', 'event_espresso'), $view_link),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
             $this->_response['success'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         } else {
             //toggle checkin
-            $status = $registration->toggle_checkin_status($this->_response['data']['DTT_ID'],
-                $this->_response['data']['check_approved']);
+            $status = $registration->toggle_checkin_status(
+                $this->_response['data']['DTT_ID'],
+                $this->_response['data']['check_approved']
+            );
             if ($status === 1) {
-                EE_Error::add_success(sprintf(__('This registration has been checked in. %s', 'event_espresso'),
-                    $view_link));
+                EE_Error::add_success(
+                    sprintf(__('This registration has been checked in. %s', 'event_espresso'), $view_link)
+                );
             }
             $this->_response['success'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
@@ -778,7 +943,7 @@ class EED_Barcode_Scanner extends EED_Module
     {
         $registration = $this->_validate_incoming_data();
 
-        if ( ! $registration instanceof EE_Registration) {
+        if (! $registration instanceof EE_Registration) {
             return $registration;
         }
 
@@ -822,7 +987,7 @@ class EED_Barcode_Scanner extends EED_Module
     {
         $registration = $this->_validate_incoming_data();
 
-        if ( ! $registration instanceof EE_Registration) {
+        if (! $registration instanceof EE_Registration) {
             return $registration;
         }
 
@@ -861,8 +1026,9 @@ class EED_Barcode_Scanner extends EED_Module
      */
     private function _user_check()
     {
-        return is_admin() && ! EE_FRONT_AJAX ? EE_Capabilities::instance()->current_user_can('ee_edit_checkin',
-            'do_barcode_scan') : apply_filters('EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true);
+        return is_admin()
+               && ! EE_FRONT_AJAX ? EE_Capabilities::instance()->current_user_can('ee_edit_checkin', 'do_barcode_scan')
+            : apply_filters('EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true);
     }
 
 
