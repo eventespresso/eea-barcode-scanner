@@ -5,7 +5,7 @@ EE Barcode Scanner Add-on
 [![Travis](https://travis-ci.org/eventespresso/eea-barcode-scanner.svg?branch=master)](https://travis-ci.org/eventespresso/eea-barcode-scanner)
 [![License](https://img.shields.io/badge/License-GPLv2-blue.svg?style=flat)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![Event Espresso Addon](https://img.shields.io/badge/Addon%20For-Event%20Espresso-blue.svg)](https://github.com/eventespresso/event-espresso-core)
-[![Minimum EE Core Version:](https://img.shields.io/badge/Minimum%20EE%20core%20ver-4.9.37.p-red.svg)](https://github.com/eventespresso/event-espresso-core/releases/tag/4.9.37.p)
+[![Minimum EE Core Version:](https://img.shields.io/badge/Minimum%20EE%20core%20ver-4.5.0.p-red.svg)](https://github.com/eventespresso/event-espresso-core/releases/tag/4.5.0.p)
 
 Control access to your event by validating each printable ticket at the door. The barcode scanning add-on interfaces with the Event Espresso 4 admin and a handheld, or bluetooth barcode scanner, to allow event managers to scan Event Espresso 4 generated tickets at the door of the event.
 
