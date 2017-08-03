@@ -1068,11 +1068,11 @@ class EED_Barcode_Scanner extends EED_Module
          * We had documentation that promoted the usage of `ee_edit_checkin` so its quite possible users had that cap
          * as a part of a custom role.  It is preferable to use `ee_edit_checkins` as the cap.  `ee_edit_checkin` is a
          * meta cap that should never be directly assigned to a user or role.
-         *
-         * The reason for the filter we remove (and add back) before and after doing the current_user_can check is because with the work
-         * introduced in core for https://events.codebasehq.com/projects/event-espresso/tickets/10569, the
-         * `ee_edit_checkin` cap check will fail EVEN if the user has that explicit cap access because in 10569 we FIXED
-         * the bug with how meta caps were working.
+         * The reason for the filter we remove (and add back) before and after doing the current_user_can check is
+         * because with the work introduced in core for
+         * https://events.codebasehq.com/projects/event-espresso/tickets/10569, the `ee_edit_checkin` cap check will
+         * fail EVEN if the user has that explicit cap access because in 10569 we FIXED the bug with how meta caps were
+         * working.
          */
         remove_filter('map_meta_cap', array(EE_Capabilities::instance(), 'map_meta_caps'), 10);
         $has_access = is_admin()
