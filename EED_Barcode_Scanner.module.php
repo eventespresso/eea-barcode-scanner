@@ -1063,7 +1063,8 @@ class EED_Barcode_Scanner extends EED_Module
     private function _user_check()
     {
         return is_admin()
-               && ! EE_FRONT_AJAX ? EE_Capabilities::instance()->current_user_can('ee_edit_checkin', 'do_barcode_scan')
+               && ! EE_FRONT_AJAX
+            ? EE_Capabilities::instance()->current_user_can('ee_edit_checkins', 'do_barcode_scan')
             : apply_filters('EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true);
     }
 
