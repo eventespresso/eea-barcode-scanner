@@ -127,9 +127,9 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 						/**
 						 * The reason for these conditionals is for backward compat with versions of EE core that do not have the check-in status constants defined.
 						 */
-						$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Registration::checkin_status_in : 1;
-						$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Registration::checkin_status_out : 2;
-						$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Registration::checkin_status_never : 0;
+						$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Checkin::status_checked_in : 1;
+						$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Checkin::status_checked_out : 2;
+						$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Checkin::status_checked_never : 0;
 
 						switch ( $checkin_status ) {
 							case $never_checked :

@@ -636,9 +636,9 @@ class EED_Barcode_Scanner extends EED_Module
          * The reason for these conditionals is for backward compat with versions of EE core that do not have the
          * check-in status constants defined.
          */
-        $checked_in    = defined('EE_Registration::checkin_status_in') ? EE_Registration::checkin_status_in : 1;
-        $checked_out   = defined('EE_Registration::checkin_status_out') ? EE_Registration::checkin_status_out : 2;
-        $never_checked = defined('EE_Registration::checkin_status_never') ? EE_Registration::checkin_status_never : 0;
+        $checked_in    = defined('EE_Registration::checkin_status_in') ? EE_Checkin::status_checked_in : 1;
+        $checked_out   = defined('EE_Registration::checkin_status_out') ? EE_Checkin::status_checked_out : 2;
+        $never_checked = defined('EE_Registration::checkin_status_never') ? EE_Checkin::status_checked_never : 0;
         $last_checkin  = $checkin_button_text = $all_checkin_button_text = $checkin_color = '';
 
         switch ($checkin_status) {
@@ -940,7 +940,7 @@ class EED_Barcode_Scanner extends EED_Module
         // allowing check-outs on this route.
         $checkin_status = $registration->check_in_status_for_datetime($this->_response['data']['DTT_ID']);
 
-        if ($checkin_status !== EE_Registration::checkin_status_never) {
+        if ($checkin_status !== EE_Checkin::status_checked_never) {
             EE_Error::add_error(
                 sprintf(__('This registration has already been checked-in. %s', 'event_espresso'), $view_link),
                 __FILE__,
