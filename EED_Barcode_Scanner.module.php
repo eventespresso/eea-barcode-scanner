@@ -632,23 +632,16 @@ class EED_Barcode_Scanner extends EED_Module
         ));
         $checkin_status = $registration->check_in_status_for_datetime($this->_response['data']['DTT_ID'], $checkin);
 
-        /**
-         * The reason for these conditionals is for backward compat with versions of EE core that do not have the
-         * check-in status constants defined.
-         */
-        $checked_in    = defined('EE_Registration::checkin_status_in') ? EE_Checkin::status_checked_in : 1;
-        $checked_out   = defined('EE_Registration::checkin_status_out') ? EE_Checkin::status_checked_out : 2;
-        $never_checked = defined('EE_Registration::checkin_status_never') ? EE_Checkin::status_checked_never : 0;
         $last_checkin  = $checkin_button_text = $all_checkin_button_text = $checkin_color = '';
 
         switch ($checkin_status) {
-            case $never_checked:
+            case EE_Checkin::status_checked_never:
                 $last_checkin            = __('Has not been checked in yet.', 'event_espresso');
                 $checkin_button_text     = __('Check In', 'event_espresso');
                 $all_checkin_button_text = __('Check In All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-green';
                 break;
-            case $checked_in:
+            case EE_Checkin::status_checked_in:
                 $last_checkin            = sprintf(
                     __("Last checked in on %s", 'event_espresso'),
                     $checkin->get_datetime('CHK_timestamp', 'M j @', 'h:i a')
@@ -657,7 +650,7 @@ class EED_Barcode_Scanner extends EED_Module
                 $all_checkin_button_text = __('Check Out All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-red';
                 break;
-            case $checked_out:
+            case EE_Checkin::status_checked_out:
                 $last_checkin            = sprintf(
                     __("Last checked out on %s", 'event_espresso'),
                     $checkin->get_datetime('CHK_timestamp', 'M j @ ', 'h:i a')
@@ -939,7 +932,6 @@ class EED_Barcode_Scanner extends EED_Module
         //first verify whether the registration has ever been checked-in.  If so, then return false because we're not
         // allowing check-outs on this route.
         $checkin_status = $registration->check_in_status_for_datetime($this->_response['data']['DTT_ID']);
-
         if ($checkin_status !== EE_Checkin::status_checked_never) {
             EE_Error::add_error(
                 sprintf(__('This registration has already been checked-in. %s', 'event_espresso'), $view_link),
@@ -949,20 +941,19 @@ class EED_Barcode_Scanner extends EED_Module
             );
             $this->_response['success'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
-        } else {
-            //toggle checkin
-            $status = $registration->toggle_checkin_status(
-                $this->_response['data']['DTT_ID'],
-                $this->_response['data']['check_approved']
-            );
-            if ($status === 1) {
-                EE_Error::add_success(
-                    sprintf(__('This registration has been checked in. %s', 'event_espresso'), $view_link)
-                );
-            }
-            $this->_response['success'] = true;
-            return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
         }
+        //toggle checkin
+        $status = $registration->toggle_checkin_status(
+            $this->_response['data']['DTT_ID'],
+            $this->_response['data']['check_approved']
+        );
+        if ($status === EE_Checkin::status_checked_in) {
+            EE_Error::add_success(
+                sprintf(__('This registration has been checked in. %s', 'event_espresso'), $view_link)
+            );
+        }
+        $this->_response['success'] = true;
+        return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
     }
 
 
@@ -1103,7 +1094,7 @@ class EED_Barcode_Scanner extends EED_Module
             'content'    => '',
             'data'       => array(),
             'isEEajax'   => true,
-            'isFrontend' => EE_FRONT_AJAX && is_admin() || ! is_admin(),
+            'isFrontend' => (EE_FRONT_AJAX && is_admin()) || ! is_admin(),
         );
         $this->_response  = array_merge($default_response, $this->_response);
         //restore current screen global
@@ -1123,42 +1114,4 @@ class EED_Barcode_Scanner extends EED_Module
     }
 
 
-    /**
-     *        @ override magic methods
-     *        @ return void
-     */
-    public function __set($a, $b)
-    {
-        return false;
-    }
-
-    public function __get($a)
-    {
-        return false;
-    }
-
-    public function __isset($a)
-    {
-        return false;
-    }
-
-    public function __unset($a)
-    {
-        return false;
-    }
-
-    public function __clone()
-    {
-        return false;
-    }
-
-    public function __wakeup()
-    {
-        return false;
-    }
-
-    public function __destruct()
-    {
-        return false;
-    }
 }
