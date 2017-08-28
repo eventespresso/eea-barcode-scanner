@@ -10,7 +10,7 @@
  * @type string  $avatar   The profile image for the registrant (usually gravatar).
  * @type EE_Registration $registration  The registration being displayed.
  * @type EE_Transaction  $transaction   The transaction details for this registration.
- * @type EE_Atttendee $contact The contact details for the registration.
+ * @type EE_Attendee $contact The contact details for the registration.
  * @type EE_Registration[] $other_regs  This is (if present) an array of $other registrations in a group for the given transaction.
  * @type int $DTT_ID  the id of the datetime for the registration being viewed.
  * @type string $last_checkin  A textual string representing the most recent info on the checkin status for this registration and this datetime.
@@ -18,6 +18,9 @@
  * @type string $all_checkin_button_text The button text for changing checkin status of all registrations in group.
  * @type string $checkin_color Class text for the checkin button color.
  */
+
+use EventEspresso\ui\browser\checkins\entities\CheckinStatusDashicon;
+
 $answers = $registration->answers();
 
 /**
@@ -123,35 +126,17 @@ $att_link = sprintf( __( '%1$sView Contact Details%2$s', 'event_espresso' ), '<a
 						$att = $reg->attendee();
 						$checkin_button_text = $checkin_status === 1 ? __(' Check Out', 'event_espresso' ) : __('Check In', 'event_espresso');
 						$reg_url_link = $reg->reg_url_link();
-
-						/**
-						 * The reason for these conditionals is for backward compat with versions of EE core that do not have the check-in status constants defined.
-						 */
-						$checked_in = defined( 'EE_Registration::checkin_status_in' ) ? EE_Checkin::status_checked_in : 1;
-						$checked_out = defined( 'EE_Registration::checkin_status_out' ) ? EE_Checkin::status_checked_out : 2;
-						$never_checked = defined( 'EE_Registration::checkin_status_never' ) ? EE_Checkin::status_checked_never : 0;
-
-						switch ( $checkin_status ) {
-							case $never_checked :
-								$checkin_class = ' dashicons-no';
-								$chkin_color = ' ee-green';
-								break;
-							case $checked_in :
-								$checkin_class = ' ee-icon ee-icon-check-in';
-								$chkin_color = ' ee-red';
-								break;
-							case $checked_out :
-								$checkin_class = ' ee-icon ee-icon-check-out';
-								$chkin_color = ' ee-green';
-								break;
-						}
-					?>
+                        $checkin_color = $checkin_status === EE_Checkin::status_checked_in
+                            ? ' ee-red'
+                            : ' ee-green';
+                        $checkin_status_dashicon    = new CheckinStatusDashicon($checkin_status);
+                        ?>
 						<tr class="alternate">
 							<td><?php echo $att->fname(); ?></td>
 							<td><?php echo $att->lname(); ?></td>
 							<td><span class="eea-bs-secondary-att-datetime"><?php echo $checkin instanceof EE_Checkin ? $checkin->get_datetime( 'CHK_timestamp', 'M j @ ', 'h:i a' ) : ''; ?></span></td>
-							<td><span class="eea-bs-check-icon dashicons <?php echo $checkin_class; ?>"></span></td>
-							<td><button data-checkin-button="secondary" data-reg-url-lnk="<?php echo $reg_url_link; ?>" class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $chkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
+							<td><span class="eea-bs-check-icon <?php echo $checkin_status_dashicon->cssClasses(); ?>"></span></td>
+							<td><button data-checkin-button="secondary" data-reg-url-lnk="<?php echo $reg_url_link; ?>" class="eea-bs-checkout-action-button  ee-roundish ee-button<?php echo $checkin_color; ?>"><?php echo $checkin_button_text; ?></button></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
