@@ -5,7 +5,7 @@
  * @package			Event Espresso
  * @subpackage		espresso-ee-barcode-scanner
  * @author 			Darren Ethier
- * @ version		$VID:$
+ *
  */
 class EES_Espresso_Barcode_Scanner extends EES_Shortcode {
 
