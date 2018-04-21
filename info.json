@@ -9,7 +9,6 @@
     "src\/screenshot*.jpg",
     "src\/.travis.yml"
   ],
-  "github": true,
   "awsbucket": "",
   "awsregion": "",
   "srcBuildFolderName": "eea-barcode-scanner",
