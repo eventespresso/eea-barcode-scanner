@@ -10,19 +10,8 @@
 
     <rule ref="EventEspresso" />
 
-    <!-- file exclusions -->
-    <exclude-pattern>isdk.php</exclude-pattern>
-
     <!-- specific rule exclusions per file -->
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
         <exclude-pattern>espresso-barcode-scanner.php</exclude-pattern>
-    </rule>
-
-    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
-        <exclude-pattern>EE_Infusionsoft_Config.php</exclude-pattern>
-    </rule>
-
-    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
-        <exclude-pattern>EE_Infusionsoft_Config.php</exclude-pattern>
     </rule>
 </ruleset>
