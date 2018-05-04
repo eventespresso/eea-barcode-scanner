@@ -37,16 +37,18 @@
  *
  * ------------------------------------------------------------------------
  */
-define( 'EE_BARCODE_SCANNER_VERSION', '1.0.12.rc.006' );
-define( 'EE_BARCODE_SCANNER_PLUGIN_FILE',  __FILE__ );
-function load_espresso_barcode_scanner() {
-if ( class_exists( 'EE_Addon' )) {
-	// ee_barcode_scanner version
-	require_once ( plugin_dir_path( __FILE__ ) . 'EE_Barcode_Scanner.class.php' );
-	EE_Barcode_Scanner::register_addon();
+define('EE_BARCODE_SCANNER_VERSION', '1.0.12.rc.006');
+define('EE_BARCODE_SCANNER_PLUGIN_FILE', __FILE__);
+function load_espresso_barcode_scanner()
+{
+    if (class_exists('EE_Addon')) {
+        // ee_barcode_scanner version
+        require_once(plugin_dir_path(__FILE__) . 'EE_Barcode_Scanner.class.php');
+        EE_Barcode_Scanner::register_addon();
+    }
 }
-}
-add_action( 'AHEE__EE_System__load_espresso_addons', 'load_espresso_barcode_scanner' );
+
+add_action('AHEE__EE_System__load_espresso_addons', 'load_espresso_barcode_scanner');
 
 // End of file espresso_barcode_scanner.php
 // Location: wp-content/plugins/eea-barcode-scanner/espresso_barcode_scanner.php
