@@ -1,9 +1,9 @@
 {
-  "name": "@eventespresso/eea-automated-upcoming-event-notifications",
+  "name": "@eventespresso/eea-barcode-scanner",
   "version": "1.0.0",
-  "description": "An add-on for Event Espresso 4 that automates messages for upcoming events.",
+  "description": "An add-on for Event Espresso 4.",
   "main": "webpack.dev.js",
-  "repository": "git+https://github.com/eventespresso/eea-automated-upcoming-event-notifications.git",
+  "repository": "git+https://github.com/eventespresso/eea-barcode-scanner.git",
   "scripts": {
     "watch": "webpack --watch --config webpack.dev.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js",

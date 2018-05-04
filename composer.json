@@ -1,8 +1,8 @@
 {
-	"name": "eventespresso/event-espresso-core",
+	"name": "eventespresso/eea-barcode-scanner",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
-	"description": "Event Espresso 4 Core for WordPress: Build an Event Ticketing Website Today!",
+	"description": "An addon for Event Espresso 4.",
 	"authors" : [
 		{
 			"name": "Event Espresso Teem",
@@ -15,10 +15,10 @@
 		"event-espresso", "wordpress", "events", "event-management", "event-tickets", "event-registration", "ticketing-system"
 	],
 	"support": {
-		"issues": "https://github.com/eventespresso/event-espresso-core/issues",
+		"issues": "https://github.com/eventespresso/eea-barcode-scanner/issues",
 		"forum": "https://eventespresso/support/forums",
-		"source": "https://github.com/eventespresso/event-espresso-core",
-		"docs": "https://github.com/eventespresso/event-espresso-core/tree/master/docs"
+		"source": "https://github.com/eventespresso/eea-barcode-scanner",
+		"docs": "https://github.com/eventespresso/eea-barcode-scanner/tree/master/docs"
 	},
 	"repositories": [
 		{
