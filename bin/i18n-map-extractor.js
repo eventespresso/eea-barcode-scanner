@@ -51,7 +51,7 @@ class wpi18nExtractor {
 					const node = path.node;
 					if ( includes( extractor.functionNames,
 						node.callee.name,
-					) &&
+						) &&
 						node.arguments
 					) {
 						strings = strings.concat(
