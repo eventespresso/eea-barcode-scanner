@@ -48,7 +48,6 @@ class BarcodeScannerAssetManager extends AssetManager
      */
     private function registerJavascript()
     {
-        var_dump('in here');
         // scanner library
         $script_min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : 'min.';
         $this->addJavascript(
