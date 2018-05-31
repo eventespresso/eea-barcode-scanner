@@ -1,5 +1,14 @@
 <?php
 
+use EventEspresso\BarcodeScanner\domain\Domain;
+use EventEspresso\BarcodeScanner\domain\services\assets\BarcodeScannerAssetManager;
+use EventEspresso\core\exceptions\EntityNotFoundException;
+use EventEspresso\core\exceptions\ExceptionStackTraceDisplay;
+use EventEspresso\core\exceptions\InvalidDataTypeException;
+use EventEspresso\core\exceptions\InvalidInterfaceException;
+use EventEspresso\core\services\loaders\LoaderFactory;
+use EventEspresso\core\services\request\Request;
+
 /**
  * The main module class for the EE Barcode Scanner app.
  *
@@ -112,10 +121,17 @@ class EED_Barcode_Scanner extends EED_Module
      * @access    public
      * @param  WP $WP
      * @return    void
+     * @throws Exception
      */
     public function run($WP)
     {
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        try {
+            $this->getAssetManager();
+            add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+            add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+        } catch (Exception $exception) {
+            new ExceptionStackTraceDisplay($exception);
+        }
     }
 
 
@@ -124,79 +140,22 @@ class EED_Barcode_Scanner extends EED_Module
      *
      * @access    public
      * @return    void
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     public function enqueue_scripts()
     {
-        // scanner library
-        $script_min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : 'min.';
-        wp_register_script(
-            'eea-scanner-detection-cps',
-            EE_BARCODE_SCANNER_URL
-            . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.compatibility.'
-            . $script_min . 'js',
-            array('jquery'),
-            EE_BARCODE_SCANNER_VERSION,
-            true
-        );
-        wp_register_script(
-            'eea-scanner-detection',
-            EE_BARCODE_SCANNER_URL
-            . 'core/third_party_libraries/scanner_detection/jquery.scannerdetection.'
-            . $script_min . 'js',
-            array('eea-scanner-detection-cps'),
-            EE_BARCODE_SCANNER_VERSION,
-            true
-        );
-
-        // chosen
-        wp_register_script(
-            'eea-bs-chosen',
-            EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.jquery.' . $script_min . 'js',
-            array('jquery'),
-            EE_BARCODE_SCANNER_VERSION,
-            true
-        );
-        wp_register_style(
-            'eea-bs-chosen-css',
-            EE_BARCODE_SCANNER_URL . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css',
-            array(),
-            EE_BARCODE_SCANNER_VERSION
-        );
-
-        // addon js/css
-        $scanner_css_dep = 'ee-admin-css';
-        if (! is_admin()) {
-            wp_register_style(
-                'espresso_default',
-                EE_GLOBAL_ASSETS_URL . 'css/espresso_default.css',
-                array('dashicons'),
-                EVENT_ESPRESSO_VERSION
-            );
-            $scanner_css_dep = 'espresso_default';
-        }
-        wp_register_style(
-            'eea-scanner-detection-css',
-            EE_BARCODE_SCANNER_URL . 'css/espresso_ee_barcode_scanner.css',
-            array($scanner_css_dep, 'eea-bs-chosen-css'),
-            EE_BARCODE_SCANNER_VERSION
-        );
-        wp_register_script(
-            'eea-scanner-detection-core',
-            EE_BARCODE_SCANNER_URL . 'scripts/espresso_ee_barcode_scanner.js',
-            array('eea-scanner-detection', 'eea-bs-chosen', 'espresso_core'),
-            EE_BARCODE_SCANNER_VERSION,
-            true
-        );
-
         // is the shortcode or widget in play || is_admin?
-        if (EED_Barcode_Scanner::$shortcode_active
+        if (self::$shortcode_active
             || (
                 is_admin()
-                && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner'
+                && $this->getRequest()->getRequestParam('page') === Domain::ADMIN_PAGE_SLUG
             )
         ) {
-            wp_enqueue_style('eea-scanner-detection-css');
-            wp_enqueue_script('eea-scanner-detection-core');
+            /** @todo use BarcodeAssetManager to enqueue the assets */
+            wp_enqueue_style(BarcodeScannerAssetManager::CSS_HANDLE_SCANNER_DETECTION);
+            wp_enqueue_script(BarcodeScannerAssetManager::JS_HANDLE_SCANNER_DETECTION_CORE);
         }
     }
 
@@ -209,7 +168,11 @@ class EED_Barcode_Scanner extends EED_Module
      * @return string
      * @throws DomainException
      * @throws EE_Error
-     * @throws \EventEspresso\core\exceptions\EntityNotFoundException
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
+     * @throws EntityNotFoundException
      */
     public function scanner_form($echo = true)
     {
@@ -229,9 +192,6 @@ class EED_Barcode_Scanner extends EED_Module
         }
 
         // selector for the different default actions after a scan.
-        EE_Registry::instance()->load_helper('Form_Fields');
-        EE_Registry::instance()->load_helper('Template');
-        EE_Registry::instance()->load_helper('URL');
         $action_options = array(
             0 => array(
                 'text' => __('Lookup Attendee', 'event_espresso'),
@@ -279,7 +239,7 @@ class EED_Barcode_Scanner extends EED_Module
         );
 
         // add cap restrictions in the admin
-        if (is_admin() && ! (defined('DOING_AJAX') && DOING_AJAX)) {
+        if ($this->getRequest()->isAdmin() && ! $this->getRequest()->isAjax()) {
             $query['caps'] = EEM_Event::caps_read_admin;
         }
 
@@ -351,9 +311,9 @@ class EED_Barcode_Scanner extends EED_Module
         );
 
         // First thing to determine is if we have all the details needed to display a specific record.
-        $this->_response['data']['EVT_ID']  = EE_Registry::instance()->REQ->get('EVT_ID');
-        $this->_response['data']['DTT_ID']  = EE_Registry::instance()->REQ->get('DTT_ID');
-        $this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
+        $this->_response['data']['EVT_ID']  = $this->getRequest()->getRequestParam('EVT_ID');
+        $this->_response['data']['DTT_ID']  = $this->getRequest()->getRequestParam('DTT_ID');
+        $this->_response['data']['regcode'] = $this->getRequest()->getRequestParam('ee_reg_code');
         $doing_lookup                       = false;
 
         if (! empty($this->_response['data']['EVT_ID'])
@@ -398,7 +358,7 @@ class EED_Barcode_Scanner extends EED_Module
             $template_args = array_merge($template_args, $targs);
         }
 
-        $template = EE_BARCODE_SCANNER_ADMIN . 'templates/scanner_detection_form.template.php';
+        $template = $this->getDomain()->adminPath() . 'templates/scanner_detection_form.template.php';
 
         if ($echo) {
             EEH_Template::display_template($template, $template_args);
@@ -413,6 +373,9 @@ class EED_Barcode_Scanner extends EED_Module
      *
      * @since 1.0.0
      * @return void
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     public function ee_barcode_scanner_main_action()
     {
@@ -432,13 +395,13 @@ class EED_Barcode_Scanner extends EED_Module
         }
 
         // verify incoming package.
-        $nonce                                                 = EE_Registry::instance()->REQ->get('_wpnonce');
-        $action                                                = EE_Registry::instance()->REQ->get('ee_scanner_action');
-        $this->_response['data']['regcode']                    = EE_Registry::instance()->REQ->get('ee_reg_code');
-        $this->_response['data']['EVT_ID']                     = EE_Registry::instance()->REQ->get('EVT_ID');
-        $this->_response['data']['DTT_ID']                     = EE_Registry::instance()->REQ->get('DTT_ID');
-        $this->_response['data']['httpReferrer']               = EE_Registry::instance()->REQ->get('httpReferrer');
-        $this->_response['data']['ee_scanner_checkin_trigger'] = EE_Registry::instance()->REQ->get(
+        $nonce = $this->getRequest()->getRequestParam('_wpnonce');
+        $action = $this->getRequest()->getRequestParam('ee_scanner_action');
+        $this->_response['data']['regcode'] = $this->getRequest()->getRequestParam('ee_reg_code');
+        $this->_response['data']['EVT_ID'] = $this->getRequest()->getRequestParam('EVT_ID');
+        $this->_response['data']['DTT_ID'] = $this->getRequest()->getRequestParam('DTT_ID');
+        $this->_response['data']['httpReferrer'] = $this->getRequest()->getRequestParam('httpReferrer');
+        $this->_response['data']['ee_scanner_checkin_trigger'] = $this->getRequest()->getRequestParam(
             'ee_scanner_checkin_trigger'
         );
 
@@ -462,7 +425,7 @@ class EED_Barcode_Scanner extends EED_Module
         // check_approved flag set?
         $this->_response['data']['check_approved'] = apply_filters(
             'FHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__check_approved',
-            $action != 'lookup_attendee',
+            $action !== 'lookup_attendee',
             $this->_response
         );
 
@@ -498,7 +461,7 @@ class EED_Barcode_Scanner extends EED_Module
         }
 
         // ALL is good! let's call the action and return the response.
-        $this->_response['content'] = call_user_func(array($this, $method));
+        $this->_response['content'] = $this->{$method}();
 
         // do_action for the action.yo.
         do_action('AHEE__EED_Barcode_Scanner__ee_barcode_scanner_main_action__' . $action, $this->_response);
@@ -524,6 +487,10 @@ class EED_Barcode_Scanner extends EED_Module
      * @since 1.0.0
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
      */
     protected function _scanner_action_retrieve_datetimes()
     {
@@ -572,7 +539,6 @@ class EED_Barcode_Scanner extends EED_Module
         }
 
         // setup selector
-        EE_Registry::instance()->load_helper('Form_Fields');
         $options[] = array(
             'text' => '',
             'id'   => '',
@@ -606,7 +572,11 @@ class EED_Barcode_Scanner extends EED_Module
      * @return string
      * @throws DomainException
      * @throws EE_Error
-     * @throws \EventEspresso\core\exceptions\EntityNotFoundException
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
+     * @throws EntityNotFoundException
      */
     protected function _scanner_action_lookup_attendee()
     {
@@ -617,7 +587,6 @@ class EED_Barcode_Scanner extends EED_Module
         }
 
         // alright there IS a registration.  Let's get the template and return.
-        EE_Registry::instance()->load_helper('Template');
         $contact = $registration->attendee();
 
         // get other registrations in group.
@@ -677,7 +646,7 @@ class EED_Barcode_Scanner extends EED_Module
             'DTT_ID'                  => $this->_response['data']['DTT_ID'],
             'checkin_color'           => $checkin_color,
         );
-        $template                   = $template = EE_BARCODE_SCANNER_ADMIN
+        $template                   = $template = $this->getDomain()->adminPath()
                                                   . 'templates/scanner_attendee_details.template.php';
         $this->_response['success'] = true;
         return EEH_Template::display_template($template, $template_args, true);
@@ -690,6 +659,10 @@ class EED_Barcode_Scanner extends EED_Module
      *
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
      */
     protected function _scanner_action_search_by_keyword()
     {
@@ -724,7 +697,7 @@ class EED_Barcode_Scanner extends EED_Module
                     array('Datetime.DTT_ID' => $this->_response['data']['DTT_ID'])
                 )
             );
-            $EVT_ID = $event->ID();
+            $EVT_ID = $event instanceof EE_Event ? $event->ID() : 0;
         } else {
             $EVT_ID = $this->_response['data']['EVT_ID'];
         }
@@ -755,6 +728,9 @@ class EED_Barcode_Scanner extends EED_Module
      *                             approved.  false = ignore.
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     private function _validate_incoming_data($check_approved = true)
     {
@@ -827,6 +803,9 @@ class EED_Barcode_Scanner extends EED_Module
      * @since 1.0.0
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     protected function _scanner_action_toggle_attendee()
     {
@@ -838,7 +817,9 @@ class EED_Barcode_Scanner extends EED_Module
 
 
         // generate the url for this view for returning to if necessary.
-        $base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url('admin.php') : null;
+        $base_url = $this->getRequest()->isAdmin() && ! $this->getRequest()->isFrontAjax()
+            ? admin_url('admin.php')
+            : null;
         $base_url = empty($base_url) && ! empty($this->_response['data']['httpReferrer'])
             ? $this->_response['data']['httpReferrer']
             : $base_url;
@@ -897,6 +878,9 @@ class EED_Barcode_Scanner extends EED_Module
      * @since 1.0.6
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     protected function _scanner_action_toggle_attendee_no_checkout()
     {
@@ -908,7 +892,9 @@ class EED_Barcode_Scanner extends EED_Module
 
 
         // generate the url for this view for returning to if necessary.
-        $base_url = is_admin() && ! EE_FRONT_AJAX ? admin_url('admin.php') : null;
+        $base_url = $this->getRequest()->isAdmin() && ! $this->getRequest()->isFrontAjax()
+            ? admin_url('admin.php')
+            : null;
         $base_url = empty($base_url) && ! empty($this->_response['data']['httpReferrer'])
             ? $this->_response['data']['httpReferrer']
             : $base_url;
@@ -961,6 +947,9 @@ class EED_Barcode_Scanner extends EED_Module
      * @since 1.0.0
      * @return string The content for the response
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     protected function _scanner_action_check_in_or_out_all_attendees()
     {
@@ -1006,6 +995,10 @@ class EED_Barcode_Scanner extends EED_Module
      * @since 1.0.0
      * @return string
      * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
      */
     protected function _scanner_action_toggle_secondary_attendee()
     {
@@ -1048,6 +1041,9 @@ class EED_Barcode_Scanner extends EED_Module
      *
      * @since 1.0.0
      * @return bool  yes if user can, no if user can't.
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     private function _user_check()
     {
@@ -1064,8 +1060,7 @@ class EED_Barcode_Scanner extends EED_Module
          * working.
          */
         remove_filter('map_meta_cap', array(EE_Capabilities::instance(), 'map_meta_caps'), 10);
-        $has_access = is_admin()
-               && ! EE_FRONT_AJAX
+        $has_access = $this->getRequest()->isAdmin() && ! $this->getRequest()->isFrontAjax()
             ? EE_Capabilities::instance()->current_user_can('ee_edit_checkins', 'do_barcode_scan')
               || EE_Capabilities::instance()->current_user_can('ee_edit_checkin', 'do_barcode_scan')
             : apply_filters('EED_Barcode_Scanner__scanner_form__user_can_from_shortcode', true);
@@ -1076,12 +1071,15 @@ class EED_Barcode_Scanner extends EED_Module
 
     /**
      * Handles prepping and returning the json object on an ajax request.
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      */
     private function _return_json()
     {
         // temporarily force `is_admin()` to return true if we're in frontend ajax then reset after.
         $cached_screen = null;
-        if (EE_FRONT_AJAX) {
+        if ($this->getRequest()->isFrontAjax()) {
             $cached_screen             = isset($GLOBALS['current_screen']) ? $GLOBALS['current_screen'] : null;
             $GLOBALS['current_screen'] = WP_Screen::get('front');
         }
@@ -1092,11 +1090,12 @@ class EED_Barcode_Scanner extends EED_Module
             'content'    => '',
             'data'       => array(),
             'isEEajax'   => true,
-            'isFrontend' => (EE_FRONT_AJAX && is_admin()) || ! is_admin(),
+            'isFrontend' => ($this->getRequest()->isFrontAjax() && $this->getRequest()->isAdmin())
+                            || ! $this->getRequest()->isAdmin(),
         );
         $this->_response  = array_merge($default_response, $this->_response);
         // restore current screen global
-        if (EE_FRONT_AJAX) {
+        if ($this->getRequest()->isFrontAjax()) {
             $GLOBALS['current_screen'] = $cached_screen;
         }
 
@@ -1109,5 +1108,44 @@ class EED_Barcode_Scanner extends EED_Module
 
         echo json_encode($this->_response);
         exit();
+    }
+
+
+    /**
+     * @return BarcodeScannerAssetManager
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @since $VID:$
+     */
+    private function getAssetManager()
+    {
+        return LoaderFactory::getLoader()->getShared(BarcodeScannerAssetManager::class);
+    }
+
+
+    /**
+     * @return Request
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @since $VID:$
+     */
+    private function getRequest()
+    {
+        return LoaderFactory::getLoader()->getShared(Request::class);
+    }
+
+
+    /**
+     * @return Domain
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @since $VID:$
+     */
+    private function getDomain()
+    {
+        return LoaderFactory::getLoader()->getShared(Domain::class);
     }
 }

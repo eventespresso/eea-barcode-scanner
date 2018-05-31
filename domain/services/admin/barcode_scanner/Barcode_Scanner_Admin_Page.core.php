@@ -1,5 +1,11 @@
 <?php
 
+use EventEspresso\BarcodeScanner\domain\Domain;
+use EventEspresso\core\exceptions\EntityNotFoundException;
+use EventEspresso\core\exceptions\InvalidDataTypeException;
+use EventEspresso\core\exceptions\InvalidInterfaceException;
+use EventEspresso\core\services\loaders\LoaderFactory;
+
 /**
  * Admin Page class for EE4 Barcode Scanner
  *
@@ -12,12 +18,33 @@
 class Barcode_Scanner_Admin_Page extends EE_Admin_Page
 {
 
+    /**
+     * @var Domain
+     */
+    private $domain;
+
+    /**
+     * Barcode_Scanner_Admin_Page constructor.
+     *
+     * @param bool $routing
+     * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws ReflectionException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     */
+    public function __construct($routing = true)
+    {
+        $this->domain = LoaderFactory::getLoader()->getShared(Domain::class);
+        parent::__construct($routing);
+    }
+
     protected function _init_page_props()
     {
-        $this->page_slug = EE_BARCODE_SCANNER_PG_SLUG;
-        $this->_admin_base_url = EE_BARCODE_SCANNER_ADMIN_URL;
-        $this->_admin_base_path = EE_BARCODE_SCANNER_ADMIN;
-        $this->page_label = EE_BARCODE_SCANNER_PG_NAME;
+        $this->page_slug = Domain::ADMIN_PAGE_SLUG;
+        $this->_admin_base_url = $this->domain->adminPageUrl();
+        $this->_admin_base_path = $this->domain->adminPath();
+        $this->page_label = $this->domain->adminPageLabel();
     }
 
 
@@ -77,6 +104,12 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
     public function admin_init()
     {
     }
+
+    public function admin_init_default()
+    {
+        EED_Barcode_Scanner::instance()->run(null);
+    }
+
     public function admin_notices()
     {
     }
@@ -87,15 +120,6 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
     {
     }
 
-
-
-    public function load_scripts_styles_default()
-    {
-        EED_Barcode_Scanner::instance()->enqueue_scripts();
-    }
-
-
-
     /**
      * Handles outputting the scanning form.
      * Note that this grabs the form and all related files etc from the EED_Barcode_Scanner module.
@@ -103,6 +127,13 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
      * @since 1.0.0
      *
      * @return string html output.
+     * @throws DomainException
+     * @throws EE_Error
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @throws ReflectionException
+     * @throws EntityNotFoundException
      */
     protected function _barcode_scanner()
     {
