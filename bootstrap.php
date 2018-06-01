@@ -81,10 +81,12 @@ function eea_barcode_scanner_activation_error()
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
     }
     deactivate_plugins(plugin_basename(__FILE__));
+    /** phpcs:disable Generic.Files.LineLength.TooLong */
     ?>
     <div class="error">
         <p>
             <?php printf(
+                /* Translators: Event Espresso version */
                 esc_html__(
                     'Event Espresso Barcode Scanner add-on could not be activated. Please ensure that Event Espresso version %1$s or higher is running',
                     'event_espresso'
@@ -94,4 +96,5 @@ function eea_barcode_scanner_activation_error()
         </p>
     </div>
     <?php
+    /** phpcs:enable */
 }

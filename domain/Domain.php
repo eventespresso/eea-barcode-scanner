@@ -51,5 +51,4 @@ class Domain extends DomainBase
     {
         return esc_html__('Barcode Scanner', 'event_espresso');
     }
-
 }

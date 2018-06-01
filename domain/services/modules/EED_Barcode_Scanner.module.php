@@ -179,8 +179,9 @@ class EED_Barcode_Scanner extends EED_Module
 
         // user permission check first
         if (! $this->_user_check()) {
+            /** phpcs:disable Generic.Files.LineLength.TooLong */
             EE_Error::add_error(
-                __(
+                esc_html__(
                     'Sorry, but you do not have permissions to access the barcode scanner form.  Please see the site administrator about gaining access',
                     'event_espresso'
                 ),
@@ -188,21 +189,22 @@ class EED_Barcode_Scanner extends EED_Module
                 __FUNCTION__,
                 __LINE__
             );
+            /** phpcs:enable */
             return '';
         }
 
         // selector for the different default actions after a scan.
         $action_options = array(
             0 => array(
-                'text' => __('Lookup Attendee', 'event_espresso'),
+                'text' => esc_html__('Lookup Attendee', 'event_espresso'),
                 'id'   => self::action_lookup,
             ),
             1 => array(
-                'text' => __('Continuous Scanning', 'event_espresso'),
+                'text' => esc_html__('Continuous Scanning', 'event_espresso'),
                 'id'   => self::action_auto,
             ),
             2 => array(
-                'text' => __('Continuous Check-in Only', 'event_espresso'),
+                'text' => esc_html__('Continuous Check-in Only', 'event_espresso'),
                 'id'   => self::action_no_checkout,
             ),
         );
@@ -213,7 +215,7 @@ class EED_Barcode_Scanner extends EED_Module
         )) {
             $action_options[3] =
                 array(
-                    'text' => __('Search by Keyword', 'event_espresso'),
+                    'text' => esc_html__('Search by Keyword', 'event_espresso'),
                     'id'   => self::action_search_by_keyword,
                 );
         }
@@ -381,8 +383,9 @@ class EED_Barcode_Scanner extends EED_Module
     {
         // verify user has basic access.
         if (! $this->_user_check()) {
+            /** phpcs:disable Generic.Files.LineLength.TooLong */
             EE_Error::add_error(
-                __(
+                esc_html__(
                     'You do not have permission to perform this action.  Please contact your site administrator about getting the correct permissions.',
                     'event_espresso'
                 ),
@@ -390,6 +393,7 @@ class EED_Barcode_Scanner extends EED_Module
                 __FUNCTION__,
                 __LINE__
             );
+            /** phpcs:enable */
             $this->_response['error'] = true;
             $this->_return_json();
         }
@@ -407,7 +411,7 @@ class EED_Barcode_Scanner extends EED_Module
 
         if (empty($nonce) || empty($action)) {
             EE_Error::add_error(
-                __(
+                esc_html__(
                     'Missing required instructions from scanner request. "_wpnonce" or "ee_scanner_action" is empty.',
                     'event_espresso'
                 ),
@@ -432,7 +436,7 @@ class EED_Barcode_Scanner extends EED_Module
         // verify nonce
         if (! wp_verify_nonce($nonce, 'ee_banner_scan_form')) {
             EE_Error::add_error(
-                __('Invalid request.  Missing a valid nonce in the request.', 'event_espresso'),
+                esc_html__('Invalid request.  Missing a valid nonce in the request.', 'event_espresso'),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -444,9 +448,11 @@ class EED_Barcode_Scanner extends EED_Module
         // perform action.
         $method = '_scanner_action_' . $action;
         if (! method_exists($this, $method)) {
+            /** phpcs:disable Generic.Files.LineLength.TooLong */
             EE_Error::add_error(
                 sprintf(
-                    __(
+                    /* Translators: a slug for the action */
+                    esc_html__(
                         'The incoming action on the scanner request (%s) is invalid.  Please check the spelling and ensure there is a callback for handling that action defined.',
                         'event_espresso'
                     ),
@@ -456,6 +462,7 @@ class EED_Barcode_Scanner extends EED_Module
                 __FUNCTION__,
                 __LINE__
             );
+            /** phpcs:enable */
             $this->_response['error'] = true;
             $this->_return_json();
         }
@@ -497,7 +504,10 @@ class EED_Barcode_Scanner extends EED_Module
         // have required request var
         if (empty($this->_response['data']['EVT_ID'])) {
             EE_Error::add_error(
-                __('Missing required EVT_ID in the request for the retrieve_datetimes action.', 'event_espresso'),
+                esc_html__(
+                    'Missing required EVT_ID in the request for the retrieve_datetimes action.',
+                    'event_espresso'
+                ),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -603,33 +613,35 @@ class EED_Barcode_Scanner extends EED_Module
 
         switch ($checkin_status) {
             case EE_Checkin::status_checked_never:
-                $last_checkin            = __('Has not been checked in yet.', 'event_espresso');
-                $checkin_button_text     = __('Check In', 'event_espresso');
-                $all_checkin_button_text = __('Check In All Registrations', 'event_espresso');
+                $last_checkin            = esc_html__('Has not been checked in yet.', 'event_espresso');
+                $checkin_button_text     = esc_html__('Check In', 'event_espresso');
+                $all_checkin_button_text = esc_html__('Check In All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-green';
                 break;
             case EE_Checkin::status_checked_in:
                 $last_checkin            = sprintf(
-                    __("Last checked in on %s", 'event_espresso'),
+                    /* Translators: Timestamp */
+                    esc_html__('Last checked in on %s', 'event_espresso'),
                     $checkin->get_datetime('CHK_timestamp', 'M j @', 'h:i a')
                 );
-                $checkin_button_text     = __('Check Out', 'event_espresso');
-                $all_checkin_button_text = __('Check Out All Registrations', 'event_espresso');
+                $checkin_button_text     = esc_html__('Check Out', 'event_espresso');
+                $all_checkin_button_text = esc_html__('Check Out All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-red';
                 break;
             case EE_Checkin::status_checked_out:
                 $last_checkin            = sprintf(
-                    __("Last checked out on %s", 'event_espresso'),
+                    /* Translators: timestamp */
+                    esc_html__('Last checked out on %s', 'event_espresso'),
                     $checkin->get_datetime('CHK_timestamp', 'M j @ ', 'h:i a')
                 );
-                $checkin_button_text     = __('Check In', 'event_espresso');
-                $all_checkin_button_text = __('Check In All Registrations ', 'event_espresso');
+                $checkin_button_text     = esc_html__('Check In', 'event_espresso');
+                $all_checkin_button_text = esc_html__('Check In All Registrations ', 'event_espresso');
                 $checkin_color           = ' ee-green';
                 break;
             case false:
-                $last_checkin            = __('Has access to datetime, but not approved.', 'event_espresso');
-                $checkin_button_text     = __('Check In Anyways', 'event_espresso');
-                $all_checkin_button_text = __('Check In All Registrations', 'event_espresso');
+                $last_checkin            = esc_html__('Has access to datetime, but not approved.', 'event_espresso');
+                $checkin_button_text     = esc_html__('Check In Anyways', 'event_espresso');
+                $all_checkin_button_text = esc_html__('Check In All Registrations', 'event_espresso');
                 $checkin_color           = ' ee-yellow';
         }
 
@@ -669,7 +681,7 @@ class EED_Barcode_Scanner extends EED_Module
         // make sure we have a valid reg_code
         if (empty($this->_response['data']['regcode'])) {
             EE_Error::add_error(
-                __('Missing required registration url link code from the request.', 'event_espresso'),
+                esc_html__('Missing required registration url link code from the request.', 'event_espresso'),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -682,7 +694,7 @@ class EED_Barcode_Scanner extends EED_Module
         // do we have a dtt_id?
         if (empty($this->_response['data']['DTT_ID'])) {
             EE_Error::add_error(
-                __('Missing required datetime ID from the request.', 'event_espresso'),
+                esc_html__('Missing required datetime ID from the request.', 'event_espresso'),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -736,7 +748,7 @@ class EED_Barcode_Scanner extends EED_Module
     {
         if (empty($this->_response['data']['regcode'])) {
             EE_Error::add_error(
-                __('Missing required registration url link code from the request.', 'event_espresso'),
+                esc_html__('Missing required registration url link code from the request.', 'event_espresso'),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -748,7 +760,7 @@ class EED_Barcode_Scanner extends EED_Module
         // do we have a dtt_id?
         if (empty($this->_response['data']['DTT_ID'])) {
             EE_Error::add_error(
-                __('Missing required datetime ID from the request.', 'event_espresso'),
+                esc_html__('Missing required datetime ID from the request.', 'event_espresso'),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -770,7 +782,10 @@ class EED_Barcode_Scanner extends EED_Module
 
         if (! $registration instanceof EE_Registration) {
             EE_Error::add_error(
-                __('Sorry, but the given registration code does not match a valid registration.', 'event_espresso'),
+                esc_html__(
+                    'Sorry, but the given registration code does not match a valid registration.',
+                    'event_espresso'
+                ),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -781,8 +796,9 @@ class EED_Barcode_Scanner extends EED_Module
 
         // k let's make sure this registration has access to the given datetime.
         if (! $registration->can_checkin($this->_response['data']['DTT_ID'], $check_approved)) {
+            /** phpcs:disable Generic.Files.LineLength.TooLong */
             EE_Error::add_error(
-                __(
+                esc_html__(
                     'Sorry, but while the ticket is for a valid registration, this registration does not have access to the given datetime.',
                     'event_espresso'
                 ),
@@ -790,6 +806,7 @@ class EED_Barcode_Scanner extends EED_Module
                 __FUNCTION__,
                 __LINE__
             );
+            /** phpcs:enable */
             $this->_response['success'] = true;
             return '<span class="ee-bs-barcode-checkin-result dashicons dashicons-no"></span>';
         }
@@ -835,7 +852,15 @@ class EED_Barcode_Scanner extends EED_Module
         ));
 
         $view_link = ! empty($base_url)
-            ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>')
+            ? sprintf(
+                /* Translators: internal link to records */
+                esc_html__(
+                    '%1$sReview Record%2$s',
+                    'event_espresso'
+                ),
+                '<a href="' . $url . '">',
+                '</a>'
+            )
             : '';
 
         // toggle checkin
@@ -846,20 +871,22 @@ class EED_Barcode_Scanner extends EED_Module
         if ($status === 1) {
             EE_Error::add_success(
                 sprintf(
-                    __('This registration has been checked in. %s', 'event_espresso'),
+                    /* Translators: internal link to check-in record */
+                    esc_html__('This registration has been checked in. %s', 'event_espresso'),
                     $view_link
                 )
             );
-            $checked_in_out_text  = __('Checked In', 'event_espresso');
+            $checked_in_out_text  = esc_html__('Checked In', 'event_espresso');
             $checked_in_out_class = ' ee-bs-barcode-checkedin';
         } else {
             EE_Error::add_success(
                 sprintf(
-                    __('This registration has been checked out. %s', 'event_espresso'),
+                    /* Translators: internal link to check-in record */
+                    esc_html__('This registration has been checked out. %s', 'event_espresso'),
                     $view_link
                 )
             );
-            $checked_in_out_text  = __('Checked Out', 'event_espresso');
+            $checked_in_out_text  = esc_html__('Checked Out', 'event_espresso');
             $checked_in_out_class = ' ee-bs-barcode-checkedout';
         }
         $this->_response['success'] = true;
@@ -910,7 +937,12 @@ class EED_Barcode_Scanner extends EED_Module
         ));
 
         $view_link = ! empty($base_url)
-            ? sprintf(__('%1$sReview Record%2$s', 'event_espresso'), '<a href="' . $url . '">', '</a>')
+            ? sprintf(
+                /* Translators: internal link to record */
+                esc_html__('%1$sReview Record%2$s', 'event_espresso'),
+                '<a href="' . $url . '">',
+                '</a>'
+            )
             : '';
 
         // first verify whether the registration has ever been checked-in.  If so, then return false because we're not
@@ -918,7 +950,11 @@ class EED_Barcode_Scanner extends EED_Module
         $checkin_status = $registration->check_in_status_for_datetime($this->_response['data']['DTT_ID']);
         if ($checkin_status !== EE_Checkin::status_checked_never) {
             EE_Error::add_error(
-                sprintf(__('This registration has already been checked-in. %s', 'event_espresso'), $view_link),
+                sprintf(
+                    /* Translators: internal link to record */
+                    esc_html__('This registration has already been checked-in. %s', 'event_espresso'),
+                    $view_link
+                ),
                 __FILE__,
                 __FUNCTION__,
                 __LINE__
@@ -933,7 +969,11 @@ class EED_Barcode_Scanner extends EED_Module
         );
         if ($status === EE_Checkin::status_checked_in) {
             EE_Error::add_success(
-                sprintf(__('This registration has been checked in. %s', 'event_espresso'), $view_link)
+                sprintf(
+                    /* Translators: internal link to check-in record */
+                    esc_html__('This registration has been checked in. %s', 'event_espresso'),
+                    $view_link
+                )
             );
         }
         $this->_response['success'] = true;
@@ -965,13 +1005,13 @@ class EED_Barcode_Scanner extends EED_Module
         // first let's toggle the main registration, and that way we'll know what status we need to set the others to
         $status = $registration->toggle_checkin_status($this->_response['data']['DTT_ID']);
         if ($status === 1) {
-            EE_Error::add_success(__('All registrations in the group have been checked in.', 'event_espresso'));
+            EE_Error::add_success(esc_html__('All registrations in the group have been checked in.', 'event_espresso'));
             $this->_response['data']['checkout_button_class'] = 'ee-red';
-            $this->_response['data']['buttonText']            = __('Check Out All Registrations', 'event_espresso');
+            $this->_response['data']['buttonText'] = esc_html__('Check Out All Registrations', 'event_espresso');
         } else {
-            EE_Error::add_success(__('All registrations in the group have been checked out', 'event_espresso'));
+            EE_Error::add_success(esc_html__('All registrations in the group have been checked out', 'event_espresso'));
             $this->_response['data']['checkout_button_class'] = 'ee-green';
-            $this->_response['data']['buttonText']            = __('Check In All Registrations', 'event_espresso');
+            $this->_response['data']['buttonText'] = esc_html__('Check In All Registrations', 'event_espresso');
         }
         $this->_response['success'] = true;
         $content                    = '<span class="ee-bs-barcode-checkin-result dashicons dashicons-yes"></span>';
@@ -1018,12 +1058,12 @@ class EED_Barcode_Scanner extends EED_Module
         if ($status === 1) {
             EE_Error::add_success(__('This group registration has been checked in.', 'event_espresso'));
             $this->_response['data']['checkout_icon_class']   = 'ee-icon-check-in';
-            $this->_response['data']['buttonText']            = __('Check Out', 'event_espresso');
+            $this->_response['data']['buttonText']            = esc_html__('Check Out', 'event_espresso');
             $this->_response['data']['checkout_button_class'] = 'ee-red';
         } else {
             EE_Error::add_success(__('This group registration has been checked out', 'event_espresso'));
             $this->_response['data']['checkout_icon_class']   = 'ee-icon-check-out';
-            $this->_response['data']['buttonText']            = __('Check In', 'event_espresso');
+            $this->_response['data']['buttonText']            = esc_html__('Check In', 'event_espresso');
             $this->_response['data']['checkout_button_class'] = 'ee-green';
         }
         $this->_response['success'] = true;

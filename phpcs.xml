@@ -12,6 +12,6 @@
 
     <!-- specific rule exclusions per file -->
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
-        <exclude-pattern>espresso-barcode-scanner.php</exclude-pattern>
+        <exclude-pattern>eea-barcode-scanner.php</exclude-pattern>
     </rule>
 </ruleset>
