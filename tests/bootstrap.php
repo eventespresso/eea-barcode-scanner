@@ -20,6 +20,6 @@ define('EEA_BARCODE_SCANNER_TESTS_DIR', EEA_BARCODE_SCANNER_PLUGIN_DIR . 'tests/
 $addon_loader = new AddonLoader(
     EEA_BARCODE_SCANNER_TESTS_DIR,
     EEA_BARCODE_SCANNER_PLUGIN_DIR,
-    'espresso-barcode-scanner.php'
+    'eea-barcode-scanner.php'
 );
 $addon_loader->init();
