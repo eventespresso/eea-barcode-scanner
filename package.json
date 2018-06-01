@@ -5,6 +5,8 @@
 	"main": "webpack.dev.js",
 	"repository": "git+https://github.com/eventespresso/eea-barcode-scanner.git",
 	"scripts": {
+		"prebuild": "check-node-version --package",
+		"prewatch": "check-node-version --package",
 		"watch": "webpack --watch --config webpack.dev.js",
 		"build": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
 		"watch-poll": "webpack --watch --watch-poll --config webpack.dev.js",
@@ -20,7 +22,8 @@
 		"test-unit": "wp-scripts test-unit-js --config tests/javascript-config/unit/jest.config.json",
 		"test-unit:coverage": "npm run test-unit -- --coverage",
 		"test-unit:coverage-ci": "npm run test-unit -- --coverage --maxWorkers 1 && codecov",
-		"test-unit:watch": "npm run test-unit -- --watch"
+		"test-unit:watch": "npm run test-unit -- --watch",
+		"lc": "jsgl --local ./"
 	},
 	"author": "Event Espresso",
 	"license": "GPL-2.0",
@@ -29,7 +32,7 @@
 	],
 	"engines": {
 		"node": ">=8.0.0",
-		"npm": ">=5.0.0"
+		"npm": ">=6.0.0"
 	},
 	"devDependencies": {
 		"@wordpress/babel-plugin-makepot": "^1.0.1",
@@ -42,21 +45,23 @@
 		"babel-loader": "^7.1.2",
 		"babel-plugin-transform-react-jsx": "^6.24.1",
 		"babel-polyfill": "^6.26.0",
-		"classnames": "^2.2.5",
+		"check-node-version": "^3.2.0",
 		"clean-webpack-plugin": "^0.1.18",
 		"codecov": "^3.0.2",
 		"concurrently": "^3.5.1",
 		"cross-env": "^5.1.5",
 		"css-loader": "^0.28.11",
+		"deep-freeze": "0.0.1",
 		"eslint": "^4.19.1",
 		"eslint-config-wordpress": "^2.0.0",
 		"eslint-plugin-jest": "^21.15.1",
 		"eslint-plugin-jsx-a11y": "^6.0.3",
 		"eslint-plugin-react": "^7.8.2",
 		"eslint-plugin-wordpress": "git://github.com/WordPress-Coding-Standards/eslint-plugin-wordpress.git#1774343f6226052a46b081e01db3fca8793cc9f1",
-		"lodash": "^4.17.10",
 		"mini-css-extract-plugin": "^0.4.0",
+		"gutenberg": "wordpress/gutenberg#master",
 		"pegjs": "^0.10.0",
+		"pegjs-loader": "^0.5.4",
 		"postcss-loader": "^2.1.5",
 		"raw-loader": "^0.5.1",
 		"react": "^16.3.0",
@@ -67,12 +72,15 @@
 		"redux": "^3.7.2",
 		"webpack": "^4.8.3",
 		"webpack-assets-manifest": "^3.0.1",
-		"webpack-merge": "^4.1.1"
+		"webpack-merge": "^4.1.1",
+		"js-green-licenses": "^0.5.0"
 	},
 	"dependencies": {
 		"@wordpress/dom-ready": "^1.0.2",
 		"@wordpress/i18n": "^1.1.1",
 		"@wordpress/jest-preset-default": "^1.0.6",
-		"querystringify": "^1.0.0"
+		"querystringify": "^1.0.0",
+		"@wordpress/is-shallow-equal": "^1.0.2",
+		"memize": "^1.0.5"
 	}
 }
