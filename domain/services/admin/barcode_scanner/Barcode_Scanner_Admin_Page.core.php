@@ -1,6 +1,7 @@
 <?php
 
 use EventEspresso\BarcodeScanner\domain\Domain;
+use EventEspresso\BarcodeScanner\domain\services\assets\BarcodeScannerAssetManager;
 use EventEspresso\core\exceptions\EntityNotFoundException;
 use EventEspresso\core\exceptions\InvalidDataTypeException;
 use EventEspresso\core\exceptions\InvalidInterfaceException;
@@ -57,36 +58,46 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
 
     protected function _set_page_routes()
     {
-        $this->_page_routes = array(
-            'default' => array(
+        $this->_page_routes = [
+            'default' => [
                 'func' => '_barcode_scanner',
                 'capability' => 'ee_read_checkins'
-                )
-            );
+            ],
+            'testing' => [
+                'func' => 'testingNew',
+                'capability' => 'ee_read_checkins'
+            ]
+        ];
     }
 
 
 
     protected function _set_page_config()
     {
-        $this->_page_config = array(
-            'default' => array(
-                'nav' => array(
+        $this->_page_config = [
+            'default' => [
+                'nav' => [
                     'label' => __('Barcode Scanning', 'event_espresso'),
                     'order' => 5
-                    ),
-                'help_tabs' => array(
-                    'barcode_scanning_overview_help_tab' => array(
+                ],
+                'help_tabs' => [
+                    'barcode_scanning_overview_help_tab' => [
                         'title' => __('Overview', 'event_espresso'),
                         'filename' => 'barcode_scanner_overview'
-                        ),
-                    'barcode_scanning_shortcode_help_tab' => array(
+                    ],
+                    'barcode_scanning_shortcode_help_tab' => [
                         'title' => __('Front-end Ticket Scanning', 'event_espresso'),
                         'filename' => 'barcode_scanner_shortcode'
-                        )
-                    )
-                )
-            );
+                    ]
+                ]
+            ],
+            'testing' => [
+                'nav' => [
+                    'label' => 'Temp Testing',
+                    'order' => 10
+                ]
+            ]
+        ];
     }
 
 
@@ -103,6 +114,7 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
     }
     public function admin_init()
     {
+        EED_Barcode_Scanner::instance()->run(null);
     }
 
     public function admin_init_default()
@@ -118,6 +130,13 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
     }
     public function load_scripts_styles()
     {
+    }
+
+
+    public function load_scripts_styles_testing()
+    {
+        wp_enqueue_script(BarcodeScannerAssetManager::JS_HANDLE_SCANNER_APP);
+        wp_enqueue_style(BarcodeScannerAssetManager::CSS_HANDLE_SCANNER_APP);
     }
 
     /**
@@ -138,6 +157,17 @@ class Barcode_Scanner_Admin_Page extends EE_Admin_Page
     protected function _barcode_scanner()
     {
         $this->_template_args['admin_page_content'] = EED_Barcode_Scanner::instance()->scanner_form(false);
+        $this->display_admin_page_with_no_sidebar();
+    }
+
+
+    /**
+     * @throws DomainException
+     * @throws EE_Error
+     */
+    protected function testingNew()
+    {
+        $this->_template_args['admin_page_content'] = '<div id="root"></div>';
         $this->display_admin_page_with_no_sidebar();
     }
 }

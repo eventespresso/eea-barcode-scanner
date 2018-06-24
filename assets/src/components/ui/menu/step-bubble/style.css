@@ -1,0 +1,51 @@
+.ee-step-bubble-menu-container {
+    width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+.ee-step-bubble-menu-container .ee-step-bubble-item {
+    display: inline-block;
+    margin-right: 30px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.ee-step-bubble-menu-container .ee-clickable {
+    cursor: pointer;
+}
+
+.ee-step-bubble-menu-container .ee-step-bubble {
+    width: 50px;
+    height: 50px;
+    margin: auto;
+    border-radius: 50px;
+    background-color: #ddd;
+    color: #000;
+    text-align: center;
+}
+
+.ee-step-bubble-menu-container .ee-step-bubble-active .ee-step-bubble {
+    color: #fff;
+    background-color: #666;
+    width: 55px;
+    height: 55px;
+    margin: auto;
+    border-radius: 55px;
+}
+
+.ee-step-bubble-menu-container .ee-step-bubble p {
+    font-size: 32px;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    line-height: 1.4;
+    text-align: center;
+    padding-top: 3px;
+}
+
+.ee-step-bubble-menu-container .ee-step-bubble-step-text {
+    display: block;
+    margin-top: 15px;
+    font-size: 1.3em;
+}

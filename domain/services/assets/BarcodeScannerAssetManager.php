@@ -22,6 +22,10 @@ class BarcodeScannerAssetManager extends AssetManager
     const CSS_HANDLE_CHOSEN = 'eea-bs-chosen';
     const CSS_HANDLE_SCANNER_DETECTION = 'eea-scanner-detection-css';
 
+    const JS_HANDLE_SCANNER_APP = 'eea-bs-scanner-app-js';
+    const CSS_HANDLE_SCANNER_APP = 'eea-bs-scanner-app-css';
+    const ASSET_CHUNK_NAME = 'barcode-scanner-app';
+
 
     /**
      * Main method called for registering assets.
@@ -80,7 +84,14 @@ class BarcodeScannerAssetManager extends AssetManager
             array(self::JS_HANDLE_SCANNER_DETECTION, self::JS_HANDLE_CHOSEN, CoreAssetManager::JS_HANDLE_EE_CORE),
             true
         )->setVersion($this->domain->version());
-
+        $this->addJavascript(
+            self::JS_HANDLE_SCANNER_APP,
+            $this->registry->getJsUrl(
+                $this->domain->assetNamespace(),
+                self::ASSET_CHUNK_NAME
+            ),
+            [ CoreAssetManager::JS_HANDLE_EE_COMPONENTS ]
+        )->setRequiresTranslation();
     }
 
 
@@ -106,5 +117,12 @@ class BarcodeScannerAssetManager extends AssetManager
             $this->domain->pluginUrl() . 'css/espresso_ee_barcode_scanner.css',
             array($scanner_css_dep, self::CSS_HANDLE_CHOSEN)
         )->setVersion($this->domain->version());
+        $this->addStylesheet(
+            self::CSS_HANDLE_SCANNER_APP,
+            $this->registry->getCssUrl(
+                $this->domain->assetNamespace(),
+                self::ASSET_CHUNK_NAME
+            )
+        );
     }
 }

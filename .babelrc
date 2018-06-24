@@ -11,12 +11,16 @@
 	"plugins": [
 		"transform-object-rest-spread",
 		"transform-react-jsx",
-		"transform-async-generator-functions"
+		"transform-async-generator-functions",
+		"transform-class-properties"
 	],
 	"env": {
 		"test": {
 			"presets" : [
 				"@wordpress/default"
+			],
+			"plugins": [
+				"transform-class-properties"
 			]
 		},
 		"production": {
@@ -29,8 +33,9 @@
 				],
 				"transform-object-rest-spread",
 				"transform-react-jsx",
-				"transform-async-generator-functions"
+				"transform-async-generator-functions",
+				"transform-class-properties"
 			]
-		},
+		}
 	}
 }
