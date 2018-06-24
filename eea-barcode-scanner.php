@@ -40,19 +40,20 @@
  * ------------------------------------------------------------------------
  */
 define('EE_BARCODE_SCANNER_VERSION', '1.0.12.rc.011');
+define('EE_BARCODE_SCANNER_MAIN_FILE', __FILE__ );
 
 // check php version, if not sufficient then deactivate and show notice
 // requires PHP 5.6 ++
 if (! defined('PHP_VERSION_ID')
     || PHP_VERSION_ID < 50600
 ) {
-    add_action('admin_notices', 'eea_barcode_scanner_deactvation_and_notice');
+    add_action('admin_notices', 'eea_barcode_scanner_deactivation_and_notice');
 } else {
     require_once __DIR__ . '/bootstrap.php';
 }
 
 
-function eea_barcode_scanner_deactvation_and_notice()
+function eea_barcode_scanner_deactivation_and_notice()
 {
     unset($_GET['activate'], $_REQUEST['activate']);
     if (! function_exists('deactivate_plugins')) {

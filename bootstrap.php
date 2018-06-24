@@ -49,7 +49,7 @@ add_action('AHEE__EE_System__load_espresso_addons', function () {
             DomainFactory::getShared(
                 new FullyQualifiedName(Domain::class),
                 array(
-                    new FilePath(__FILE__),
+                    new FilePath(EE_BARCODE_SCANNER_MAIN_FILE),
                     Version::fromString(EE_BARCODE_SCANNER_VERSION)
                 )
             )
