@@ -1,10 +1,12 @@
 const path = require( 'path' );
+const assets = './assets/src/';
 const miniExtract = require( 'mini-css-extract-plugin' );
 const autoprefixer = require( 'autoprefixer' );
 const externals = {
 	jquery: 'jQuery',
 	'@eventespresso/eejs': 'eejs',
 	'@eventespresso/i18n': 'eejs.i18n',
+	'@eventespresso/components': 'eejs.components',
 	react: 'eejs.vendor.react',
 	'react-dom': 'eejs.vendor.reactDom',
 	'react-redux': 'eejs.vendor.reactRedux',
@@ -19,11 +21,13 @@ const config = [
 	{
 		configName: 'base',
 		entry: {
-			//@todo this is where bundles will go for builds
+			'barcode-scanner-app': [
+				assets + 'barcode-scanner-app/index.js',
+			],
 		},
 		externals,
 		output: {
-			filename: 'ee-[name].[chunkhash].dist.js',
+			filename: 'eea-[name].[chunkhash].dist.js',
 			path: path.resolve( __dirname, 'assets/dist' ),
 		},
 		module: {

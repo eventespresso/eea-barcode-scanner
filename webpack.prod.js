@@ -9,11 +9,11 @@ const wpi18nExtractor = require( './bin/i18n-map-extractor.js' );
 const assetsData = Object.create( null );
 common.forEach( ( config, index ) => {
 	if ( common[ index ].configName === 'base' ) {
-		common[ index ].optimization = {
-			runtimeChunk: {
-				name: 'manifest',
-			},
-		};
+		// common[ index ].optimization = {
+		// 	runtimeChunk: {
+		// 		name: 'manifest',
+		// 	},
+		// };
 		common[ index ].plugins = [
 			new CleanWebpackPlugin( [ 'assets/dist', 'translation-map.json' ] ),
 		];
@@ -26,9 +26,9 @@ common.forEach( ( config, index ) => {
 				},
 			} ),
 			new wpi18nExtractor( {
-				// aliases: {
-				//     'wp-plugins-page': 'ee-wp-plugins-page',
-				// },
+				aliases: {
+					'barcode-scanner-app': 'eea-barcode-scanner-app-js',
+				},
 			} ),
 			new WebpackAssetsManifest( {
 				output: path.resolve( __dirname,
@@ -40,7 +40,7 @@ common.forEach( ( config, index ) => {
 				React: 'react',
 			} ),
 			new miniExtract( {
-				filename: 'ee-[name].[contenthash].dist.css',
+				filename: 'eea-[name].[contenthash].dist.css',
 			} ),
 		],
 		mode: 'production',
