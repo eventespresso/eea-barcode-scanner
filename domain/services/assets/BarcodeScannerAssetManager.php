@@ -81,7 +81,7 @@ class BarcodeScannerAssetManager extends AssetManager
         $this->addJavascript(
             self::JS_HANDLE_SCANNER_DETECTION_CORE,
             $this->domain->pluginUrl() . 'scripts/espresso_ee_barcode_scanner.js',
-            array(self::JS_HANDLE_SCANNER_DETECTION, self::JS_HANDLE_CHOSEN, CoreAssetManager::JS_HANDLE_EE_CORE),
+            array(self::JS_HANDLE_SCANNER_DETECTION, self::JS_HANDLE_CHOSEN, CoreAssetManager::JS_HANDLE_CORE),
             true
         )->setVersion($this->domain->version());
         $this->addJavascript(
@@ -90,7 +90,7 @@ class BarcodeScannerAssetManager extends AssetManager
                 $this->domain->assetNamespace(),
                 self::ASSET_CHUNK_NAME
             ),
-            [ CoreAssetManager::JS_HANDLE_EE_COMPONENTS ]
+            [ CoreAssetManager::JS_HANDLE_COMPONENTS ]
         )->setRequiresTranslation();
     }
 
@@ -106,7 +106,7 @@ class BarcodeScannerAssetManager extends AssetManager
     private function registerStyleSheets()
     {
         $script_min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : 'min.';
-        $scanner_css_dep = is_admin() ? 'ee-admin-css' : CoreAssetManager::CSS_HANDLE_EE_DEFAULT;
+        $scanner_css_dep = is_admin() ? 'ee-admin-css' : CoreAssetManager::CSS_HANDLE_DEFAULT;
         $this->addStylesheet(
             self::CSS_HANDLE_CHOSEN,
             $this->domain->pluginUrl() . 'core/third_party_libraries/chosen/chosen.' . $script_min . 'css'

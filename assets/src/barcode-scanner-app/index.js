@@ -19,6 +19,16 @@ class BarcodeApp extends Component {
 	};
 
 	onDataUpdate = ( stepSlug, selectedValue ) => {
+		if ( selectedValue === null ) {
+			if ( stepSlug === slugs.MENU_CHOOSE_EVENT ) {
+				this.updateEventState();
+				this.updateDatetimeState();
+			}
+			if ( stepSlug === slugs.MENU_CHOOSE_DATETIME ) {
+				this.updateDatetimeState();
+			}
+			return;
+		}
 		if ( stepSlug === slugs.MENU_CHOOSE_EVENT &&
 			selectedValue.value &&
 			selectedValue.value !== this.state.selectedEventId

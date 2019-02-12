@@ -3,28 +3,39 @@
  */
 import { Component } from 'react';
 import { ExternalLink } from '@wordpress/components';
+import { routes } from '@eventespresso/eejs';
+import { stringify } from 'querystringify';
+import { __ } from '@eventespresso/i18n';
+import PropTypes from 'proptypes';
+
+const { getAdminUrl, ADMIN_ROUTES, ADMIN_ROUTE_ACTIONS } = routes;
 
 export default class AllRegistrationLink extends Component {
+	PropTypes = {
+		EVT_ID: PropTypes.number.isRequired,
+		DTT_ID: PropTypes.number.isRequired,
+	};
+
 	getLink() {
-		// return link to registration admin page generated from event_id and
-		// datetimeId that should be available via props.
-		return '';
+		return getAdminUrl(
+			ADMIN_ROUTES.REGISTRATION,
+			ADMIN_ROUTE_ACTIONS.REGISTRATION.EVENT_CHECKIN,
+		) +
+		stringify( {
+			event_id: this.props.EVT_ID,
+			DTT_ID: this.props.DTT_ID,
+		}, '&' );
 	}
 
 	render() {
 		return (
 			<div className={ 'eea-bs-ed-checkin-link-container' }>
-				<ExternalLink { ...this.props } />
+				<ExternalLink
+					href={ this.getLink() }
+				>
+					{ __( 'View all Registrations', 'event_espresso' ) }
+				</ExternalLink>
 			</div>
 		);
 	}
-};
-
-/**
- * Todos:
- * - need to expose root path on eejs.data for link root
- * - might want to consider creating a library that returns paths to various
- *   EE routes that can be added to as needed.
- * - Pass needed props through here.  See also the props `ExternalLink` uses at
- *   https://github.com/WordPress/gutenberg/blob/master/components/external-link/index.js
- */
+}

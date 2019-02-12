@@ -1,4 +1,8 @@
-const TextBubble = ( props ) => {
-	//todo renders text content within a background colored "bubble".
+const TextBubble = ( { children } ) => {
+	return (
+		<span className={ 'ee-text-bubble' }>
+			{ children }
+		</span>
+	);
 };
 export default TextBubble;

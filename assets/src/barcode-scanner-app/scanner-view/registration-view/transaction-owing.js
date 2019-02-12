@@ -1,8 +1,9 @@
 /**
- * External imports
+ * External Imports
  */
 import { Component } from 'react';
 import { __ } from '@eventespresso/i18n';
+import { Money } from '@eventespresso/value-objects';
 import PropTypes from 'prop-types';
 
 /**
@@ -10,21 +11,18 @@ import PropTypes from 'prop-types';
  */
 import { StatusSection } from '../../../components/ui/indicators';
 
-export default class RegistrationStatus extends Component {
+export default class TransactionOwing extends Component {
 	static propTypes = {
 		status: PropTypes.string.isRequired,
-		statusLabel: PropTypes.string.isRequired,
+		amountOwing: PropTypes.instanceOf( Money ).isRequired,
 	};
 
 	render() {
-		const {
-			status,
-			statusLabel: registrationStatusLabel,
-		} = this.props;
+		const { status, amountOwing } = this.props;
 		const props = {
-			className: 'registration-' + status,
-			statusLabel: __( 'Registration Status: ', 'event_espresso' ),
-			statusValue: registrationStatusLabel,
+			className: 'transaction-' + status,
+			statusLabel: __( 'Owing: ', 'event_espresso' ),
+			statusValue: amountOwing.toString(),
 			statusCode: status,
 		};
 

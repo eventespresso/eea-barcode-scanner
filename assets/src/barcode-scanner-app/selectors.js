@@ -109,7 +109,10 @@ export default class Selectors extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		if ( prevProps.currentStep !== this.props.currentStep ) {
+		if ( prevProps.currentStep !== this.props.currentStep ||
+			prevProps.selectedEventId !== this.props.selectedEventId ||
+			prevProps.selectedDatetimeId !== this.props.selectedDatetimeId
+		) {
 			this.setActiveSelector();
 		}
 	}
