@@ -7,13 +7,19 @@ const externals = {
 	'@eventespresso/eejs': 'eejs',
 	'@eventespresso/i18n': 'eejs.i18n',
 	'@eventespresso/components': 'eejs.components',
-	react: 'eejs.vendor.react',
-	'react-dom': 'eejs.vendor.reactDom',
+	'@eventespresso/validators': 'eejs.validators',
+	'@eventespresso/helpers': 'eejs.helpers',
+	'@eventespresso/model': 'eejs.model',
+	'@eventespresso/value-objects': 'eejs.valueObjects',
+	'@eventespresso/hocs': 'eejs.hocs',
+	'@eventespresso/editor-hocs': 'eejs.editorHocs',
+	react: 'React',
+	'react-dom': 'ReactDOM',
 	'react-redux': 'eejs.vendor.reactRedux',
 	redux: 'eejs.vendor.redux',
 	classnames: 'eejs.vendor.classnames',
-	lodash: 'eejs.vendor.lodash',
-	moment: 'eejs.vendor.moment',
+	lodash: 'lodash',
+	'moment-timezone': 'eejs.vendor.moment',
 };
 /** see below for multiple configurations.
  /** https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations */

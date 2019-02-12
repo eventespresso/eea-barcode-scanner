@@ -8,11 +8,6 @@ const miniExtract = require( 'mini-css-extract-plugin' );
 const assetsData = Object.create( null );
 common.forEach( ( config, index ) => {
 	if ( common[ index ].configName === 'base' ) {
-		// common[ index ].optimization = {
-		// 	runtimeChunk: {
-		// 		name: 'manifest',
-		// 	},
-		// };
 		common[ index ].plugins = [
 			new CleanWebpackPlugin( [ 'assets/dist' ] ),
 		];

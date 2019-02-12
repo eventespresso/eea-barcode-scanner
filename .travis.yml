@@ -34,17 +34,18 @@ before_script:
     # Install the specified version of PHPUnit depending on the PHP version:
     if [[ -n "$TRAVIS_PHP_VERSION" ]]; then
       case "$TRAVIS_PHP_VERSION" in
-        7.2|7.1|7.0|nightly)
-          echo "Using PHPUnit 6.1"
-          composer global require "phpunit/phpunit=6.1.*"
+        7.3|nightly)
+          # when wp tests support phpunit 7 we'll update this.
+          echo "Using PHPUnit 6"
+          composer global require "phpunit/phpunit=6.5.*"
           ;;
-        5.6|5.5|5.4|5.3)
+        7.2|7.1|7.0)
+          echo "Using PHPUnit 6"
+          composer global require "phpunit/phpunit=6.5.*"
+          ;;
+        5.6|5.5)
           echo "Using PHPUnit 4.8"
           composer global require "phpunit/phpunit=4.8.*"
-          ;;
-        5.2)
-          # Do nothing, use default PHPUnit 3.6.x
-          echo "Using default PHPUnit, hopefully 3.6"
           ;;
         *)
           echo "No PHPUnit version handling for PHP version $TRAVIS_PHP_VERSION"
@@ -55,6 +56,8 @@ before_script:
   - mysql --version
   - phpunit --version
   - phpenv versions
+  - npm --version
+  - node --version
 
 script: npm run test-php
 
@@ -62,13 +65,13 @@ jobs:
   fast_finish: true
   allow_failures:
     - php: nightly
-    - php: 7.2
+    - php: 7.3
       env:
         - PHP_LINT=1
         - PHP_LINT_WITH_WARNINGS=yes
   include:
     - stage: test
-      php: 7.2
+      php: 7.3
       env:
         - PHP_LINT=1
         - PHP_LINT_WITH_WARNINGS=no
@@ -76,7 +79,7 @@ jobs:
         - composer install || exit 1
         - composer config-eventespressocs || exit 1
         - npm run lint-php:skip-warnings || exit 1
-    - php: 7.2
+    - php: 7.3
       env:
         - PHP_LINT=1
         - PHP_LINT_WITH_WARNINGS=yes
@@ -87,19 +90,24 @@ jobs:
 ## skipping for now because there's no javascript to test!
 #    - env:
 #        - JAVASCRIPT_TESTS=1
+#      language: node_js
+#      node_js:
+#        - node
+#        - nvm install && nvm use
+#        - npm install npm --latest-npm
 #      script:
-#        - npm install || exit 1
 #        - npm run ci || exit 1
-    - php: 7.2
+    - language: node_js
       env:
         - LICENSE_CHECK=1
       script:
-        - npm install || exit 1
         - npm run lc || exit 1
+    - php: 7.3
     - php: 7.2
     - php: 7.1
     - php: 7.0
     - php: 5.6
+    - php: 5.5
     # multisite
     - php: 7.2
       env: WP_MULTISITE=1

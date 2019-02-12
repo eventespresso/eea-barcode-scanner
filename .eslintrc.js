@@ -1,20 +1,6 @@
 module.exports = {
-	'extends': [
+	extends: [
 		'./eslint/config.js',
-		'plugin:jest/recommended',
-	],
-	'plugins': [
-		'wordpress',
-	],
-	env: {
-		'jest/globals': true,
-	},
-	globals: {
-		wpApiSettings: true,
-		eejsdata: true
-	},
-	plugins: [
-		'jest',
 	],
 	overrides: [
 		{
@@ -22,7 +8,21 @@ module.exports = {
 			globals: {
 				page: true,
 				browser: true,
+				wp:true,
+				eejsdata:true,
 			},
+			env: {
+				browser:true,
+			}
 		},
+		{
+			files: [ '*.js' ],
+			rules: {
+				"react/react-in-jsx-scope": "off",
+			},
+			globals: {
+				eejsdata:true
+			}
+		}
 	],
 };
