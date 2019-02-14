@@ -1,10 +1,11 @@
 /**
  * External imports
  */
-import { PureComponent } from 'react';
+import { Component } from '@wordpress/element';
+import { pure } from '@wordpress/compose';
 
 
-class StepText extends PureComponent {
+class StepText extends Component {
 	render() {
 		const  { content } = this.props;
 		return content &&
@@ -14,4 +15,4 @@ class StepText extends PureComponent {
 	}
 }
 
-export default StepText;
+export default pure( StepText );

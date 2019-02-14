@@ -1,7 +1,7 @@
 /**
  * External Imports
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import { __, sprintf } from '@eventespresso/i18n';
 import { checkInModel } from '@eventespresso/model';
 

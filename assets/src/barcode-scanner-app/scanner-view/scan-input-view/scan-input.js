@@ -1,7 +1,7 @@
 /**
  * External imports
  */
-import { forwardRef } from 'react';
+import { forwardRef } from '@wordpress/element';
 
 /**
  * Internal Imports

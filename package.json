@@ -43,6 +43,8 @@
 		"@wordpress/babel-plugin-makepot": "^1.0.1",
 		"@wordpress/babel-preset-default": "^2.1.0",
 		"@wordpress/browserslist-config": "^2.1.4",
+		"@wordpress/compose": "^3.0.1",
+		"@wordpress/element": "^2.1.9",
 		"@wordpress/eslint-plugin": "^1.0.0",
 		"@wordpress/jest-preset-default": "^2.0.6",
 		"@wordpress/scripts": "^2.5.0",

@@ -1,7 +1,7 @@
 /**
  * External imports
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import $ from 'jquery';
 import { __ } from '@eventespresso/i18n';

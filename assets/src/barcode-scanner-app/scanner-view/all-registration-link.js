@@ -1,7 +1,7 @@
 /**
  * External imports
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import { ExternalLink } from '@wordpress/components';
 import { routes } from '@eventespresso/eejs';
 import { stringify } from 'querystringify';

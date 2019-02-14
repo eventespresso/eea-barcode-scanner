@@ -8,9 +8,8 @@ import Selectors from './selectors';
 /**
  * External imports
  */
-import ReactDOM from 'react-dom';
+import { render as domRender, Component } from '@wordpress/element';
 import { __ } from '@eventespresso/i18n';
-import { Component } from 'react';
 import { values } from 'lodash';
 
 class BarcodeApp extends Component {
@@ -110,7 +109,7 @@ class BarcodeApp extends Component {
 	}
 }
 
-ReactDOM.render(
+domRender(
 	<BarcodeApp />,
 	document.getElementById( 'root' )
 );

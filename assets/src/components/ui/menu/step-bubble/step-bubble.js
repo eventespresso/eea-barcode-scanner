@@ -7,9 +7,10 @@ import StepText from './step-text';
  * External imports
  */
 import classNames from 'classnames';
-import { PureComponent } from 'react';
+import { Component } from '@wordpress/element';
+import { pure } from '@wordpress/compose'
 
-class StepBubble extends PureComponent {
+class StepBubble extends Component {
 	render() {
 		const {
 			label,
@@ -40,4 +41,4 @@ class StepBubble extends PureComponent {
 	}
 }
 
-export default StepBubble;
+export default pure( StepBubble );

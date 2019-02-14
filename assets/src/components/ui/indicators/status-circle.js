@@ -1,7 +1,7 @@
 /**
  * External Imports
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { values } from 'lodash';
@@ -26,8 +26,8 @@ export default class StatusCircle extends Component {
 		className: PropTypes.string,
 	};
 	static defaultProps = {
-		circleSize: statusSizes:12
-	}
+		circleSize: statusSizes[ 12 ]
+	};
 	render() {
 		const statusClass = classnames(
 			'ee-status-circle',

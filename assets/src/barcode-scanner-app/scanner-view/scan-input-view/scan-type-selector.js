@@ -1,7 +1,7 @@
 /**
  * External imports
  */
-import { Component, Fragment } from 'react';
+import { Component, Fragment } from '@wordpress/element';
 import Select from 'react-select';
 import { __ } from '@eventespresso/i18n';
 import classNames from 'classnames';

@@ -1,7 +1,7 @@
 /**
- * WordPress dependencies
+ * External imports
  */
-import { Component, forwardRef } from 'react';
+import { Component, forwardRef } from '@wordpress/element';
 
 /**
  * A Higher Order Component used to be provide a unique instance ID by

@@ -1,7 +1,7 @@
 /**
  * External Imports
  */
-import { Component } from 'react';
+import { Component } from '@wordpress/element';
 import { AvatarImage } from '@eventespresso/components';
 
 /**
