@@ -2,6 +2,7 @@
  * External imports
  */
 import { Component } from '@wordpress/element';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal imports
@@ -9,33 +10,39 @@ import { Component } from '@wordpress/element';
 import AllRegistrationLink from './all-registration-link';
 import ScanInputView from './scan-input-view';
 import { scanTypes } from './scan-input-view/scan-type-selector';
+import { __ } from '@eventespresso/i18n';
+import RegistrationView from './registration-view';
 
-export default class ScannerView extends Component {
+export class ScannerView extends Component {
 	state = {
 		registrationCode: '',
 		scanTypeSelection: scanTypes.LOOKUP,
 	};
 
-	onScannerComplete = ( event, data ) => {
+	onScannerComplete = ( inputEvent, data ) => {
 		this.setRegistrationCode( data.string );
+		this.props.createSuccess(
+			__( 'Successfully scanned', 'event_espresso' )
+		);
 	};
 
-	onScannerError = ( event, data ) => {
-		// todo: data.string will be the string being written when there is
-		// an error.  I need to have a component for displaying notices/errors.
+	onScannerError = () => {
+		this.props.createError(
+			__( 'There was an error with the input.', 'event_espresso' )
+		);
 	};
 
-	onScannerReceive = event => {
+	onScannerReceive = ( inputEvent ) => {
 		// todo: nothing needs to happen at this point unless we want to start
 		// showing the indicator that things are working?  Maybe a scanner icon?
 	};
 
-	onScanTypeSelect = selectedValue => {
+	onScanTypeSelect = ( selectedValue ) => {
 		this.setRegistrationCode( '' );
 		this.setScanTypeSelection( selectedValue.value );
 	};
 
-	onManualInput = registrationCode => {
+	onManualInput = ( registrationCode ) => {
 		this.setRegistrationCode( registrationCode );
 	};
 
@@ -48,6 +55,14 @@ export default class ScannerView extends Component {
 	}
 
 	render() {
+		const registrationView =
+			this.state.scanType !== scanTypes.LOOKUP &&
+			this.state.registrationCode ?
+				<RegistrationView
+					DTT_ID={ this.props.DTT_ID }
+					registrationCode={ this.state.registrationCode }
+				/> :
+				null;
 		return (
 			<div className={ 'eea-bs-scanner-view-container' }>
 				<AllRegistrationLink
@@ -63,9 +78,13 @@ export default class ScannerView extends Component {
 					registrationCode={ this.state.registrationCode }
 					onManualInput={ this.onManualInput }
 				/>
-				{ /* Todo: This view will only appear for lookup type searches */ }
-				<RegistrationView />
+				{ registrationView }
 			</div>
 		);
 	}
 };
+
+export default withDispatch( ( dispatch ) => ( {
+	createError: dispatch( 'core/notices' ).createErrorNotice,
+	createSuccess: dispatch( 'core/notices' ).createSuccess,
+} ) )( ScannerView );

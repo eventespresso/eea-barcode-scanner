@@ -4,13 +4,20 @@
 import StepBubbleMenu from '../components/ui/menu/step-bubble';
 import * as slugs from './menu-slugs';
 import Selectors from './selectors';
+import ScannerNotices from '../components/scanner-notices';
+import ScannerView from './scanner-view';
 
 /**
  * External imports
  */
-import { render as domRender, Component } from '@wordpress/element';
+import { render as domRender, Component, Fragment } from '@wordpress/element';
 import { __ } from '@eventespresso/i18n';
 import { values } from 'lodash';
+
+/**
+ * import and register data api
+ */
+import '../data';
 
 class BarcodeApp extends Component {
 	onBubbleClick = ( bubbleSlug ) => {
@@ -95,16 +102,22 @@ class BarcodeApp extends Component {
 
 	render() {
 		return (
-			<div className="eea-barcode-scanning-container">
-				<StepBubbleMenu
-					bubbleClick={ this.onBubbleClick }
-					bubbleData={ this.state.bubbleData }
-					clickable={ this.state.clickable }
-					activeBubble={ this.state.currentStep }
-				/>
-				<Selectors { ...this.state } />
-				{/*<ScannerView />*/}
-			</div>
+			<Fragment>
+				<ScannerNotices />
+				<div className="eea-barcode-scanning-container">
+					<StepBubbleMenu
+						bubbleClick={ this.onBubbleClick }
+						bubbleData={ this.state.bubbleData }
+						clickable={ this.state.clickable }
+						activeBubble={ this.state.currentStep }
+					/>
+					<Selectors { ...this.state } />
+					<ScannerView
+						DTT_ID={ this.state.selectedDatetimeId }
+						EVT_ID={ this.state.selectedEventId }
+					/>
+				</div>
+			</Fragment>
 		);
 	}
 }

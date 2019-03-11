@@ -87,7 +87,7 @@ export default class ScanInputView extends Component {
 					onChange={ this.props.onScanTypeSelect }
 				/>
 				<ScanInput
-					ref={ el => this.el = el }
+					ref={ ( el ) => this.el = el }
 					value={ this.props.registrationCode }
 				/>
 				<Button isPrimary={ true } onClick={ this.submitInput }>

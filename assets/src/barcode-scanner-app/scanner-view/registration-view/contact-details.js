@@ -4,7 +4,7 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 
-export class ContactDetails extends Component {
+export default class ContactDetails extends Component {
 	static propTypes = {
 		fullName: PropTypes.string,
 		email: PropTypes.email,
