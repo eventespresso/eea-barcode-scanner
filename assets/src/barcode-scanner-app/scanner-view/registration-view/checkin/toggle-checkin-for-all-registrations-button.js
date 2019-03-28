@@ -9,7 +9,7 @@ const ToggleCheckinForAllRegistrationsButton = ( { toggleCheckinsAction } ) => {
 	return <Button onClick={ toggleCheckinsAction } className={ 'ee-green' }>
 		{ __( 'Checkin All Registrations', 'event_espresso' ) }
 	</Button>;
-}
+};
 
 export default withDispatch( (
 	dispatch,

@@ -3,13 +3,10 @@
 namespace EventEspresso\BarcodeScanner\domain\services\assets;
 
 use DomainException;
-use EventEspresso\core\domain\DomainInterface;
 use EventEspresso\core\domain\services\assets\CoreAssetManager;
 use EventEspresso\core\exceptions\InvalidDataTypeException;
 use EventEspresso\core\exceptions\InvalidEntityException;
-use EventEspresso\core\services\assets\AssetCollection;
 use EventEspresso\core\services\assets\AssetManager;
-use EventEspresso\core\services\assets\Registry;
 use EventEspresso\core\services\collections\DuplicateCollectionIdentifierException;
 
 class BarcodeScannerAssetManager extends AssetManager
@@ -90,7 +87,7 @@ class BarcodeScannerAssetManager extends AssetManager
                 $this->domain->assetNamespace(),
                 self::ASSET_CHUNK_NAME
             ),
-            [ CoreAssetManager::JS_HANDLE_COMPONENTS ]
+            [ CoreAssetManager::JS_HANDLE_COMPONENTS, 'wp-notices' ]
         )->setRequiresTranslation();
     }
 
@@ -122,7 +119,8 @@ class BarcodeScannerAssetManager extends AssetManager
             $this->registry->getCssUrl(
                 $this->domain->assetNamespace(),
                 self::ASSET_CHUNK_NAME
-            )
+            ),
+            [ 'wp-components', CoreAssetManager::CSS_HANDLE_COMPONENTS ]
         );
     }
 }

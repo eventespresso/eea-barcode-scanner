@@ -1,7 +1,14 @@
 export { CheckInButton } from './check-in-button';
-export CheckInAction from './check-in-action';
+export { default as CheckInAction } from './check-in-action';
 export * from './get-check-in-status-configuration';
-export withLatestCheckin from './with-latest-checkin';
-export CheckInTimestamp from './check-in-action';
-export CheckInStatusIcon from './check-in-status-icon';
-export ToggleCheckinForAllRegistrationsButton from './toggle-checkin-for-all-registrations-button';
+export { default as withLatestCheckin } from './with-latest-checkin';
+export { default as CheckInTimestamp } from './check-in-timestamp';
+export { default as CheckInStatusIcon } from './check-in-status-icon';
+export { default as CheckInResult } from './check-in-result';
+export {
+	default as ToggleCheckinForAllRegistrationsButton,
+} from './toggle-checkin-for-all-registrations-button';
+export {
+	default as withCheckinState,
+	CHECKIN_STATES,
+} from './with-checkin-state';

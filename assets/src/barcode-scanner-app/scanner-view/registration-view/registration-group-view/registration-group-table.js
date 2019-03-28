@@ -5,6 +5,10 @@ import { Component } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import AccessibleReactTable from 'accessible-react-table';
 import { __ } from '@wordpress/i18n';
+import { isModelEntityOfModel } from '@eventespresso/validators';
+import 'react-table/react-table.css';
+import PropTypes from 'prop-types';
+import { Spinner } from '@wordpress/components';
 
 /**
  * Internal imports
@@ -16,29 +20,48 @@ import {
 	CheckInStatusIcon,
 } from '../checkin';
 
+const EnhancedTimestamp = withLatestCheckin( CheckInTimestamp );
+const EnhancedStatusIcon = withLatestCheckin( CheckInStatusIcon );
+const EnhancedAction = withLatestCheckin( CheckInAction );
+
 export class RegistrationGroupTable extends Component {
-	fName = ( registrationEntity ) => registrationEntity.attendee.fname;
-	lName = ( registrationEntity ) => registrationEntity.attendee.lname;
-	lastUpdate = ( registrationEntity ) => withLatestCheckin(
-		<CheckInTimestamp
-			registration={ registrationEntity }
-			datetimeId={ this.props.datetimeId }
-		/>
-	);
-	checkInStatus = ( registrationEntity ) => withLatestCheckin(
-		<CheckInStatusIcon
-			registration={ registrationEntity }
-			datetimeId={ this.props.datetimeId }
-		/>
-	);
-	checkInAction = ( registrationEntity ) => withLatestCheckin(
-		<CheckInAction
-			registration={ registrationEntity }
-			datetimeId={ this.props.datetimeId }
-		/>
-	);
+	static propTypes = {
+		data: PropTypes.array,
+		finishedLoading: PropTypes.bool,
+		datetimeId: PropTypes.number,
+		perPage: PropTypes.number,
+	};
+	static defaultProps = {
+		data: [],
+		finishedLoading: false,
+		datetimeId: 0,
+		perPage: 20,
+	};
+	fName = ( entityRecord ) => entityRecord.attendee.fname;
+	lName = ( entityRecord ) => entityRecord.attendee.lname;
+	lastUpdate = ( entityRecord ) => <EnhancedTimestamp
+		registration={ entityRecord.registration }
+		datetimeId={ this.props.datetimeId }
+	/>;
+	checkInStatus = ( entityRecord ) => <EnhancedStatusIcon
+		registration={ entityRecord.registration }
+		datetimeId={ this.props.datetimeId }
+	/>;
+	checkInAction = ( entityRecord ) => <EnhancedAction
+		registration={ entityRecord.registration }
+		datetimeId={ this.props.datetimeId }
+	/>;
+	showPagination = () => this.props.data.length > this.props.perPage;
+	minRows = () => this.showPagination() ?
+		this.props.perPage :
+		this.props.data.length;
 
 	render() {
+		// @todo need to gracefully handle when finished loading and there's
+		// an error or no data.
+		if ( ! this.props.finishedLoading || this.props.data.length === 0 ) {
+			return <Spinner />;
+		}
 		const columns = [
 			{
 				id: 'firstName',
@@ -66,30 +89,53 @@ export class RegistrationGroupTable extends Component {
 				accessor: this.checkInAction,
 			},
 		];
-		return <AccessibleReactTable data={ this.data } columns={ columns } />;
+		return <AccessibleReactTable
+			data={ this.props.data }
+			columns={ columns }
+			perPage={ this.props.perPage }
+			showPagination={ this.showPagination() }
+			minRows={ this.minRows() }
+		/>;
 	}
 }
-
-let previousAttendees = [];
 
 export default withSelect( ( select, ownProps ) => {
 	let attendees;
 	const { registration } = ownProps;
+	let finishedAttendeeLoading;
 
-	let { finishedLoading = false, data = [] } = ownProps;
+	if (
+		! isModelEntityOfModel( registration, 'registration' )
+	) {
+		return {};
+	}
 
 	const {
-		getEntities,
+		getEntitiesForModel,
 		getEntityById,
 		getRelatedEntitiesForIds,
 	} = select( 'eventespresso/core' );
 	const { hasFinishedResolution } = select( 'core/data' );
-	const groupRegistrations = getEntities( 'registration' ).filter(
+
+	const hasResolvedGroupRegistrations = hasFinishedResolution(
+		'eventespresso/lists',
+		'getEntities',
+		[ 'registration', 'where[TXN_ID]=' + registration.txnId ]
+	);
+
+	if ( ! hasResolvedGroupRegistrations ) {
+		return {};
+	}
+
+	const groupRegistrations = getEntitiesForModel( 'registration' ).filter(
 		( registrationEntity ) => registrationEntity.id !== registration.id
 	);
 	const registrationIds = groupRegistrations.map(
 		( registrationEntity ) => registrationEntity.id
 	);
+
+	let finishedLoading = false,
+		data = [];
 
 	if ( groupRegistrations ) {
 		attendees = getRelatedEntitiesForIds(
@@ -97,31 +143,26 @@ export default withSelect( ( select, ownProps ) => {
 			registrationIds,
 			'attendees',
 		);
-		finishedLoading = ! hasFinishedResolution(
+		finishedAttendeeLoading = hasFinishedResolution(
 			'eventespresso/core',
 			'getRelatedEntitiesForIds',
-			'registration',
-			registrationIds,
-			'attendees'
+			[ 'registration', registrationIds, 'attendees' ]
 		);
 
-		if ( finishedLoading && attendees !== previousAttendees ) {
+		if ( finishedAttendeeLoading && attendees && attendees.length > 0 ) {
 			data = groupRegistrations.map(
 				( registrationEntity ) => {
-					registrationEntity.attendee = getEntityById(
-						'attendee',
-						registrationEntity.attId
-					);
-					return registrationEntity;
+					return {
+						registration: registrationEntity,
+						attendee: getEntityById(
+							'attendee',
+							registrationEntity.attId
+						),
+					};
 				}
 			);
+			finishedLoading = true;
 		}
-		previousAttendees = attendees;
 	}
-
-	return {
-		...ownProps,
-		data,
-		finishedLoading,
-	};
-} );
+	return { data, finishedLoading };
+} )( RegistrationGroupTable );

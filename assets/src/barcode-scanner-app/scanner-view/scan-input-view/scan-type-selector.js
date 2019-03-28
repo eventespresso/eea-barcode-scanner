@@ -3,10 +3,10 @@
  */
 import { Component, Fragment } from '@wordpress/element';
 import Select from 'react-select';
-import { __ } from '@eventespresso/i18n';
+import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { values } from 'lodash';
+import { values, find } from 'lodash';
 
 export const scanTypes = {
 	LOOKUP: 'lookup_attendee',
@@ -35,16 +35,13 @@ export const scanTypeOptions = [
 ];
 
 export default class ScanTypeSelector extends Component {
-	defaultProps = {
+	static defaultProps = {
 		value: scanTypeOptions[ 0 ],
 		onChange: () => false,
 	};
 
-	propTypes = {
-		value: PropTypes.shape( {
-			value: PropTypes.oneOf( values( scanTypes ) ),
-			label: PropTypes.string,
-		} ),
+	static propTypes = {
+		value: PropTypes.oneOf( values( scanTypes ) ),
 		onChange: PropTypes.func,
 	};
 
@@ -62,8 +59,10 @@ export default class ScanTypeSelector extends Component {
 	};
 
 	setValue = () => {
-		if ( this.props.value.value !== this.state.value.value ) {
-			this.setState( { value: this.props.value } );
+		if ( this.props.value !== this.state.value.value ) {
+			this.setState( {
+				value: find( scanTypeOptions, [ 'value', this.props.value ] ),
+			} );
 		}
 	};
 

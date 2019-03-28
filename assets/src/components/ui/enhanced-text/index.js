@@ -1,1 +1,1 @@
-export { default as TextBubble } from 'text-bubble';
+export { default as TextBubble } from './text-bubble';

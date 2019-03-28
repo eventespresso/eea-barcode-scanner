@@ -11,7 +11,7 @@ import ScannerView from './scanner-view';
  * External imports
  */
 import { render as domRender, Component, Fragment } from '@wordpress/element';
-import { __ } from '@eventespresso/i18n';
+import { __ } from '@wordpress/i18n';
 import { values } from 'lodash';
 
 /**
@@ -100,6 +100,16 @@ class BarcodeApp extends Component {
 		} );
 	}
 
+	getScannerView() {
+		if ( this.state.currentStep === slugs.MENU_SCAN ) {
+			return <ScannerView
+				DTT_ID={ this.state.selectedDatetimeId }
+				EVT_ID={ this.state.selectedEventId }
+			/>;
+		}
+		return null;
+	}
+
 	render() {
 		return (
 			<Fragment>
@@ -112,10 +122,7 @@ class BarcodeApp extends Component {
 						activeBubble={ this.state.currentStep }
 					/>
 					<Selectors { ...this.state } />
-					<ScannerView
-						DTT_ID={ this.state.selectedDatetimeId }
-						EVT_ID={ this.state.selectedEventId }
-					/>
+					{ this.getScannerView() }
 				</div>
 			</Fragment>
 		);

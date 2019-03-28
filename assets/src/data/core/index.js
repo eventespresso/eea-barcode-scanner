@@ -11,7 +11,7 @@ import * as selectors from './selectors';
 import * as actions from './actions';
 import controls from './controls';
 
-const REDUCER_KEY = 'eea-barcode-scanner/core'
+const REDUCER_KEY = 'eea-barcode-scanner/core';
 
 /**
  * Registers store for 'eventespresso/core'.

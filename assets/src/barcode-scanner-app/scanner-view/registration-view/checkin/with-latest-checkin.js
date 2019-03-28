@@ -18,13 +18,13 @@ const withLatestCheckin = createHigherOrderComponent(
 				}
 				const { getLatestCheckin } = select( 'eventespresso/core' );
 				return {
-					checkin: getLatestCheckin( registration.id, datetimeId )
+					checkin: getLatestCheckin( registration.id, datetimeId ),
 				};
 			}
 		),
 		withDispatch(
 			( dispatch, ownProps ) => {
-				const { toggleLatestCheckin } = dispatch( 'eventespresso/core' );
+				const { toggleCheckin } = dispatch( 'eventespresso/core' );
 				const { registration, datetimeId } = ownProps;
 				return {
 					onCheckinChange() {
@@ -34,7 +34,7 @@ const withLatestCheckin = createHigherOrderComponent(
 								'registration'
 							)
 						) {
-							toggleLatestCheckin( registration.id, datetimeId );
+							toggleCheckin( registration.id, datetimeId );
 						}
 					},
 				};

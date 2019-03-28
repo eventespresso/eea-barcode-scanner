@@ -5,6 +5,7 @@ import { checkInModel } from '@eventespresso/model';
 import { isModelEntityOfModel } from '@eventespresso/validators';
 import { sprintf } from '@eventespresso/i18n';
 import memize from 'memize';
+import { __ } from '@wordpress/i18n';
 
 const getCheckInStatusConfiguration = ( checkInEntity ) => {
 	const status = isModelEntityOfModel( checkInEntity, 'checkin' ) ?
@@ -53,6 +54,7 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 		checkInStatusText,
 		checkInActionText,
 		checkInClassName,
+		checkInIcon,
 	};
 };
 

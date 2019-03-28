@@ -4,8 +4,8 @@
 import { Component } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import $ from 'jquery';
-import { __ } from '@eventespresso/i18n';
-import PropTypes from 'proptypes';
+import { __ } from '@wordpress/i18n';
+import PropTypes from 'prop-types';
 import { values } from 'lodash';
 
 /**
@@ -37,6 +37,10 @@ const SCANNER_EVENTS = {
 };
 
 export default class ScanInputView extends Component {
+	state = {
+		scanValue: '',
+	};
+
 	static propTypes = {
 		onScannerComplete: PropTypes.func,
 		onScannerError: PropTypes.func,
@@ -49,6 +53,10 @@ export default class ScanInputView extends Component {
 
 	submitInput = () => {
 		this.props.onManualInput( this.$el.val() );
+	};
+
+	setScanValue = ( data ) => {
+		this.setState( { scanValue: data.target.value } );
 	};
 
 	componentDidMount() {
@@ -64,6 +72,7 @@ export default class ScanInputView extends Component {
 			SCANNER_EVENTS.SCANNER_DETECTION_RECEIVE,
 			this.props.onScannerReceive,
 		);
+		this.el.focus();
 	}
 
 	componentWillUnmount() {
@@ -88,7 +97,8 @@ export default class ScanInputView extends Component {
 				/>
 				<ScanInput
 					ref={ ( el ) => this.el = el }
-					value={ this.props.registrationCode }
+					value={ this.state.scanValue }
+					onChange={ this.setScanValue }
 				/>
 				<Button isPrimary={ true } onClick={ this.submitInput }>
 					{ __( 'Go', 'event_espresso' ) }

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 export default class ContactDetails extends Component {
 	static propTypes = {
 		fullName: PropTypes.string,
-		email: PropTypes.email,
+		email: PropTypes.string,
 	};
 	render() {
 		return (

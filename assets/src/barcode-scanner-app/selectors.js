@@ -9,6 +9,10 @@ import { EventSelect, DatetimeSelect } from '@eventespresso/components';
  */
 import * as slugs from './menu-slugs';
 
+const DEFAULT_QUERY_DATA = {
+	limit: 50,
+};
+
 export default class Selectors extends Component {
 	state = {
 		activeSelector: '',
@@ -34,6 +38,14 @@ export default class Selectors extends Component {
 
 	onDatetimeSelect = ( selectedValue ) => {
 		this.props.onDataUpdate( slugs.MENU_CHOOSE_DATETIME, selectedValue );
+	};
+
+	getDatesQueryData = () => {
+		return {
+			...DEFAULT_QUERY_DATA,
+			forEventId: this.state.selectedEventId,
+			showExpired: true,
+		};
 	};
 
 	getSelectorTitle() {
@@ -83,21 +95,24 @@ export default class Selectors extends Component {
 		);
 	}
 
+
+
 	getSelector() {
 		switch ( this.state.activeSelector ) {
 			case slugs.MENU_CHOOSE_EVENT:
 				return <EventSelect
 					selectLabel={ '' }
-					onEventSelect={ this.onEventSelect }
-					selectedEventId={ this.state.selectedEventId }
+					onSelect={ this.onEventSelect }
+					selected={ this.state.selectedEventId }
+					queryData={ DEFAULT_QUERY_DATA }
 				/>;
 			case slugs.MENU_CHOOSE_DATETIME:
 				return <DatetimeSelect
 					selectLabel={ '' }
-					onDatetimeSelect={ this.onDatetimeSelect }
+					onSelect={ this.onDatetimeSelect }
 					addAllOptionLabel={ '' }
-					selectedDatetimeId={ this.state.selectedDatetimeId }
-					forEventId={ this.state.selectedEventId }
+					selected={ this.state.selectedDatetimeId }
+					queryData={ this.getDatesQueryData() }
 				/>;
 			default:
 				return '';

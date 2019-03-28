@@ -2,7 +2,7 @@
  * External Imports
  */
 import { Component } from '@wordpress/element';
-import { __ } from '@eventespresso/i18n';
+import { __ } from '@wordpress/i18n';
 import { Money } from '@eventespresso/value-objects';
 import PropTypes from 'prop-types';
 

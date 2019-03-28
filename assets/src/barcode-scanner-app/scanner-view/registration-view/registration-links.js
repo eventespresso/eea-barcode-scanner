@@ -2,19 +2,15 @@
  * External imports
  */
 import { isModelEntityOfModel } from '@eventespresso/validators';
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
-import { registrationModel } from '@eventespresso/model';
 import { routes } from '@eventespresso/eejs';
+import { withDispatch } from '@wordpress/data';
 import { sprintf, __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-
-const DEFAULT_EMPTY_ARRAY = [];
+import { Fragment } from '@wordpress/element';
 
 export function RegistrationLinks( {
 	registration = null,
-	onViewClick,
-	groupSize = 0,
+	onViewGroupClick,
 } ) {
 	const getRegistrationDetailsLink = () => {
 		return routes.getAdminUrl(
@@ -28,20 +24,19 @@ export function RegistrationLinks( {
 			'edit_attendee'
 		) + 'post=' + registration.attId;
 	};
-	const getGroupSizeToggle = () => {
-		if ( groupSize > 0 ) {
-			return (
-				' | ' + <Button onClick={ onViewClick }>
-					{ sprintf(
-						__( 'View Group (%d)', 'event_espresso' ),
-						groupSize
-					) }
-				</Button>
-			);
-		}
-		return '';
+	const getToggleButton = () => {
+		return <Button onClick={ onViewGroupClick }>
+			{ sprintf( __( 'View Group (%d)', 'event_espresso ' ),
+				registration.groupSize
+			) }
+		</Button>;
 	};
-	if ( ! isModelEntityOfModel( registration ) ) {
+	const getGroupToggle = () => {
+		return registration.groupSize > 0 ?
+			<Fragment> | { getToggleButton() }</Fragment> :
+			null;
+	};
+	if ( ! isModelEntityOfModel( registration, 'registration' ) ) {
 		return null;
 	}
 	return <div className="eea-barcode-registration-links-container">
@@ -51,44 +46,22 @@ export function RegistrationLinks( {
 		<a href={ getContactDetailsLink() }>
 			{ __( 'View Contact Details', 'event_espresso' ) }
 		</a>
-		{ getGroupSizeToggle() }
+		{ getGroupToggle() }
 	</div>;
 }
 
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		const { registration } = ownProps;
-		const { getEntities } = select( 'eventespresso/core' );
-		const groupRegistrations = isModelEntityOfModel(
-			registration,
-			'registration'
-		) && registration.groupSize < 2 ?
-			getEntities(
-				'registration',
-				registrationModel.getQueryString(
-					{
-						orderBy: 'reg_id',
-						forTransactionId: registration.txnId,
-						forTicketId: registration.tktId,
-					}
-				) + '&[where][REG_ID][!=]=' + registration.id
-			) :
-			DEFAULT_EMPTY_ARRAY;
-		return { groupSize: groupRegistrations.length };
-	} ),
-	withDispatch( ( dispatch, ownProps, { select } ) => {
-		const { registration } = ownProps;
-		const { toggleIsVisibleGroup } = dispatch( 'eea-barcode-scanner/core' );
-		const { isGroupVisible } = select( 'eea-barcode-scanner/core' );
-		return {
-			onViewGroupClick: () => {
-				if (
-					isModelEntityOfModel( registration, 'registration' )
-				) {
-					const visibleGroup = isGroupVisible( registration.id );
-					dispatch( toggleIsVisibleGroup( ! visibleGroup ) );
-				}
-			},
-		};
-	} ),
-] )( RegistrationLinks );
+export default withDispatch( ( dispatch, ownProps, { select } ) => {
+	const { registration } = ownProps;
+	const { toggleIsVisibleGroup } = dispatch( 'eea-barcode-scanner/core' );
+	const { isGroupVisible } = select( 'eea-barcode-scanner/core' );
+	return {
+		onViewGroupClick: () => {
+			if (
+				isModelEntityOfModel( registration, 'registration' )
+			) {
+				const visibleGroup = isGroupVisible( registration.id );
+				toggleIsVisibleGroup( registration.id, ! visibleGroup );
+			}
+		},
+	};
+} )( RegistrationLinks );
