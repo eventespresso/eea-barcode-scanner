@@ -80,6 +80,7 @@
 		"@wordpress/dom-ready": "^1.0.2",
 		"@wordpress/is-shallow-equal": "^1.2.0",
 		"accessible-react-table": "^0.2.0",
+		"classnames": "^2.2.6",
 		"immutable": "^4.0.0-rc.12",
 		"memize": "^1.0.5",
 		"prop-types": "^15.7.2",
