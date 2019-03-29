@@ -12,18 +12,17 @@ import { CheckInButton } from './check-in-button';
 
 export default class CheckInAction extends Component {
 	render() {
-		const { checkIn, onClick } = this.props;
-		const { checkInStatusText } = getCheckInStatusText( checkIn );
-		return (
+		const { checkinEntity, onClick, hasResolvedCheckin } = this.props;
+		return hasResolvedCheckin ?
 			<div>
 				<TextBubble>
-					{ checkInStatusText }
+					{ getCheckInStatusText( checkinEntity ) }
 				</TextBubble>
 				<CheckInButton
-					checkIn={ checkIn }
+					checkinEntity={ checkinEntity }
 					onClick={ onClick }
 				/>
-			</div>
-		);
+			</div> :
+			null;
 	}
 }

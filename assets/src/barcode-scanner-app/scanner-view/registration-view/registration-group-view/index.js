@@ -19,18 +19,11 @@ const RegistrationGroupView = ( {
 	finishedLoadingGroup = false,
 } ) => {
 	const getGroupView = () => {
-		console.log( 'ggv', finishedLoadingGroup );
 		return finishedLoadingGroup ?
-			<Fragment>
-				<RegistrationGroupTable
-					registration={ registration }
-					datetimeId={ datetimeId }
-				/>
-				<ToggleCheckinForAllRegistrationsButton
-					registration={ registration }
-					datetimeId={ datetimeId }
-				/>
-			</Fragment> :
+			<RegistrationGroupTable
+				registration={ registration }
+				datetimeId={ datetimeId }
+			/> :
 			<Spinner />;
 	};
 	return isGroupVisible ?
@@ -38,6 +31,10 @@ const RegistrationGroupView = ( {
 			<h3>
 				{ __( 'Other People in this Group', 'event_espresso' ) }
 			</h3>
+			<ToggleCheckinForAllRegistrationsButton
+				registration={ registration }
+				datetimeId={ datetimeId }
+			/>
 			{ getGroupView() }
 		</div> :
 		null;

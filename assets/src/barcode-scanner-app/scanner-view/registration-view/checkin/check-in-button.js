@@ -2,6 +2,7 @@
  * External imports.
  */
 import { Button } from '@wordpress/components';
+import classnames from 'classnames';
 
 import {
 	getCheckInActionText,
@@ -9,11 +10,15 @@ import {
 } from './get-check-in-status-configuration';
 
 export function CheckInButton( {
-	checkIn,
+	checkinEntity,
 	onClick,
 } ) {
-	const buttonText = getCheckInActionText( checkIn );
-	const cssClass = getCheckInClassName( checkIn );
+	const buttonText = getCheckInActionText( checkinEntity );
+	const cssClass = classnames(
+		getCheckInClassName( checkinEntity ),
+		'ee-button',
+		'ee-roundish'
+	);
 	return <Button onClick={ onClick } className={ cssClass }>
 		{ buttonText }
 	</Button>;

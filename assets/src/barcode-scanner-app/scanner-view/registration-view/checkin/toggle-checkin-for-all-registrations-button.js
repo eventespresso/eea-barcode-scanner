@@ -4,9 +4,11 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { withDispatch } from '@wordpress/data';
+import classnames from 'classnames';
 
 const ToggleCheckinForAllRegistrationsButton = ( { toggleCheckinsAction } ) => {
-	return <Button onClick={ toggleCheckinsAction } className={ 'ee-green' }>
+	const classes = classnames( 'ee-button', 'ee-green', 'ee-roundish' );
+	return <Button onClick={ toggleCheckinsAction } className={ classes }>
 		{ __( 'Checkin All Registrations', 'event_espresso' ) }
 	</Button>;
 };

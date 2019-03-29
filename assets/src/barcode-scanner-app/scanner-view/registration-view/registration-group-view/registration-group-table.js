@@ -9,20 +9,30 @@ import { isModelEntityOfModel } from '@eventespresso/validators';
 import 'react-table/react-table.css';
 import PropTypes from 'prop-types';
 import { Spinner } from '@wordpress/components';
+import { compose, ifCondition } from '@wordpress/compose';
 
 /**
  * Internal imports
  */
 import {
 	withLatestCheckin,
-	CheckInAction,
+	CheckInButton,
 	CheckInTimestamp,
 	CheckInStatusIcon,
 } from '../checkin';
 
-const EnhancedTimestamp = withLatestCheckin( CheckInTimestamp );
-const EnhancedStatusIcon = withLatestCheckin( CheckInStatusIcon );
-const EnhancedAction = withLatestCheckin( CheckInAction );
+const EnhancedTimestamp = compose( [
+	withLatestCheckin,
+	ifCondition( ( { hasResolvedCheckin } ) => hasResolvedCheckin ),
+] )( CheckInTimestamp );
+const EnhancedStatusIcon = compose( [
+	withLatestCheckin,
+	ifCondition( ( { hasResolvedCheckin } ) => hasResolvedCheckin ),
+] )( CheckInStatusIcon );
+const EnhancedButton = compose( [
+	withLatestCheckin,
+	ifCondition( ( { hasResolvedCheckin } ) => hasResolvedCheckin ),
+] )( CheckInButton );
 
 export class RegistrationGroupTable extends Component {
 	static propTypes = {
@@ -47,7 +57,7 @@ export class RegistrationGroupTable extends Component {
 		registration={ entityRecord.registration }
 		datetimeId={ this.props.datetimeId }
 	/>;
-	checkInAction = ( entityRecord ) => <EnhancedAction
+	checkInButton = ( entityRecord ) => <EnhancedButton
 		registration={ entityRecord.registration }
 		datetimeId={ this.props.datetimeId }
 	/>;
@@ -55,6 +65,15 @@ export class RegistrationGroupTable extends Component {
 	minRows = () => this.showPagination() ?
 		this.props.perPage :
 		this.props.data.length;
+
+	// @todo
+	// - ensure avatar (or default avatar) shows. with details.
+	// - add status coloring
+	// - style Checkin All Registrations Button and ensure action works.
+	// - fix `:focus` style modifier for buttons (need to override what WP sets
+	//	 by default.
+	// - Related to styles, might be good to start thinking about bringing some
+	// - common styles into the build process for core (exported with @eventespresso/components?)
 
 	render() {
 		// @todo need to gracefully handle when finished loading and there's
@@ -84,9 +103,9 @@ export class RegistrationGroupTable extends Component {
 				accessor: this.checkInStatus,
 			},
 			{
-				id: 'checkInAction',
+				id: 'checkInButton',
 				Header: '',
-				accessor: this.checkInAction,
+				accessor: this.checkInButton,
 			},
 		];
 		return <AccessibleReactTable

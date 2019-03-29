@@ -8,8 +8,8 @@ import { Dashicon } from '@wordpress/components';
  */
 import { getCheckInIconString } from './get-check-in-status-configuration';
 
-const CheckInStatusIcon = ( { checkin } ) => {
-	return <Dashicon icon={ getCheckInIconString( checkin ) } />;
+const CheckInStatusIcon = ( { checkinEntity } ) => {
+	return <Dashicon icon={ getCheckInIconString( checkinEntity ) } />;
 };
 
 export default CheckInStatusIcon;

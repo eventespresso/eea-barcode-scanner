@@ -8,26 +8,30 @@ import { isModelEntityOfModel } from '@eventespresso/validators';
 const withLatestCheckin = createHigherOrderComponent(
 	compose( [
 		withSelect(
-			( select, ownProps ) => {
-				const { registration, datetimeId } = ownProps;
+			( select, { registration, datetimeId } ) => {
 				if ( ! isModelEntityOfModel(
 					registration,
 					'registration'
 				) ) {
-					return ownProps;
+					{}
 				}
 				const { getLatestCheckin } = select( 'eventespresso/core' );
+				const { hasFinishedResolution } = select( 'core/data' );
 				return {
-					checkin: getLatestCheckin( registration.id, datetimeId ),
+					checkinEntity: getLatestCheckin( registration.id, datetimeId ),
+					hasResolvedCheckin: hasFinishedResolution(
+						'eventespresso/core',
+						'getLatestCheckin',
+						[ registration.id, datetimeId ]
+					),
 				};
 			}
 		),
 		withDispatch(
-			( dispatch, ownProps ) => {
+			( dispatch, { registration, datetimeId} ) => {
 				const { toggleCheckin } = dispatch( 'eventespresso/core' );
-				const { registration, datetimeId } = ownProps;
 				return {
-					onCheckinChange() {
+					onClick() {
 						if (
 							isModelEntityOfModel(
 								registration,

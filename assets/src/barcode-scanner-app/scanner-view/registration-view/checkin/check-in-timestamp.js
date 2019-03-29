@@ -3,12 +3,12 @@
  */
 import { isModelEntityOfModel } from '@eventespresso/validators';
 
-const CheckInTimestamp = ( { checkin } ) => {
-	if ( ! isModelEntityOfModel( checkin, 'checkin' ) ) {
+const CheckInTimestamp = ( { checkinEntity } ) => {
+	if ( ! isModelEntityOfModel( checkinEntity, 'checkin' ) ) {
 		return null;
 	}
 	return <span className={ 'checkin-timestamp' }>
-		{ checkin.timestamp.toFormat() }
+		{ checkinEntity.timestamp.toFormat() }
 	</span>;
 };
 
