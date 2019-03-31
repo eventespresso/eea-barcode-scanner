@@ -66,15 +66,6 @@ export class RegistrationGroupTable extends Component {
 		this.props.perPage :
 		this.props.data.length;
 
-	// @todo
-	// - ensure avatar (or default avatar) shows. with details.
-	// - add status coloring
-	// - style Checkin All Registrations Button and ensure action works.
-	// - fix `:focus` style modifier for buttons (need to override what WP sets
-	//	 by default.
-	// - Related to styles, might be good to start thinking about bringing some
-	// - common styles into the build process for core (exported with @eventespresso/components?)
-
 	render() {
 		// @todo need to gracefully handle when finished loading and there's
 		// an error or no data.
@@ -161,11 +152,12 @@ export default withSelect( ( select, ownProps ) => {
 			'registration',
 			registrationIds,
 			'attendees',
+			'user_avatar'
 		);
 		finishedAttendeeLoading = hasFinishedResolution(
 			'eventespresso/core',
 			'getRelatedEntitiesForIds',
-			[ 'registration', registrationIds, 'attendees' ]
+			[ 'registration', registrationIds, 'attendees', 'user_avatar' ]
 		);
 
 		if ( finishedAttendeeLoading && attendees && attendees.length > 0 ) {

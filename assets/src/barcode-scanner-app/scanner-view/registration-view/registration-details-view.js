@@ -48,7 +48,7 @@ export default function RegistrationDetailsView( {
 				email={ attendee.email }
 			/>
 			<AvatarImage
-				avatarUrl={ attendee.avatarUrl }
+				avatarUrl={ attendee.userAvatar }
 				avatarHeight={ 128 }
 				avatarWidth={ 128 }
 			/>

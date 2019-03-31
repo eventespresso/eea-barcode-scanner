@@ -93,11 +93,12 @@ export default compose( [
 		finishedLoadingAttendee = hasFinishedResolution(
 			'eventespresso/core',
 			'getRelatedEntities',
-			[ newRegistration, 'attendee' ]
+			[ newRegistration, 'attendee', 'user_avatar' ]
 		);
 		const newAttendees = getRelatedEntities(
 			newRegistration,
-			'attendee'
+			'attendee',
+			'user_avatar'
 		);
 		const newAttendee = finishedLoadingAttendee &&
 			newAttendees &&
