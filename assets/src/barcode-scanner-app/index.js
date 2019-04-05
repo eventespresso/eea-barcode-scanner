@@ -103,8 +103,8 @@ class BarcodeApp extends Component {
 	getScannerView() {
 		if ( this.state.currentStep === slugs.MENU_SCAN ) {
 			return <ScannerView
-				DTT_ID={ this.state.selectedDatetimeId }
-				EVT_ID={ this.state.selectedEventId }
+				datetimeId={ this.state.selectedDatetimeId }
+				eventId={ this.state.selectedEventId }
 			/>;
 		}
 		return null;

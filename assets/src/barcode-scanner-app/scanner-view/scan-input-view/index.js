@@ -59,6 +59,12 @@ export default class ScanInputView extends Component {
 		this.setState( { scanValue: data.target.value } );
 	};
 
+	onScanTypeSelect = ( data ) => {
+		this.el.focus();
+		this.setState( { scanValue: '' } );
+		this.props.onScanTypeSelect( data );
+	};
+
 	componentDidMount() {
 		this.$el = $( this.el );
 		this.$el.scannerDetection( SCANNER_OPTIONS );
@@ -93,7 +99,7 @@ export default class ScanInputView extends Component {
 			<div className={ 'eea-bs-scan-input-view' }>
 				<ScanTypeSelector
 					value={ this.props.scanTypeSelection }
-					onChange={ this.props.onScanTypeSelect }
+					onChange={ this.onScanTypeSelect }
 				/>
 				<ScanInput
 					ref={ ( el ) => this.el = el }

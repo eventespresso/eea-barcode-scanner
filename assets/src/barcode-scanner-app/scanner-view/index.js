@@ -19,19 +19,24 @@ import {
 	CHECKIN_STATES,
 	CheckInResult,
 } from './registration-view/checkin';
+import { NOTICE_ID_SCAN_ERRROR, NOTICE_ID_SCAN_SUCCESS } from '../constants';
+import {
+	NOTICE_ID_TOGGLE_CHECKIN_ERROR,
+} from './registration-view/checkin/constants';
+
+// @todo add reset actions for eventespresso/lists store (which is needed because
+// of the usage in the barcode scanner `toggleCheckInState` action!
 
 export class ScannerView extends Component {
 	state = {
 		registrationCode: '',
 		scanTypeSelection: scanTypes.LOOKUP,
+		doReset: false,
 	};
 
 	onScannerComplete = ( inputEvent, data ) => {
 		this.setRegistrationCode( data.string );
-		this.props.createSuccess(
-			__( 'Successfully scanned', 'event_espresso' )
-		);
-		this.triggerToggleCheckin();
+		this.triggerToggleCheckin( data.string );
 	};
 
 	onScannerError = () => {
@@ -49,8 +54,8 @@ export class ScannerView extends Component {
 	};
 
 	onScanTypeSelect = ( selectedValue ) => {
-		this.setRegistrationCode( '' );
 		this.setScanTypeSelection( selectedValue.value );
+		this.setRegistrationCode( '' );
 	};
 
 	onManualInput = ( registrationCode ) => {
@@ -62,15 +67,15 @@ export class ScannerView extends Component {
 			return;
 		}
 		this.setRegistrationCode( registrationCode );
-		this.triggerToggleCheckin();
+		this.triggerToggleCheckin( registrationCode );
 	};
 
 	resetState = () => {
-		this.props.resetStoreState();
 		this.props.resetCheckinState();
+		this.props.resetStoreState();
 	};
 
-	triggerToggleCheckin() {
+	triggerToggleCheckin( registrationCode ) {
 		if (
 			this.state.scanTypeSelection === scanTypes.LOOKUP ||
 			this.state.scanTypeSelection === scanTypes.SEARCH
@@ -78,16 +83,16 @@ export class ScannerView extends Component {
 			return;
 		}
 		this.props.toggleCheckin(
-			this.state.registrationCode,
-			this.props.DTT_ID,
-			this.scanTypeSelection === scanTypes.TOGGLE_NO_CHECKOUT
+			registrationCode,
+			this.props.datetimeId,
+			this.state.scanTypeSelection === scanTypes.TOGGLE_NO_CHECKOUT
 		);
 	}
 
 	redirect( registrationCode ) {
-		const parts = this.props.EVT_ID && this.props.DTT_ID ?
-			'&event_id=' + this.props.EVT_ID +
-			'&DTT_ID=' + this.props.DTT_ID +
+		const parts = this.props.eventId && this.props.datetimeId ?
+			'&event_id=' + this.props.eventId +
+			'&DTT_ID=' + this.props.datetimeId +
 			'&s=' + registrationCode :
 			'&s=' + registrationCode;
 		window.location.href = routes.getAdminUrl(
@@ -97,8 +102,11 @@ export class ScannerView extends Component {
 	}
 
 	setRegistrationCode( registrationCode ) {
-		this.resetState();
-		this.setState( { registrationCode } );
+		const change = { registrationCode };
+		if ( this.state.registrationCode !== '' && registrationCode === '' ) {
+			change.doReset = true;
+		}
+		this.setState( change );
 	}
 
 	setScanTypeSelection( scanTypeSelection ) {
@@ -111,22 +119,33 @@ export class ScannerView extends Component {
 			this.state.registrationCode
 		) {
 			return <RegistrationView
-				DTT_ID={ this.props.DTT_ID }
+				DTT_ID={ this.props.datetimeId }
 				registrationCode={ this.state.registrationCode }
+				//onUnsubscribe={ this.onUnsubscribe }
 			/>;
 		}
-		if ( this.props.checkinState === CHECKIN_STATES.IDLE ) {
+		if (
+			this.props.checkinState === CHECKIN_STATES.IDLE ||
+			this.props.checkinState === CHECKIN_STATES.LOADING
+		) {
 			return null;
 		}
 		return <CheckInResult checkin={ this.props.checkin } />;
+	}
+
+	componentDidUpdate() {
+		if ( this.state.doReset ) {
+			this.setState( { doReset: false } );
+			this.resetState();
+		}
 	}
 
 	render() {
 		return (
 			<div className={ 'eea-bs-scanner-view-container' }>
 				<AllRegistrationLink
-					DTT_ID={ this.props.DTT_ID }
-					EVT_ID={ this.props.EVT_ID }
+					DTT_ID={ this.props.datetimeId }
+					EVT_ID={ this.props.eventId }
 				/>
 				<ScanInputView
 					onScannerComplete={ this.onScannerComplete }
@@ -144,27 +163,6 @@ export class ScannerView extends Component {
 }
 
 export default compose( [
-	withSelect( ( select, ownProps ) => {
-		const hasCheckInState = ( checkinState ) => {
-			return checkinState !== CHECKIN_STATES.IDLE &&
-				checkinState !== CHECKIN_STATES.ERROR &&
-				checkinState !== CHECKIN_STATES.LOADING;
-		};
-		const { DTT_ID, checkinState } = ownProps;
-		const { getLatestCheckin } = select( 'eventespresso/core' );
-		const { getMainRegistrationId } = select( 'eea-barcode-scanner/core' );
-		const mainRegistrationId = hasCheckInState( checkinState ) ?
-			getMainRegistrationId() :
-			0;
-		return {
-			checkin: hasCheckInState( checkinState ) &&
-				DTT_ID &&
-				mainRegistrationId ?
-				getLatestCheckin( mainRegistrationId, DTT_ID ) :
-				null,
-			mainRegistrationId,
-		};
-	} ),
 	withDispatch( ( dispatch ) => {
 		return {
 			createError: dispatch( 'core/notices' ).createErrorNotice,
@@ -172,15 +170,42 @@ export default compose( [
 			resetStoreState: () => {
 				const {
 					resetStateForModel,
-					resetModelSpecificForSelector,
 				} = dispatch( 'eventespresso/core' );
-				dispatch( 'eea-barcode-scanner/core' ).resetAllState();
+				const {
+					resetAllState,
+				} = dispatch( 'eea-barcode-scanner/core' );
+				const { removeNotice } = dispatch( 'core/notices' );
+				resetAllState( true );
 				resetStateForModel( 'registration' );
 				resetStateForModel( 'attendee' );
+				resetStateForModel( 'transaction' );
 				resetStateForModel( 'checkin' );
-				resetModelSpecificForSelector( 'getLatestCheckin' );
+				removeNotice( NOTICE_ID_SCAN_SUCCESS );
+				removeNotice( NOTICE_ID_SCAN_ERRROR );
+				removeNotice( NOTICE_ID_TOGGLE_CHECKIN_ERROR );
 			},
 		};
 	} ),
 	withCheckinState,
+	withSelect( ( select, ownProps ) => {
+		const hasCheckInState = ( checkinState ) => {
+			return checkinState !== CHECKIN_STATES.IDLE &&
+				checkinState !== CHECKIN_STATES.ERROR &&
+				checkinState !== CHECKIN_STATES.LOADING;
+		};
+		const { datetimeId, checkinState } = ownProps;
+		const { getLatestCheckin } = select( 'eventespresso/core' );
+		const { getMainRegistrationId } = select( 'eea-barcode-scanner/core' );
+		const mainRegistrationId = hasCheckInState( checkinState ) ?
+			getMainRegistrationId() :
+			0;
+		return {
+			checkin: hasCheckInState( checkinState ) &&
+				datetimeId &&
+				mainRegistrationId ?
+				getLatestCheckin( mainRegistrationId, datetimeId ) :
+				null,
+			mainRegistrationId,
+		};
+	} ),
 ] )( ScannerView );

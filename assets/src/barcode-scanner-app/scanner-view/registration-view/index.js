@@ -5,7 +5,7 @@ import { isModelEntityOfModel } from '@eventespresso/validators';
 import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
-import { compose, ifCondition } from '@wordpress/compose';
+import { compose, ifCondition, } from '@wordpress/compose';
 
 /**
  * Internal import
@@ -113,5 +113,5 @@ export default compose( [
 			finishedLoadingRegistrations,
 		};
 	} ),
-	ifCondition( ( { registrationCode } ) => registrationCode ),
+	ifCondition( ( registrationCode ) => registrationCode ),
 ] )( RegistrationView );

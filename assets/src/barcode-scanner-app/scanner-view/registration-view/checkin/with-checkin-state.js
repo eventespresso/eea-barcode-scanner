@@ -5,6 +5,8 @@ import {
 	withState,
 } from '@wordpress/compose';
 
+import { NOTICE_ID_TOGGLE_CHECKIN_ERROR } from './constants';
+
 export const CHECKIN_STATES = {
 	IDLE: 0,
 	LOADING: 1,
@@ -20,6 +22,9 @@ const withCheckinState = createHigherOrderComponent( compose( [
 		let checkinState;
 		const { toggleCheckInState } = dispatch( 'eea-barcode-scanner/core' );
 		async function toggleCheckin( registrationCode, datetimeId, checkInOnly ) {
+			if ( ! registrationCode || ! datetimeId ) {
+				return;
+			}
 			setState( { checkinState: CHECKIN_STATES.LOADING } );
 			try {
 				checkinState = await toggleCheckInState(
@@ -29,7 +34,12 @@ const withCheckinState = createHigherOrderComponent( compose( [
 				);
 				setState( { checkinState } );
 			} catch ( e ) {
-				dispatch( 'core/notices' ).createErrorNotice( e.message );
+				dispatch( 'core/notices' ).createErrorNotice(
+					e.message,
+					{
+						id: NOTICE_ID_TOGGLE_CHECKIN_ERROR,
+					}
+				);
 				setState( { checkinState: CHECKIN_STATES.ERROR } );
 			}
 		}

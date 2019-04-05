@@ -1,7 +1,7 @@
 /**
  * Internal imports
  */
-import { select, dispatch } from './controls';
+import { dispatch, resolveSelect } from './controls';
 
 /**
  * External imports
@@ -24,10 +24,22 @@ export function receiveMainRegistrationId( registrationId ) {
 	};
 }
 
-export function resetAllState() {
-	return {
+export function* resetAllState( includeOtherStates = true ) {
+	yield {
 		type: 'RESET_ALL_STATE',
 	};
+	if ( includeOtherStates ) {
+		yield dispatch(
+			'eventespresso/lists',
+			'resetEntitiesForModelName',
+			'registration'
+		);
+		yield dispatch(
+			'eventespresso/core',
+			'resetModelSpecificForSelector',
+			'getLatestCheckin'
+		);
+	}
 }
 
 export function resetMainRegistrationId() {
@@ -47,7 +59,7 @@ export function* toggleCheckInState(
 	datetimeId,
 	checkInOnly = false
 ) {
-	const registrations = yield select(
+	const registrations = yield resolveSelect(
 		'eventespresso/lists',
 		'getEntities',
 		'registration',
@@ -61,22 +73,22 @@ export function* toggleCheckInState(
 			)
 		);
 	}
-	const registration = registrations.slice( 0, 1 );
+	const registration = registrations.pop();
 	yield dispatch(
 		'eea-barcode-scanner/core',
 		'receiveMainRegistrationId',
 		registration.id
 	);
 	if ( checkInOnly ) {
-		const latestCheckin = yield select(
+		const latestCheckin = yield resolveSelect(
 			'eventespresso/core',
 			'getLatestCheckin',
 			registration.id,
-			datetimeId,
+			datetimeId
 		);
 		if (
 			latestCheckin.in ===
-			checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_OUT
+			checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_IN
 		) {
 			throw new Error(
 				__(
