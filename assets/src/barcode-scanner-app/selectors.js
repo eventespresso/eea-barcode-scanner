@@ -3,6 +3,7 @@
  */
 import { Component } from '@wordpress/element';
 import { EventSelect, DatetimeSelect } from '@eventespresso/components';
+import PropTypes from 'prop-types';
 
 /**
  * Internal imports
@@ -22,13 +23,30 @@ export default class Selectors extends Component {
 		selectedDatetimeId: 0,
 	};
 
+	static propTypes = {
+		currentStep: PropTypes.string,
+		selectedEventId: PropTypes.number,
+		selectedDatetimeId: PropTypes.number,
+		eventTitle: PropTypes.string,
+		dateTimeTitle: PropTypes.string,
+		onDataUpdate: PropTypes.func,
+	};
+
+	static defaultProps = {
+		selectedEventId: 0,
+		selectedDatetimeId: 0,
+		eventTitle: '',
+		dateTimeTitle: '',
+		onDataUpdate: () => null,
+	};
+
 	setActiveSelector() {
 		this.setState( {
 			activeSelector: this.props.currentStep,
-			selectedEventId: this.props.selectedEventId || 0,
-			selectedDatetimeId: this.props.selectedDatetimeId || 0,
-			eventTitle: this.props.eventTitle || '',
-			dateTimeTitle: this.props.dateTimeTitle || '',
+			selectedEventId: this.props.selectedEventId,
+			selectedDatetimeId: this.props.selectedDatetimeId,
+			eventTitle: this.props.eventTitle,
+			dateTimeTitle: this.props.dateTimeTitle,
 		} );
 	}
 
@@ -94,8 +112,6 @@ export default class Selectors extends Component {
 			</div>
 		);
 	}
-
-
 
 	getSelector() {
 		switch ( this.state.activeSelector ) {

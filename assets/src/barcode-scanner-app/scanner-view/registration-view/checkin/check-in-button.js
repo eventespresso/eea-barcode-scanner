@@ -3,16 +3,14 @@
  */
 import { Button } from '@wordpress/components';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 import {
 	getCheckInActionText,
 	getCheckInClassName,
 } from './get-check-in-status-configuration';
 
-export function CheckInButton( {
-	checkinEntity,
-	onClick,
-} ) {
+const CheckInButton = ( { checkinEntity, onClick } ) => {
 	const buttonText = getCheckInActionText( checkinEntity );
 	const cssClass = classnames(
 		getCheckInClassName( checkinEntity ),
@@ -22,4 +20,16 @@ export function CheckInButton( {
 	return <Button onClick={ onClick } className={ cssClass }>
 		{ buttonText }
 	</Button>;
-}
+};
+
+CheckInButton.propTypes = {
+	checkinEntity: PropTypes.object,
+	onClick: PropTypes.func,
+};
+
+CheckInButton.defaultProps = {
+	checkinEntity: null,
+	onClick: () => null,
+};
+
+export default CheckInButton;

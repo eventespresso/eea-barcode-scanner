@@ -2,6 +2,7 @@
  * External imports
  */
 import { Dashicon } from '@wordpress/components';
+import PropTypes from 'prop-types';
 
 /**
  * Internal imports
@@ -17,5 +18,8 @@ const CheckInStatusIcon = ( { checkinEntity } ) => {
 		icon={ getCheckInIconString( checkinEntity ) }
 	/>;
 };
+
+CheckInStatusIcon.propTypes = { checkinEntity: PropTypes.object };
+CheckInStatusIcon.defaultProps = { checkinEntity: null };
 
 export default CheckInStatusIcon;

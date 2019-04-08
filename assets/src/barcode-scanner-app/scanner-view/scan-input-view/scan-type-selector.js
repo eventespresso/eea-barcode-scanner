@@ -37,7 +37,7 @@ export const scanTypeOptions = [
 export default class ScanTypeSelector extends Component {
 	static defaultProps = {
 		value: scanTypeOptions[ 0 ],
-		onChange: () => false,
+		onChange: () => null,
 	};
 
 	static propTypes = {
@@ -55,7 +55,7 @@ export default class ScanTypeSelector extends Component {
 		isClearable: false,
 		isSearchable: false,
 		name: 'scanner_form_default_action',
-		onChange: () => false,
+		onChange: () => null,
 	};
 
 	setValue = () => {

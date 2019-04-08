@@ -1,7 +1,6 @@
 /**
  * External Imports
  */
-import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Money } from '@eventespresso/value-objects';
 import PropTypes from 'prop-types';
@@ -11,21 +10,20 @@ import PropTypes from 'prop-types';
  */
 import { StatusSection } from '../../../components/ui/indicators';
 
-export default class TransactionOwing extends Component {
-	static propTypes = {
-		status: PropTypes.string.isRequired,
-		amountOwing: PropTypes.instanceOf( Money ).isRequired,
+const TransactionOwing = ( { status, amountOwing } ) => {
+	const props = {
+		className: 'transaction-' + status,
+		statusLabel: __( 'Owing: ', 'event_espresso' ),
+		statusValue: amountOwing.toString(),
+		statusCode: status,
 	};
 
-	render() {
-		const { status, amountOwing } = this.props;
-		const props = {
-			className: 'transaction-' + status,
-			statusLabel: __( 'Owing: ', 'event_espresso' ),
-			statusValue: amountOwing.toString(),
-			statusCode: status,
-		};
+	return <StatusSection { ...props } />;
+};
 
-		return <StatusSection { ...props } />;
-	}
-}
+TransactionOwing.propTypes = {
+	status: PropTypes.string.isRequired,
+	amountOwing: PropTypes.instanceOf( Money ).isRequired,
+};
+
+export default TransactionOwing;

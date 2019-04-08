@@ -17,8 +17,7 @@ export const CHECKIN_STATES = {
 
 const withCheckinState = createHigherOrderComponent( compose( [
 	withState( { checkinState: CHECKIN_STATES.IDLE } ),
-	withDispatch( ( dispatch, ownProps ) => {
-		const { setState } = ownProps;
+	withDispatch( ( dispatch, { setState } ) => {
 		let checkinState;
 		const { toggleCheckInState } = dispatch( 'eea-barcode-scanner/core' );
 		async function toggleCheckin( registrationCode, datetimeId, checkInOnly ) {

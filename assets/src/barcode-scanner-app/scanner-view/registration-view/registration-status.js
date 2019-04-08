@@ -1,7 +1,6 @@
 /**
  * External imports
  */
-import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 
@@ -10,24 +9,23 @@ import PropTypes from 'prop-types';
  */
 import { StatusSection } from '../../../components/ui/indicators';
 
-export default class RegistrationStatus extends Component {
-	static propTypes = {
-		status: PropTypes.string.isRequired,
-		statusLabel: PropTypes.string.isRequired,
+const RegistrationStatus = ( {
+	status,
+	statusLabel: registrationStatusLabel,
+} ) => {
+	const props = {
+		className: 'registration-' + status,
+		statusLabel: __( 'Registration Status: ', 'event_espresso' ),
+		statusValue: registrationStatusLabel,
+		statusCode: status,
 	};
 
-	render() {
-		const {
-			status,
-			statusLabel: registrationStatusLabel,
-		} = this.props;
-		const props = {
-			className: 'registration-' + status,
-			statusLabel: __( 'Registration Status: ', 'event_espresso' ),
-			statusValue: registrationStatusLabel,
-			statusCode: status,
-		};
+	return <StatusSection { ...props } />;
+};
 
-		return <StatusSection { ...props } />;
-	}
-}
+RegistrationStatus.propTypes = {
+	status: PropTypes.string.isRequired,
+	statusLabel: PropTypes.string.isRequired,
+};
+
+export default RegistrationStatus;

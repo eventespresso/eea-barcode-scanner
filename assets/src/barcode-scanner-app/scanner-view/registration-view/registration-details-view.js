@@ -4,6 +4,8 @@
 import { AvatarImage } from '@eventespresso/components';
 import { isModelEntityOfModel } from '@eventespresso/validators';
 import warning from 'warning';
+import { ifCondition } from '@wordpress/compose';
+import PropTypes from 'prop-types';
 
 /**
  * Internal Imports
@@ -15,32 +17,11 @@ function getAttendeeName( attendee ) {
 	return `${ attendee.fname } ${ attendee.lname }`;
 }
 
-export default function RegistrationDetailsView( {
+function RegistrationDetailsView( {
 	attendee,
 	registration,
 	DTT_ID,
 } ) {
-	if (
-		! isModelEntityOfModel( attendee, 'attendee' )
-	) {
-		warning(
-			false,
-			'The provided attendee prop is not an instance of BaseEntity ' +
-			'for the attendee model'
-		);
-		return null;
-	}
-	if (
-		! isModelEntityOfModel( registration, 'registration' )
-	) {
-		warning(
-			false,
-			'The provided registration prop is not an instance of ' +
-			'BaseEntity for the registration model'
-		);
-		return null;
-	}
-
 	return (
 		<div className={ 'eea-bs-registration-details-container' }>
 			<ContactDetails
@@ -59,3 +40,49 @@ export default function RegistrationDetailsView( {
 		</div>
 	);
 }
+
+RegistrationDetailsView.propTypes = {
+	attendee: PropTypes.object.isRequired,
+	registration: PropTypes.object.isRequired,
+	DTT_ID: PropTypes.number.isRequired,
+};
+
+const WrappedComponent = ifCondition(
+	( { attendee, registration } ) => {
+		if (
+			! isModelEntityOfModel( attendee, 'attendee' )
+		) {
+			warning(
+				false,
+				'The provided attendee prop is not an instance of BaseEntity ' +
+				'for the attendee model'
+			);
+			return false;
+		}
+		if (
+			! isModelEntityOfModel( registration, 'registration' )
+		) {
+			warning(
+				false,
+				'The provided registration prop is not an instance of ' +
+				'BaseEntity for the registration model'
+			);
+			return false;
+		}
+		return true;
+	}
+)( RegistrationDetailsView );
+
+WrappedComponent.propTypes = {
+	registration: PropTypes.object,
+	attendee: PropTypes.object,
+	DTT_ID: PropTypes.number,
+};
+
+WrappedComponent.defaultProps = {
+	registration: null,
+	attendee: null,
+	DTT_ID: 0,
+};
+
+export default WrappedComponent;

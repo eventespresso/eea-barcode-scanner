@@ -8,6 +8,7 @@ import StepBubble from './step-bubble';
  * External imports
  */
 import { isArray } from 'lodash';
+import PropTypes from 'prop-types';
 
 const StepBubbleMenu = ( {
 	bubbleClick,
@@ -36,6 +37,20 @@ const StepBubbleMenu = ( {
 			}
 		</div>
 	);
+};
+
+StepBubbleMenu.propTypes = {
+	bubbleClick: PropTypes.func,
+	bubbleData: PropTypes.array,
+	clickable: PropTypes.array,
+	activeBubble: PropTypes.string,
+};
+
+StepBubbleMenu.defaultProps = {
+	bubbleClick: () => null,
+	bubbleData: [],
+	clickable: [],
+	activeBubble: '',
 };
 
 export default StepBubbleMenu;

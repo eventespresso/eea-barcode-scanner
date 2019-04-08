@@ -51,6 +51,16 @@ export default class ScanInputView extends Component {
 		onManualInput: PropTypes.func,
 	};
 
+	static defaultProps = {
+		onScannerComplete: () => null,
+		onScannerError: () => null,
+		onScannerReceive: () => null,
+		scanTypeSelection: scanTypes.LOOKUP,
+		onScanTypeSelect: () => null,
+		registrationCode: '',
+		onManualInput: () => null,
+	};
+
 	submitInput = () => {
 		this.props.onManualInput( this.$el.val() );
 	};

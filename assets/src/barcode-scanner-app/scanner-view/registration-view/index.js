@@ -5,7 +5,8 @@ import { isModelEntityOfModel } from '@eventespresso/validators';
 import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
-import { compose, ifCondition, } from '@wordpress/compose';
+import { compose, ifCondition } from '@wordpress/compose';
+import PropTypes from 'prop-types';
 
 /**
  * Internal import
@@ -14,13 +15,13 @@ import RegistrationDetailsView from './registration-details-view';
 import RegistrationGroupView from './registration-group-view';
 
 export function RegistrationView( {
-	registration = null,
-	attendee = null,
-	DTT_ID = 0,
-	finishedLoadingRegistrations = false,
-	finishedLoadingAttendee = false,
+	registration,
+	attendee,
+	DTT_ID,
+	finishedLoadingRegistration,
+	finishedLoadingAttendee,
 } ) {
-	const finishedLoading = () => finishedLoadingRegistrations &&
+	const finishedLoading = () => finishedLoadingRegistration &&
 		finishedLoadingAttendee;
 	let scannerResultsContent = ! finishedLoading() ?
 		<Spinner /> :
@@ -50,14 +51,29 @@ export function RegistrationView( {
 	);
 }
 
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		const { registrationCode } = ownProps;
+RegistrationView.propTypes = {
+	registration: PropTypes.object,
+	attendee: PropTypes.object,
+	DTT_ID: PropTypes.number,
+	finishedLoadingRegistration: PropTypes.bool,
+	finishedLoadingAttendee: PropTypes.bool,
+};
+
+RegistrationView.defaultProps = {
+	registration: null,
+	attendee: null,
+	DTT_ID: 0,
+	finishedLoadingRegistration: false,
+	finishedLoadingAttendee: false,
+};
+
+const WrappedComponent = compose( [
+	withSelect( ( select, { registrationCode } ) => {
 		const { getEntities } = select( 'eventespresso/lists' );
 		const { getRelatedEntities } = select( 'eventespresso/core' );
 		const { hasFinishedResolution } = select( 'core/data' );
 
-		const finishedLoadingRegistrations = hasFinishedResolution(
+		const finishedLoadingRegistration = hasFinishedResolution(
 			'eventespresso/lists',
 			'getEntities',
 			[ 'registration', 'where[REG_code]=' + registrationCode ]
@@ -67,7 +83,7 @@ export default compose( [
 			'registration',
 			'where[REG_code]=' + registrationCode
 		);
-		const newRegistration = finishedLoadingRegistrations &&
+		const newRegistration = finishedLoadingRegistration &&
 		newRegistrations &&
 		newRegistrations.length > 0 ?
 			newRegistrations.slice( 0, 1 ).pop() :
@@ -75,17 +91,17 @@ export default compose( [
 
 		// early abort of finished loading attendee if can't obtain a valid
 		// registration.
-		let finishedLoadingAttendee = finishedLoadingRegistrations &&
+		let finishedLoadingAttendee = finishedLoadingRegistration &&
 			! isModelEntityOfModel( newRegistration, 'registration' );
 
 		if (
-			! finishedLoadingRegistrations ||
-			( finishedLoadingAttendee && finishedLoadingRegistrations )
+			! finishedLoadingRegistration ||
+			( finishedLoadingAttendee && finishedLoadingRegistration )
 		) {
 			return {
 				registration: newRegistration,
 				attendee: null,
-				finishedLoadingRegistrations,
+				finishedLoadingRegistration,
 				finishedLoadingAttendee,
 			};
 		}
@@ -110,8 +126,13 @@ export default compose( [
 			registration: newRegistration,
 			attendee: newAttendee,
 			finishedLoadingAttendee,
-			finishedLoadingRegistrations,
+			finishedLoadingRegistration,
 		};
 	} ),
-	ifCondition( ( registrationCode ) => registrationCode ),
+	ifCondition( ( { registrationCode } ) => registrationCode ),
 ] )( RegistrationView );
+
+WrappedComponent.propTypes = { registrationCode: PropTypes.string };
+WrappedComponent.defaultProps = { registrationCode: '' };
+
+export default WrappedComponent;

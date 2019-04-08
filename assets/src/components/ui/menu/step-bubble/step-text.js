@@ -1,18 +1,17 @@
 /**
  * External imports
  */
-import { Component } from '@wordpress/element';
+import PropTypes from 'prop-types';
 import { pure } from '@wordpress/compose';
 
 
-class StepText extends Component {
-	render() {
-		const  { content } = this.props;
-		return content &&
-			<span className="ee-step-bubble-step-text">
-			{ content }
-		</span>;
-	}
-}
+const StepText = ( { content } ) => {
+	return content &&
+		<span className="ee-step-bubble-step-text">
+		{ content }
+	</span>;
+};
+
+StepText.propTypes = { content: PropTypes.string.isRequired };
 
 export default pure( StepText );

@@ -28,7 +28,7 @@ const withLatestCheckin = createHigherOrderComponent(
 			}
 		),
 		withDispatch(
-			( dispatch, { registration, datetimeId} ) => {
+			( dispatch, { registration, datetimeId } ) => {
 				const { toggleCheckin } = dispatch( 'eventespresso/core' );
 				return {
 					onClick() {

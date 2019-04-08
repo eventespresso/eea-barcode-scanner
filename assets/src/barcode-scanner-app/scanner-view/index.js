@@ -5,6 +5,7 @@ import { Component } from '@wordpress/element';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { routes } from '@eventespresso/eejs';
+import PropTypes from 'prop-types';
 
 /**
  * Internal imports
@@ -12,7 +13,6 @@ import { routes } from '@eventespresso/eejs';
 import AllRegistrationLink from './all-registration-link';
 import ScanInputView from './scan-input-view';
 import { scanTypes } from './scan-input-view/scan-type-selector';
-import { __ } from '@wordpress/i18n';
 import RegistrationView from './registration-view';
 import {
 	withCheckinState,
@@ -24,14 +24,29 @@ import {
 	NOTICE_ID_TOGGLE_CHECKIN_ERROR,
 } from './registration-view/checkin/constants';
 
-// @todo add reset actions for eventespresso/lists store (which is needed because
-// of the usage in the barcode scanner `toggleCheckInState` action!
-
 export class ScannerView extends Component {
 	state = {
 		registrationCode: '',
 		scanTypeSelection: scanTypes.LOOKUP,
 		doReset: false,
+	};
+
+	static propTypes = {
+		resetCheckinState: PropTypes.func,
+		resetStoreState: PropTypes.func,
+		datetimeId: PropTypes.number,
+		eventId: PropTypes.number,
+		checkinState: PropTypes.number,
+		checkin: PropTypes.object,
+	};
+
+	static defaultProps = {
+		resetCheckinState: () => null,
+		resetStoreState: () => null,
+		datetimeId: 0,
+		eventId: 0,
+		checkinState: CHECKIN_STATES.IDLE,
+		checkin: null,
 	};
 
 	onScannerComplete = ( inputEvent, data ) => {
@@ -121,7 +136,6 @@ export class ScannerView extends Component {
 			return <RegistrationView
 				DTT_ID={ this.props.datetimeId }
 				registrationCode={ this.state.registrationCode }
-				//onUnsubscribe={ this.onUnsubscribe }
 			/>;
 		}
 		if (
@@ -205,7 +219,6 @@ export default compose( [
 				mainRegistrationId ?
 				getLatestCheckin( mainRegistrationId, datetimeId ) :
 				null,
-			mainRegistrationId,
 		};
 	} ),
 ] )( ScannerView );

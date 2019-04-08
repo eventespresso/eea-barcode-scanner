@@ -11,37 +11,43 @@ import { values } from 'lodash';
  */
 import { StatusCircle, statusSizes } from './';
 
-export default class StatusSection extends Component {
-	static propTypes = {
-		statusLabel: PropTypes.string,
-		statusValue: PropTypes.string,
-		circleSize: PropTypes.oneOf( values( statusSizes ) ),
-		className: PropTypes.string,
-		children: PropTypes.any,
-		statusCode: PropTypes.string
-	};
-	render() {
-		const {
-			statusLabel,
-			statusValue,
-			circleSize,
-			children,
-			statusCode,
-			className
-		} = this.props;
-		const containerClass = classnames(
-			className, 'ee-status-section-container'
-		);
-		const circleProps = { statusLabel, statusCode, circleSize };
+const StatusSection = ( {
+	statusLabel,
+	statusValue,
+	circleSize,
+	className,
+	children,
+	statusCode,
+} ) => {
+	const containerClass = classnames(
+		className, 'ee-status-section-container'
+	);
+	const circleProps = { statusLabel, statusCode, circleSize };
 
-		return (
-			<section className={ containerClass }>
-				<span className={ 'ee-status-section-label' }>
-					{ statusLabel }
-				</span>{ statusValue }
-				{ children }
-				<StatusCircle { ...circleProps } />
-			</section>
-		);
-	}
-}
+	return (
+		<section className={ containerClass }>
+			<span className={ 'ee-status-section-label' }>
+				{ statusLabel }
+			</span>{ statusValue }
+			{ children }
+			<StatusCircle { ...circleProps } />
+		</section>
+	);
+};
+
+StatusSection.propTypes = {
+	statusLabel: PropTypes.string.isRequired,
+	statusValue: PropTypes.string.isRequired,
+	circleSize: PropTypes.oneOf( values( statusSizes ) ),
+	className: PropTypes.string,
+	children: PropTypes.any,
+	statusCode: PropTypes.string.isRequired
+};
+
+StatusSection.defaultProps = {
+	circleSize: statusSizes['20'],
+	className: '',
+	children: null,
+};
+
+export default StatusSection;

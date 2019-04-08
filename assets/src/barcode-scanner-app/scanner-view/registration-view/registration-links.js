@@ -7,12 +7,13 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { sprintf, __ } from '@wordpress/i18n';
 import { Button, ExternalLink } from '@wordpress/components';
 import { Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
+import { compose, ifCondition } from '@wordpress/compose';
+import PropTypes from 'prop-types';
 
 export function RegistrationLinks( {
-	registration = null,
+	registration,
 	onViewGroupClick,
-	isGroupVisible = false,
+	isGroupVisible,
 } ) {
 	const getRegistrationDetailsLink = () => {
 		return routes.getAdminUrl(
@@ -45,9 +46,6 @@ export function RegistrationLinks( {
 			<Fragment> | { getToggleButton() }</Fragment> :
 			null;
 	};
-	if ( ! isModelEntityOfModel( registration, 'registration' ) ) {
-		return null;
-	}
 	return <div className="eea-barcode-registration-links-container">
 		<ExternalLink href={ getRegistrationDetailsLink() }>
 			{ __( 'View Registration Details', 'event_espresso' ) }
@@ -59,7 +57,18 @@ export function RegistrationLinks( {
 	</div>;
 }
 
-export default compose( [
+RegistrationLinks.propTypes = {
+	registration: PropTypes.object.isRequired,
+	onViewGroupClick: PropTypes.func,
+	isGroupVisible: PropTypes.bool,
+};
+
+RegistrationLinks.defaultProps = {
+	onViewGroupClick: () => null,
+	isGroupVisible: false,
+};
+
+const WrappedComponent = compose( [
 	withSelect( ( select, { registration } ) => {
 		return {
 			isGroupVisible: select( 'eea-barcode-scanner/core' )
@@ -71,13 +80,18 @@ export default compose( [
 		const { isGroupVisible } = select( 'eea-barcode-scanner/core' );
 		return {
 			onViewGroupClick: () => {
-				if (
-					isModelEntityOfModel( registration, 'registration' )
-				) {
-					const visibleGroup = isGroupVisible( registration.id );
-					toggleIsVisibleGroup( registration.id, ! visibleGroup );
-				}
+				const visibleGroup = isGroupVisible( registration.id );
+				toggleIsVisibleGroup( registration.id, ! visibleGroup );
 			},
 		};
 	} ),
+	ifCondition( ( { registration } ) => isModelEntityOfModel(
+		registration,
+		'registration'
+	) ),
 ] )( RegistrationLinks );
+
+WrappedComponent.propTypes = { registration: PropTypes.object };
+WrappedComponent.defaultProps = { registration: null };
+
+export default WrappedComponent;

@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 const { getAdminUrl, ADMIN_ROUTES, ADMIN_ROUTE_ACTIONS } = routes;
 
 export default class AllRegistrationLink extends Component {
-	PropTypes = {
+	static propTypes = {
 		EVT_ID: PropTypes.number.isRequired,
 		DTT_ID: PropTypes.number.isRequired,
 	};

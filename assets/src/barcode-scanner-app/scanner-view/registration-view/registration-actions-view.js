@@ -5,6 +5,7 @@ import { isModelEntityOfModel } from '@eventespresso/validators';
 import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
 import { statusModel } from '@eventespresso/model';
+import PropTypes from 'prop-types';
 
 /**
  * Internal Imports
@@ -22,7 +23,7 @@ const EnhancedCheckInAction = withLatestCheckin( CheckInAction );
 export function RegistrationActionsView( {
 	registration,
 	DTT_ID,
-	transaction = null,
+	transaction,
 } ) {
 	const getTransactionOwing = () => {
 		if ( transaction === null ) {
@@ -61,19 +62,40 @@ export function RegistrationActionsView( {
 	);
 }
 
-export default withSelect( ( select, ownProps ) => {
-	const {
-		registration,
-		transaction,
-	} = ownProps;
-	const isReg = isRegistration( registration );
-	const { getRelatedEntities } = select( 'eventespresso/core' );
-	const transactions = isReg ?
-		getRelatedEntities( registration, 'transaction' ) :
-		[];
-	const newTransaction = transactions &&
-		transactions.length > 0 ?
-		transactions.slice( 0, 1 ).pop() :
-		transaction;
-	return { transaction: newTransaction };
-} )( RegistrationActionsView );
+RegistrationActionsView.propTypes = {
+	registration: PropTypes.object,
+	DTT_ID: PropTypes.number,
+	transaction: PropTypes.object,
+};
+
+RegistrationActionsView.defaultProps = {
+	registration: null,
+	DTT_ID: 0,
+	transaction: null,
+};
+
+const WrappedComponent = withSelect(
+	( select, { registration, transaction } ) => {
+		const isReg = isRegistration( registration );
+		const { getRelatedEntities } = select( 'eventespresso/core' );
+		const transactions = isReg ?
+			getRelatedEntities( registration, 'transaction' ) :
+			[];
+		const newTransaction = transactions &&
+			transactions.length > 0 ?
+			transactions.slice( 0, 1 ).pop() :
+			transaction;
+		return { transaction: newTransaction };
+	} )( RegistrationActionsView );
+
+WrappedComponent.propTypes = {
+	registration: PropTypes.object,
+	transaction: PropTypes.object,
+};
+
+WrappedComponent.defaultProps = {
+	registration: null,
+	transaction: null,
+};
+
+export default WrappedComponent;
