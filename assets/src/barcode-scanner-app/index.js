@@ -1,7 +1,6 @@
 /**
  * Internal imports
  */
-import StepBubbleMenu from '../components/ui/menu/step-bubble';
 import * as slugs from './menu-slugs';
 import Selectors from './selectors';
 import ScannerNotices from '../components/scanner-notices';
@@ -13,6 +12,7 @@ import ScannerView from './scanner-view';
 import { render as domRender, Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { values } from 'lodash';
+import { StepBubbleMenu } from '@eventespresso/components';
 
 /**
  * import and register data api
