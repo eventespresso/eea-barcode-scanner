@@ -11,7 +11,6 @@ import ScannerView from './scanner-view';
  */
 import { render as domRender, Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { values } from 'lodash';
 import { StepBubbleMenu } from '@eventespresso/components';
 
 /**
@@ -20,94 +19,114 @@ import { StepBubbleMenu } from '@eventespresso/components';
 import '../data';
 
 class BarcodeApp extends Component {
-	onBubbleClick = ( bubbleSlug ) => {
-		this.setState( { currentStep: bubbleSlug } );
-	};
-
-	onDataUpdate = ( stepSlug, selectedValue ) => {
-		if ( selectedValue === null ) {
-			if ( stepSlug === slugs.MENU_CHOOSE_EVENT ) {
-				this.updateEventState();
-				this.updateDatetimeState();
-			}
-			if ( stepSlug === slugs.MENU_CHOOSE_DATETIME ) {
-				this.updateDatetimeState();
-			}
-			return;
-		}
-		if ( stepSlug === slugs.MENU_CHOOSE_EVENT &&
-			selectedValue.value &&
-			selectedValue.value !== this.state.selectedEventId
-		) {
-			this.updateEventState( selectedValue );
-			this.updateDatetimeState();
-			this.setState( { currentStep: slugs.MENU_CHOOSE_DATETIME } );
-		}
-		if ( stepSlug === slugs.MENU_CHOOSE_DATETIME &&
-			selectedValue.value &&
-			selectedValue.value !== this.state.selectedDatetimeId
-		) {
-			this.updateDatetimeState( selectedValue );
-			this.setState( { currentStep: slugs.MENU_SCAN } );
-		}
-	};
-
 	state = {
-		bubbleData: [],
+		bubbleData: {},
 		currentStep: '',
-		selectedEventId: 0,
+		eventId: 0,
 		eventTitle: '',
-		selectedDatetimeId: 0,
+		datetimeId: 0,
 		dateTimeTitle: '',
-		onDataUpdate: this.onDataUpdate,
 	};
 
 	componentDidMount() {
 		this.setState( {
-			bubbleData: [
-				{
+			bubbleData: {
+				// using slugs as keys = direct access
+				// and a guarantee that slugs can be used as keys
+				// simply verifying that slugs are strings does not!
+				[ slugs.MENU_CHOOSE_EVENT ]: {
 					label: __( 'Choose Event', 'event_espresso' ),
 					value: 1,
-					slug: slugs.MENU_CHOOSE_EVENT,
+					// first step is always clickable
+					clickable: true,
+					action: this.onBubbleClick,
 				},
-				{
+				[ slugs.MENU_CHOOSE_DATETIME ]: {
 					label: __( 'Choose Datetime', 'event_espresso' ),
 					value: 2,
-					slug: slugs.MENU_CHOOSE_DATETIME,
+					// second step initially not clickable
+					clickable: false,
+					action: this.onBubbleClick,
 				},
-				{
+				[ slugs.MENU_SCAN ]: {
 					label: __( 'Scan', 'event_espresso' ),
 					value: 3,
-					slug: slugs.MENU_SCAN,
+					// last step initially not clickable
+					clickable: false,
+					// we can share the same class method for all steps,
+					// but just showing that each bubble step CAN receive
+					// its very own callback which is more versatile
+					action: () => {
+						this.setState( { currentStep: slugs.MENU_SCAN } );
+					},
 				},
-			],
+			},
 			currentStep: slugs.MENU_CHOOSE_EVENT,
-			clickable: [ ...values( slugs ) ],
 		} );
 	}
 
-	updateEventState( selectedValue = {} ) {
+	/**
+	 * @function
+	 * @param {string} slug
+	 */
+	onBubbleClick = ( slug ) => {
+		this.setState( { currentStep: slug } );
+	};
+
+	/**
+	 * Using a dedicated callback for the selector onChange
+	 * events so that all of the logic is in one place
+	 *
+	 * @function
+	 * @param {Object} selected
+	 */
+	onEventChange = ( { value = 0, label = '' } ) => {
+		// changing event and not resetting?
+		const currentStep = value > 0 && value !== this.state.eventId ?
+			slugs.MENU_CHOOSE_DATETIME :
+			slugs.MENU_CHOOSE_EVENT;
+		const bubbleData = this.state.bubbleData;
+		// valid event id means advance to datetime step
+		bubbleData[ slugs.MENU_CHOOSE_DATETIME ].clickable = value > 0;
+		// setting this back to false just in case
+		bubbleData[ slugs.MENU_SCAN ].clickable = false;
 		this.setState( {
-			selectedEventId: selectedValue.value || 0,
-			eventTitle: selectedValue.label || '',
+			eventId: value,
+			eventTitle: label,
+			datetimeId: 0,
+			dateTimeTitle: '',
+			currentStep: currentStep,
+			bubbleData: bubbleData,
 		} );
-	}
+	};
 
-	updateDatetimeState( selectedValue = {} ) {
+	/**
+	 * @function
+	 * @param {Object} selected
+	 */
+	onDatetimeChange = ( { value = 0, label = '' } ) => {
+		// changing datetime and not resetting?
+		const currentStep = value > 0 && value !== this.state.datetimeId ?
+			slugs.MENU_SCAN :
+			slugs.MENU_CHOOSE_DATETIME;
+		const bubbleData = this.state.bubbleData;
+		// valid datetime id means advance to scan step
+		bubbleData[ slugs.MENU_SCAN ].clickable = value > 0;
 		this.setState( {
-			selectedDatetimeId: selectedValue.value || 0,
-			dateTimeTitle: selectedValue.label || '',
+			datetimeId: value,
+			dateTimeTitle: label,
+			currentStep: currentStep,
+			bubbleData: bubbleData,
 		} );
-	}
+	};
 
-	getScannerView() {
-		if ( this.state.currentStep === slugs.MENU_SCAN ) {
-			return <ScannerView
-				datetimeId={ this.state.selectedDatetimeId }
-				eventId={ this.state.selectedEventId }
-			/>;
-		}
-		return null;
+	getScannerView( currentStep ) {
+		return currentStep === slugs.MENU_SCAN ? (
+			<ScannerView
+				datetimeId={ this.state.datetimeId }
+				eventId={ this.state.eventId }
+			/>
+		) : null;
 	}
 
 	render() {
@@ -116,13 +135,19 @@ class BarcodeApp extends Component {
 				<ScannerNotices />
 				<div className="eea-barcode-scanning-container">
 					<StepBubbleMenu
-						bubbleClick={ this.onBubbleClick }
 						bubbleData={ this.state.bubbleData }
-						clickable={ this.state.clickable }
 						activeBubble={ this.state.currentStep }
 					/>
-					<Selectors { ...this.state } />
-					{ this.getScannerView() }
+					<Selectors
+						currentStep={ this.state.currentStep }
+						eventId={ this.state.eventId }
+						datetimeId={ this.state.datetimeId }
+						eventTitle={ this.state.eventTitle }
+						dateTimeTitle={ this.state.dateTimeTitle }
+						onEventChange={ this.onEventChange }
+						onDatetimeChange={ this.onDatetimeChange }
+					/>
+					{ this.getScannerView( this.state.currentStep ) }
 				</div>
 			</Fragment>
 		);
