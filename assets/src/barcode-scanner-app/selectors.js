@@ -1,7 +1,6 @@
 /**
  * External imports
  */
-import { Component } from '@wordpress/element';
 import { EventSelect, DatetimeSelect } from '@eventespresso/components';
 import PropTypes from 'prop-types';
 
@@ -14,146 +13,102 @@ const DEFAULT_QUERY_DATA = {
 	limit: 50,
 };
 
-export default class Selectors extends Component {
-	state = {
-		activeSelector: '',
-		eventTitle: '',
-		selectedEventId: 0,
-		dateTimeTitle: '',
-		selectedDatetimeId: 0,
-	};
-
-	static propTypes = {
-		currentStep: PropTypes.string,
-		selectedEventId: PropTypes.number,
-		selectedDatetimeId: PropTypes.number,
-		eventTitle: PropTypes.string,
-		dateTimeTitle: PropTypes.string,
-		onDataUpdate: PropTypes.func,
-	};
-
-	static defaultProps = {
-		selectedEventId: 0,
-		selectedDatetimeId: 0,
-		eventTitle: '',
-		dateTimeTitle: '',
-		onDataUpdate: () => null,
-	};
-
-	setActiveSelector() {
-		this.setState( {
-			activeSelector: this.props.currentStep,
-			selectedEventId: this.props.selectedEventId,
-			selectedDatetimeId: this.props.selectedDatetimeId,
-			eventTitle: this.props.eventTitle,
-			dateTimeTitle: this.props.dateTimeTitle,
-		} );
-	}
-
-	onEventSelect = ( selectedValue ) => {
-		this.props.onDataUpdate( slugs.MENU_CHOOSE_EVENT, selectedValue );
-	};
-
-	onDatetimeSelect = ( selectedValue ) => {
-		this.props.onDataUpdate( slugs.MENU_CHOOSE_DATETIME, selectedValue );
-	};
-
-	getDatesQueryData = () => {
-		return {
-			...DEFAULT_QUERY_DATA,
-			forEventId: this.state.selectedEventId,
-			showExpired: true,
-		};
-	};
-
-	getSelectorTitle() {
-		return (
-			<div className={ 'eea-bs-ed-selected-title' }>
-				{ this.getTitle() }
-			</div>
-		);
-	}
-
-	getTitle() {
-		switch ( this.state.activeSelector ) {
-			case slugs.MENU_CHOOSE_DATETIME:
-				return this.getEventTitle();
-			case slugs.MENU_SCAN:
-				return [ this.getEventTitle(), this.getDateTimeTitle() ];
-			default:
-				return '';
-		}
-	}
-
-	getEventTitle() {
-		return (
-			<h3 key={ 'event-title' }
+const getEventTitle = ( currentStep, eventTitle ) => {
+	return currentStep === slugs.MENU_CHOOSE_DATETIME ||
+		currentStep === slugs.MENU_SCAN ? (
+			<h3
+				key={ 'event-title' }
 				className={ 'eea-bs-ed-selected-event-text' }
 			>
-				{ this.state.eventTitle }
+				{ eventTitle }
 			</h3>
-		);
-	}
+		) : null;
+};
 
-	getDateTimeTitle() {
-		return (
-			<h4 key={ 'datetime-title' }
-				className={ 'eea-bs-ed-selected-dtt-text' }
-			>
-				{ this.state.dateTimeTitle }
-			</h4>
-		);
-	}
+const getDateTimeTitle = ( currentStep, dateTimeTitle ) => {
+	return currentStep === slugs.MENU_SCAN ? (
+		<h4 key={ 'datetime-title' }
+			className={ 'eea-bs-ed-selected-dtt-text' }
+		>
+			{ dateTimeTitle }
+		</h4>
+	) : null;
+};
 
-	getSelectorContainer() {
-		return (
+const getEventSelector = ( currentStep, onChange, eventId ) => {
+	return currentStep === slugs.MENU_CHOOSE_EVENT ?
+		<EventSelect
+			selectLabel={ '' }
+			onSelect={ onChange }
+			selected={ eventId }
+			queryData={ DEFAULT_QUERY_DATA }
+		/> : null;
+};
+
+const getDatetimeSelector = ( currentStep, onChange, eventId, datetimeId ) => {
+	return currentStep === slugs.MENU_CHOOSE_DATETIME ?
+		<DatetimeSelect
+			selectLabel={ '' }
+			onSelect={ onChange }
+			addAllOptionLabel={ '' }
+			selected={ datetimeId }
+			queryData={ {
+				...DEFAULT_QUERY_DATA,
+				forEventId: eventId,
+				showExpired: true,
+			} }
+		/> : null;
+};
+
+const Selectors = ( {
+	currentStep,
+	eventId,
+	datetimeId,
+	eventTitle,
+	dateTimeTitle,
+	onEventChange,
+	onDatetimeChange,
+} ) => {
+	return (
+		<div className="eea-bs-ed-selection-container">
+			<div className={ 'eea-bs-ed-selected-title' }>
+				{ getEventTitle( currentStep, eventTitle ) }
+				{ getDateTimeTitle( currentStep, dateTimeTitle ) }
+			</div>
 			<div className={ 'eea-bs-ed-selector' }>
-				{ this.getSelector() }
+				{ getEventSelector( currentStep, onEventChange, eventId ) }
+				{
+					getDatetimeSelector(
+						currentStep,
+						onDatetimeChange,
+						eventId,
+						datetimeId
+					)
+				}
 			</div>
-		);
-	}
+		</div>
+	);
+};
 
-	getSelector() {
-		switch ( this.state.activeSelector ) {
-			case slugs.MENU_CHOOSE_EVENT:
-				return <EventSelect
-					selectLabel={ '' }
-					onSelect={ this.onEventSelect }
-					selected={ this.state.selectedEventId }
-					queryData={ DEFAULT_QUERY_DATA }
-				/>;
-			case slugs.MENU_CHOOSE_DATETIME:
-				return <DatetimeSelect
-					selectLabel={ '' }
-					onSelect={ this.onDatetimeSelect }
-					addAllOptionLabel={ '' }
-					selected={ this.state.selectedDatetimeId }
-					queryData={ this.getDatesQueryData() }
-				/>;
-			default:
-				return '';
-		}
-	}
+Selectors.propTypes = {
+	currentStep: PropTypes.string,
+	eventId: PropTypes.number,
+	datetimeId: PropTypes.number,
+	eventTitle: PropTypes.string,
+	dateTimeTitle: PropTypes.string,
+	onEventChange: PropTypes.func,
+	onDatetimeChange: PropTypes.func,
+};
 
-	componentDidMount() {
-		this.setActiveSelector();
-	}
+Selectors.defaultProps = {
+	currentStep: slugs.MENU_CHOOSE_EVENT,
+	eventId: 0,
+	datetimeId: 0,
+	eventTitle: '',
+	dateTimeTitle: '',
+	onEventChange: () => null,
+	onDatetimeChange: () => null,
+};
 
-	componentDidUpdate( prevProps ) {
-		if ( prevProps.currentStep !== this.props.currentStep ||
-			prevProps.selectedEventId !== this.props.selectedEventId ||
-			prevProps.selectedDatetimeId !== this.props.selectedDatetimeId
-		) {
-			this.setActiveSelector();
-		}
-	}
+export default Selectors;
 
-	render() {
-		return (
-			<div className="eea-bs-ed-selection-container">
-				{ this.getSelectorTitle() }
-				{ this.getSelectorContainer() }
-			</div>
-		);
-	}
-}
