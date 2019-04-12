@@ -37,21 +37,24 @@ class BarcodeApp extends Component {
 				[ slugs.MENU_CHOOSE_EVENT ]: {
 					label: __( 'Choose Event', 'event_espresso' ),
 					value: 1,
-					// first step is always clickable
+					// first step is initially active and clickable
+					active: true,
 					clickable: true,
 					action: this.onBubbleClick,
 				},
 				[ slugs.MENU_CHOOSE_DATETIME ]: {
 					label: __( 'Choose Datetime', 'event_espresso' ),
 					value: 2,
-					// second step initially not clickable
+					// second step initially not active or clickable
+					active: false,
 					clickable: false,
 					action: this.onBubbleClick,
 				},
 				[ slugs.MENU_SCAN ]: {
 					label: __( 'Scan', 'event_espresso' ),
 					value: 3,
-					// last step initially not clickable
+					// last step initially not active or clickable
+					active: false,
 					clickable: false,
 					// we can share the same class method for all steps,
 					// but just showing that each bubble step CAN receive
@@ -96,7 +99,7 @@ class BarcodeApp extends Component {
 			datetimeId: 0,
 			dateTimeTitle: '',
 			currentStep: currentStep,
-			bubbleData: bubbleData,
+			bubbleData: this.setActiveStep( currentStep, bubbleData ),
 		} );
 	};
 
@@ -116,28 +119,40 @@ class BarcodeApp extends Component {
 			datetimeId: value,
 			dateTimeTitle: label,
 			currentStep: currentStep,
-			bubbleData: bubbleData,
+			bubbleData: this.setActiveStep( currentStep, bubbleData ),
 		} );
 	};
 
-	getScannerView( currentStep ) {
+	/**
+	 * @function
+	 * @param {string} currentStep
+	 * @param {Object} bubbleData
+	 * @return {Object} bubbleData
+	 */
+	setActiveStep = ( currentStep, bubbleData ) => {
+		for ( const slug in bubbleData ) {
+			if ( bubbleData.hasOwnProperty( slug ) ) {
+				bubbleData[ slug ].active = currentStep === slug;
+			}
+		}
+		return bubbleData;
+	};
+
+	getScannerView = ( currentStep ) => {
 		return currentStep === slugs.MENU_SCAN ? (
 			<ScannerView
 				datetimeId={ this.state.datetimeId }
 				eventId={ this.state.eventId }
 			/>
 		) : null;
-	}
+	};
 
 	render() {
 		return (
 			<Fragment>
 				<ScannerNotices />
 				<div className="eea-barcode-scanning-container">
-					<StepBubbleMenu
-						bubbleData={ this.state.bubbleData }
-						activeBubble={ this.state.currentStep }
-					/>
+					<StepBubbleMenu bubbleData={ this.state.bubbleData } />
 					<Selectors
 						currentStep={ this.state.currentStep }
 						eventId={ this.state.eventId }
