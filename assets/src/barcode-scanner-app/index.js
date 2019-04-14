@@ -71,7 +71,18 @@ class BarcodeApp extends Component {
 	 * @param {string} slug
 	 */
 	onBubbleClick = ( slug ) => {
-		this.setState( { currentStep: slug } );
+		if ( slug !== this.state.currentStep ) {
+			const bubbleData = { ...this.state.bubbleData };
+			// traverse the tree and ensure that the configuration for the
+			// bubbleData that matches the current step is the only one active.
+			for ( const bubbleSlug in bubbleData ) {
+				bubbleData[ bubbleSlug ].active = bubbleSlug === slug;
+			}
+			this.setState( {
+				currentStep: slug,
+				bubbleData: bubbleData,
+			} );
+		}
 	};
 
 	/**
