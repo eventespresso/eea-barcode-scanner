@@ -93,23 +93,29 @@ class BarcodeApp extends Component {
 	 * @param {Object} selected
 	 */
 	onEventChange = ( { value = 0, label = '' } ) => {
-		// changing event and not resetting?
-		const currentStep = value > 0 && value !== this.state.eventId ?
-			slugs.MENU_CHOOSE_DATETIME :
-			slugs.MENU_CHOOSE_EVENT;
-		const bubbleData = this.state.bubbleData;
-		// valid event id means advance to datetime step
-		bubbleData[ slugs.MENU_CHOOSE_DATETIME ].clickable = value > 0;
-		// setting this back to false just in case
-		bubbleData[ slugs.MENU_SCAN ].clickable = false;
-		this.setState( {
-			eventId: value,
-			eventTitle: label,
-			datetimeId: 0,
-			dateTimeTitle: '',
-			currentStep: currentStep,
-			bubbleData: this.setActiveStep( currentStep, bubbleData ),
-		} );
+		// changing event and not resetting? (only change state if needed)
+		if ( value > 0 && value !== this.state.eventId ) {
+			const bubbleData = {
+				...this.state.bubbleData,
+			};
+			// valid event id means advance to datetime step
+			bubbleData[ slugs.MENU_CHOOSE_DATETIME ].clickable = true;
+			bubbleData[ slugs.MENU_CHOOSE_EVENT ].clickable = true;
+			// resetting this back to false because it may have been set true at
+			// some point in the life of this component.
+			bubbleData[ slugs.MENU_SCAN ].clickable = false;
+			this.setState( {
+				eventId: value,
+				eventTitle: label,
+				datetimeId: 0,
+				dateTimeTitle: '',
+				currentStep: slugs.MENU_CHOOSE_DATETIME,
+				bubbleData: this.setActiveStep(
+					slugs.MENU_CHOOSE_DATETIME,
+					bubbleData
+				),
+			} );
+		}
 	};
 
 	/**
@@ -117,19 +123,19 @@ class BarcodeApp extends Component {
 	 * @param {Object} selected
 	 */
 	onDatetimeChange = ( { value = 0, label = '' } ) => {
-		// changing datetime and not resetting?
-		const currentStep = value > 0 && value !== this.state.datetimeId ?
-			slugs.MENU_SCAN :
-			slugs.MENU_CHOOSE_DATETIME;
-		const bubbleData = this.state.bubbleData;
-		// valid datetime id means advance to scan step
-		bubbleData[ slugs.MENU_SCAN ].clickable = value > 0;
-		this.setState( {
-			datetimeId: value,
-			dateTimeTitle: label,
-			currentStep: currentStep,
-			bubbleData: this.setActiveStep( currentStep, bubbleData ),
-		} );
+		// changing datetime and not resetting? (only change state if needed)
+		if ( value > 0 && value !== this.state.datetimeId ) {
+			const bubbleData = {
+				...this.state.bubbleData,
+			};
+			bubbleData[ slugs.MENU_SCAN ].clickable = true;
+			this.setState( {
+				datetimeId: value,
+				dateTimeTitle: label,
+				currentStep: slugs.MENU_SCAN,
+				bubbleData: this.setActiveStep( slugs.MENU_SCAN, bubbleData ),
+			} );
+		}
 	};
 
 	/**
