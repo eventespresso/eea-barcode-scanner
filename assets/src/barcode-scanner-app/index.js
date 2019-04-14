@@ -59,9 +59,7 @@ class BarcodeApp extends Component {
 					// we can share the same class method for all steps,
 					// but just showing that each bubble step CAN receive
 					// its very own callback which is more versatile
-					action: () => {
-						this.setState( { currentStep: slugs.MENU_SCAN } );
-					},
+					action: this.onBubbleClick,
 				},
 			},
 			currentStep: slugs.MENU_CHOOSE_EVENT,
