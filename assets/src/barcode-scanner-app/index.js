@@ -31,9 +31,6 @@ class BarcodeApp extends Component {
 	componentDidMount() {
 		this.setState( {
 			bubbleData: {
-				// using slugs as keys = direct access
-				// and a guarantee that slugs can be used as keys
-				// simply verifying that slugs are strings does not!
 				[ slugs.MENU_CHOOSE_EVENT ]: {
 					label: __( 'Choose Event', 'event_espresso' ),
 					value: 1,
@@ -56,9 +53,6 @@ class BarcodeApp extends Component {
 					// last step initially not active or clickable
 					active: false,
 					clickable: false,
-					// we can share the same class method for all steps,
-					// but just showing that each bubble step CAN receive
-					// its very own callback which is more versatile
 					action: this.onBubbleClick,
 				},
 			},
@@ -72,15 +66,9 @@ class BarcodeApp extends Component {
 	 */
 	onBubbleClick = ( slug ) => {
 		if ( slug !== this.state.currentStep ) {
-			const bubbleData = { ...this.state.bubbleData };
-			// traverse the tree and ensure that the configuration for the
-			// bubbleData that matches the current step is the only one active.
-			for ( const bubbleSlug in bubbleData ) {
-				bubbleData[ bubbleSlug ].active = bubbleSlug === slug;
-			}
 			this.setState( {
 				currentStep: slug,
-				bubbleData: bubbleData,
+				bubbleData: this.setActiveStep( slug ),
 			} );
 		}
 	};
@@ -95,9 +83,7 @@ class BarcodeApp extends Component {
 	onEventChange = ( { value = 0, label = '' } ) => {
 		// changing event and not resetting? (only change state if needed)
 		if ( value > 0 && value !== this.state.eventId ) {
-			const bubbleData = {
-				...this.state.bubbleData,
-			};
+			const bubbleData = this.setActiveStep( slugs.MENU_CHOOSE_DATETIME );
 			// valid event id means advance to datetime step
 			bubbleData[ slugs.MENU_CHOOSE_DATETIME ].clickable = true;
 			bubbleData[ slugs.MENU_CHOOSE_EVENT ].clickable = true;
@@ -110,10 +96,7 @@ class BarcodeApp extends Component {
 				datetimeId: 0,
 				dateTimeTitle: '',
 				currentStep: slugs.MENU_CHOOSE_DATETIME,
-				bubbleData: this.setActiveStep(
-					slugs.MENU_CHOOSE_DATETIME,
-					bubbleData
-				),
+				bubbleData: bubbleData,
 			} );
 		}
 	};
@@ -125,34 +108,50 @@ class BarcodeApp extends Component {
 	onDatetimeChange = ( { value = 0, label = '' } ) => {
 		// changing datetime and not resetting? (only change state if needed)
 		if ( value > 0 && value !== this.state.datetimeId ) {
-			const bubbleData = {
-				...this.state.bubbleData,
-			};
+			const bubbleData = this.setActiveStep( slugs.MENU_SCAN );
 			bubbleData[ slugs.MENU_SCAN ].clickable = true;
 			this.setState( {
 				datetimeId: value,
 				dateTimeTitle: label,
 				currentStep: slugs.MENU_SCAN,
-				bubbleData: this.setActiveStep( slugs.MENU_SCAN, bubbleData ),
+				bubbleData: bubbleData,
 			} );
 		}
 	};
 
 	/**
+	 * returns a copy of the bubbleData object in state
+	 *
 	 * @function
-	 * @param {string} currentStep
-	 * @param {Object} bubbleData
 	 * @return {Object} bubbleData
 	 */
-	setActiveStep = ( currentStep, bubbleData ) => {
+	getBubbleData = () => {
+		return { ...this.state.bubbleData };
+	};
+
+	/**
+	 * traverse the tree and ensure that the configuration for the
+	 * bubbleData that matches the current step is the only one active.
+	 *
+	 * @function
+	 * @param {string} currentStep
+	 * @return {Object} bubbleData
+	 */
+	setActiveStep = ( currentStep ) => {
+		const bubbleData = this.getBubbleData();
 		for ( const slug in bubbleData ) {
 			if ( bubbleData.hasOwnProperty( slug ) ) {
-				bubbleData[ slug ].active = currentStep === slug;
+				bubbleData[ slug ].active = slug === currentStep;
 			}
 		}
 		return bubbleData;
 	};
 
+	/**
+	 * @function
+	 * @param {string} currentStep
+	 * @return {Object|null} rendered ScannerView
+	 */
 	getScannerView = ( currentStep ) => {
 		return currentStep === slugs.MENU_SCAN ? (
 			<ScannerView
