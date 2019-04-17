@@ -7,10 +7,10 @@
 General Styles
 ---------------------------------------------------------------------------------------------------- */
 .eea-barcode-scanning-container {
-    width: 80%;
-    margin: auto;
-    margin-top: 20px;
+    box-sizing: border-box;
+    margin: 1rem;
     font-family: "Open Sans", sans-serif;
+    width: auto;
 }
 
 .eea-barcode-scanning-container.eea-barcode-scanner-frontend {
@@ -89,7 +89,7 @@ General Styles
     padding-right: 12px;
     padding-top: 6px;
 
-   
+
 }
 .eea-barcode-scanning-container .eea-barcode-scanner-form-container .button, .eea-barcode-scanner-form-container .ee-button {
     width: auto;
@@ -106,7 +106,7 @@ General Styles
 
 .eea-barcode-scanning-container .eea-bs-ed-checkin-link-container {
     /*float: right;*/
-    margin-top: 20px;
+    margin-top: 1rem;
 }
 
 /**
@@ -125,6 +125,27 @@ Attendee container css
     text-align: center;
 }
 
+.eea-barcode-scanning-results {
+    background: #fff;
+    border: 2px solid #eee;
+    display: inline-block;
+    margin: 1rem 0;
+    padding: 2rem;
+    width: calc(55% + 1rem);
+}
+
+.eea-bs-registration-details-container {
+    min-height: 128px;
+    padding: 0 0 4rem calc(128px + 2rem);
+    position: relative;
+}
+
+.contact-image-wrap-div {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
 .eea-barcode-scanning-container .eea-barcode-scanner-attendee-details-container {
     display: inline-block;
     float: left;
@@ -132,25 +153,49 @@ Attendee container css
     margin-left: 20px;
 }
 
-h3.eea-bs-attendee-name, h3.eea-bs-attendee-name {
-    font-size: 2em;
-    margin: 0;
-    margin-top: -10px;
-    padding-left: 0;
+.eea-bs-attendee-name {
+    color: #666;
+    font-size: 2.25rem;
+    margin: 0 0 .5rem;
+    margin: 0 0 .5rem;
     line-height: 120%;
 }
 
 .eea-barcode-scanning-container .eea-bs-contact-email-container {
-    /*margin-top: -10px;*/
-    margin-bottom: 10px
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    letter-spacing: 1px;
 }
 
-h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
+.eea-bs-subtitle-label {
     margin: 0;
     margin-bottom: 5px;
     padding: 0;
     font-size: 1.5em;
 }
+
+.eea-bs-registration-actions-container {
+
+}
+
+.eea-barcode-scanning-container .eea-barcode-registration-links-container {
+    bottom: .5rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: row wrap;
+    left: 0;
+    margin: 0 -1rem;
+    padding: 1rem 0 0;
+    position: absolute;
+}
+
+.eea-barcode-scanning-container .eea-barcode-registration-links-container a,
+.eea-barcode-scanning-container .eea-barcode-registration-links-container button {
+    margin: 0 1rem;
+}
+
+
+
 
 .eea-barcode-scanning-container .eea-bs-status-container, .eea-bs-checkout-action-container {
     min-width: 25%;
@@ -375,12 +420,11 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selected-event-text, .eea-bs-ed-selected-event-text {
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 900;
-    margin-bottom: 0;
-    margin-top: 10px;
-    padding-bottom: 0;
-    padding-top: 0;
+    line-height: 1.1;
+    margin: .5rem 0 0;
+    padding: 0;
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selector-selected-text {
@@ -389,13 +433,12 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selected-dtt-text, .eea-bs-ed-selected-dtt-text {
+    color: #666;
     font-size: 1.5em;
     font-weight: 900;
-    color: #666;
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-bottom: 0;
-    padding-top: 0;
+    line-height: 1.1;
+    margin: .5rem 0 0;
+    padding: 0;
 }
 
 .eea-barcode-scanning-container .eea-bs-ed-selector-divider {
@@ -428,6 +471,59 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 }
 
 
+.eea-barcode-scanning-container .eea-bs-scan-input-view {
+    margin: 1rem 0 .25rem;
+}
+
+
+.eea-barcode-scanning-container .eea-bs-ed-selection-container .eea-bs-ed-selector > label {
+    display: block;
+    margin: 1rem 0 .25rem;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-selection-container .eea-bs-ed-selector > div,
+.eea-barcode-scanning-container .eea-bs-scanner-view-container .eea-banner-scanner-action-select {
+    display: inline-block;
+    margin: 0 1rem 1rem 0;
+}
+
+.eea-barcode-scanning-container .eea-bs-ed-selection-container .eea-bs-ed-selector > div {
+    width: 60%;
+}
+.eea-barcode-scanning-container .eea-bs-scanner-view-container .eea-banner-scanner-action-select {
+    width: 20%;
+}
+
+.eea-barcode-scanning-container .eea-scan-input {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+    box-sizing: border-box;
+    cursor: default;
+    margin: 0 1rem 1rem 0;
+    min-height: 38px;
+    outline: 0 !important;
+    position: relative;
+    -webkit-transition: all 100ms;
+    top: 1px;
+    transition: all 100ms;
+    width: 35%;
+}
+
+.eea-barcode-scanning-container .eea-bs-scan-input-view .components-button.is-button {
+    box-sizing: border-box;
+    line-height: unset;
+    min-height: 36px;
+    padding: 0 1rem 1px;
+    width: 3rem;
+}
+
+.eea-barcode-scanning-container .eea-bs-scan-input-view .components-button.is-button:active {
+    vertical-align: unset !important;
+}
+
+
 /**checkin result feedback**/
 .eea-barcode-scanning-container .ee-bs-barcode-checkin-result.dashicons-no, .ee-bs-barcode-checkin-result.dashicons-yes {
     display: block;
@@ -446,29 +542,43 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
 
 
 /* spinner stuff copied form common.css in wp because we need on frontend as well */
-.spinner {
-    background: url(../../../../../wp-admin/images/spinner.gif) no-repeat;
-    -webkit-background-size: 20px 20px;
-    background-size: 20px 20px;
+.eea-barcode-scanning-container .components-spinner {
+    /*background: url(../../../../../wp-admin/images/spinner.gif) no-repeat;*/
+    /*background-size: 20px 20px;*/
     display: inline-block;
-    visibility: hidden;
-    float: right;
-    vertical-align: middle;
-    opacity: 0.7;
-    filter: alpha(opacity=70);
-    width: 20px;
-    height: 20px;
-    margin: 4px 10px 0;
+    /*filter: alpha(opacity=70);*/
+    float: none !important;
+    /*height: 20px;*/
+    /*margin: 4px 10px 0;*/
+    /*opacity: 0.7;*/
+    /*vertical-align: middle;*/
+    /*visibility: hidden;*/
+    /*width: 20px;*/
+    /*z-index: 999;*/
 }
 
-.spinner.is-active {
-    visibility: visible;
-}
+/*.eea-barcode-scanning-container .components-spinner.is-active {*/
+/*    visibility: visible;*/
+/*}*/
 
-/* Media Query for screens smaller then 768px (iPad portrait)
----------------------------------------------------------------------------------------------------- */
+/* WordPress Admin Media Query Breakpoint: Tablet */
+@media screen and ( max-width: 782px ) {
 
-@media only screen and (max-width: 767px) {
+    .eea-barcode-scanning-container {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+
+    .eea-barcode-scanning-container .eea-bs-ed-selection-container .eea-bs-ed-selector > div,
+    .eea-barcode-scanning-container .eea-bs-scanner-view-container .eea-banner-scanner-action-select {
+        width: 100%;
+    }
+
+
+    .eea-barcode-scanning-container .eea-scan-input {
+        width: calc(100% - 4rem);
+    }
+
     .eea-barcode-scanning-container .eea-bs-ed-selector-divider {
         display: none;
     }
@@ -514,9 +624,7 @@ h4.eea-bs-subtitle-label, h4.eea-bs-subtitle-label {
         visibility: hidden;
         width: 0px;
     }
-    .eea-barcode-scanning-container {
-        width: 100%;
-    }
+
     .eea-barcode-scanning-container .eea-barcode-scanner-form-container {
         width: 98%;
     }
