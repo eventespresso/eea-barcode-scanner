@@ -1,6 +1,7 @@
 /**
  * External Imports
  */
+import { Fragment } from '@wordpress/element';
 import { isModelEntityOfModel } from '@eventespresso/validators';
 import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
@@ -53,12 +54,16 @@ export function RegistrationActionsView( {
 		/>;
 	};
 	return (
-		<div className={ 'eea-bs-registration-actions-container' }>
-			{ getTransactionOwing() }
-			{ getRegistrationStatus() }
-			{ getCheckInAction() }
+		<Fragment>
+			<div className={ 'eea-bs-registration-status-container' }>
+				{ getTransactionOwing() }
+				{ getRegistrationStatus() }
+			</div>
+			<div className={ 'eea-bs-registration-actions-container' }>
+				{ getCheckInAction() }
+			</div>
 			<RegistrationLinks registration={ registration } />
-		</div>
+		</Fragment>
 	);
 }
 
