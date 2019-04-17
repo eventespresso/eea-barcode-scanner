@@ -24,14 +24,14 @@ function RegistrationDetailsView( {
 } ) {
 	return (
 		<div className={ 'eea-bs-registration-details-container' }>
-			<ContactDetails
-				fullName={ getAttendeeName( attendee ) }
-				email={ attendee.email }
-			/>
 			<AvatarImage
 				avatarUrl={ attendee.userAvatar }
 				avatarHeight={ 128 }
 				avatarWidth={ 128 }
+			/>
+			<ContactDetails
+				fullName={ getAttendeeName( attendee ) }
+				email={ attendee.email }
 			/>
 			<RegistrationActionsView
 				registration={ registration }
