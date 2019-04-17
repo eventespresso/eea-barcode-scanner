@@ -157,10 +157,6 @@ export class ScannerView extends Component {
 	render() {
 		return (
 			<div className={ 'eea-bs-scanner-view-container' }>
-				<AllRegistrationLink
-					DTT_ID={ this.props.datetimeId }
-					EVT_ID={ this.props.eventId }
-				/>
 				<ScanInputView
 					onScannerComplete={ this.onScannerComplete }
 					onScannerError={ this.onScannerError }
@@ -171,6 +167,10 @@ export class ScannerView extends Component {
 					onManualInput={ this.onManualInput }
 				/>
 				{ this.getCheckinView() }
+				<AllRegistrationLink
+					DTT_ID={ this.props.datetimeId }
+					EVT_ID={ this.props.eventId }
+				/>
 			</div>
 		);
 	}
@@ -215,8 +215,8 @@ export default compose( [
 			0;
 		return {
 			checkin: hasCheckInState( checkinState ) &&
-				datetimeId &&
-				mainRegistrationId ?
+			datetimeId &&
+			mainRegistrationId ?
 				getLatestCheckin( mainRegistrationId, datetimeId ) :
 				null,
 		};
