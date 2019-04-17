@@ -17,6 +17,7 @@ const ScanInput = forwardRef( ( props, ref ) => {
 		ref={ ref }
 		type={ 'text' }
 		id={ `eea-scan-input-${ props.instanceId }` }
+		className={ 'eea-scan-input' }
 		onChange={ onChange }
 		{ ...otherProps }
 	/>;

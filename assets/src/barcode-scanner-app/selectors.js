@@ -42,6 +42,7 @@ const getEventSelector = ( currentStep, onChange, eventId ) => {
 			onSelect={ onChange }
 			selected={ eventId }
 			queryData={ DEFAULT_QUERY_DATA }
+			className={ 'eea-bs-ed-event-select' }
 		/> : null;
 };
 
@@ -57,6 +58,7 @@ const getDatetimeSelector = ( currentStep, onChange, eventId, datetimeId ) => {
 				forEventId: eventId,
 				showExpired: true,
 			} }
+			className={ 'eea-bs-ed-datetime-select' }
 		/> : null;
 };
 
