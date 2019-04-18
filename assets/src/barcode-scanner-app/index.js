@@ -140,9 +140,7 @@ class BarcodeApp extends Component {
 	setActiveStep = ( currentStep ) => {
 		const bubbleData = this.getBubbleData();
 		for ( const slug in bubbleData ) {
-			if ( bubbleData.hasOwnProperty( slug ) ) {
-				bubbleData[ slug ].active = slug === currentStep;
-			}
+			bubbleData[ slug ].active = slug === currentStep;
 		}
 		return bubbleData;
 	};
