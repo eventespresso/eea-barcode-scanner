@@ -117,7 +117,7 @@ export class ScannerView extends Component {
 	}
 
 	setRegistrationCode( registrationCode ) {
-		const change = { registrationCode };
+		const change = { registrationCode: registrationCode.toLowerCase() };
 		if ( this.state.registrationCode !== '' && registrationCode === '' ) {
 			change.doReset = true;
 		}
