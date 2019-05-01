@@ -8,7 +8,7 @@ import { values } from 'lodash';
 /**
  * Internal Imports
  */
-import './status-circle.css';
+import './style.css';
 
 export const statusSizes = {
 	128: 'circle-size-128',

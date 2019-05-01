@@ -1,7 +1,6 @@
 /**
  * External Imports
  */
-import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { values } from 'lodash';
@@ -9,8 +8,22 @@ import { values } from 'lodash';
 /**
  * Internal Imports
  */
-import { StatusCircle, statusSizes } from './';
+import StatusCircle, { statusSizes } from '../status-circle';
 
+/**
+ * A component for a status information section for the given props.
+ *
+ * @param {string} statusLabel  The label for the status.
+ * @param {string} statusValue  The represented value for the status.
+ * @param {string} circleSize	The circle size css classname (should be one of
+ *                              statusSizes from the status-circle component.
+ * @param {string} className	Any custom css class to append to this component.
+ * @param {*} 	   children     Any children to embed in the section container.
+ * @param {string} statusCode	The status code for the status represented in
+ * 								this section.
+ * @return {*}
+ * @constructor
+ */
 const StatusSection = ( {
 	statusLabel,
 	statusValue,
@@ -28,7 +41,10 @@ const StatusSection = ( {
 		<section className={ containerClass }>
 			<span className={ 'ee-status-section-label' }>
 				{ statusLabel }
-			</span>{ statusValue }
+			</span>
+			<span className={ 'ee-status-section-value' }>
+				{ statusValue }
+			</span>
 			{ children }
 			<StatusCircle { ...circleProps } />
 		</section>
