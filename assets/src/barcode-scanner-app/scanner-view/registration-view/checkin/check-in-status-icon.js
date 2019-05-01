@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
  * Internal imports
  */
 import {
-	getCheckInIconString,
-	getCheckInIconClassName,
+	getCheckinStatusIcon,
+	getCheckinStatusClassName,
 } from './get-check-in-status-configuration';
 
 const CheckInStatusIcon = ( { checkinEntity } ) => {
 	return <Dashicon
-		className={ getCheckInIconClassName( checkinEntity ) }
-		icon={ getCheckInIconString( checkinEntity ) }
+		className={ getCheckinStatusClassName( checkinEntity ) }
+		icon={ getCheckinStatusIcon( checkinEntity ) }
 	/>;
 };
 

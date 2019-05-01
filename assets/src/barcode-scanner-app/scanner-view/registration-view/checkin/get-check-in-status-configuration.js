@@ -13,9 +13,9 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 		checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_NEVER;
 	let checkInStatusText,
 		checkInActionText,
-		checkInClassName,
-		checkInIcon,
-		checkInIconClassName;
+		checkInActionClassName,
+		checkInStatusIcon,
+		checkInStatusClassName;
 	switch ( status ) {
 		case checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_NEVER:
 			checkInStatusText = __(
@@ -23,9 +23,9 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 				'event_espresso'
 			);
 			checkInActionText = __( 'Check In', 'event_espresso' );
-			checkInClassName = 'ee-green';
-			checkInIconClassName = 'ee-red';
-			checkInIcon = 'no-alt';
+			checkInActionClassName = 'ee-green';
+			checkInStatusClassName = 'ee-red';
+			checkInStatusIcon = 'no-alt';
 			break;
 		case checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_IN:
 			checkInStatusText = sprintf(
@@ -33,9 +33,9 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 				checkInEntity.timestamp
 			);
 			checkInActionText = __( 'Check Out', 'event_espresso ' );
-			checkInClassName = 'ee-red';
-			checkInIconClassName = 'ee-green';
-			checkInIcon = 'yes';
+			checkInActionClassName = 'ee-red';
+			checkInStatusClassName = 'ee-green';
+			checkInStatusIcon = 'yes';
 			break;
 		case checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_OUT:
 			checkInStatusText = sprintf(
@@ -43,9 +43,9 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 				checkInEntity.timestamp
 			);
 			checkInActionText = __( 'Check In', 'event_espresso ' );
-			checkInClassName = 'ee-green';
-			checkInIconClassName = 'ee-red';
-			checkInIcon = 'no-alt';
+			checkInActionClassName = 'ee-green';
+			checkInStatusClassName = 'ee-red';
+			checkInStatusIcon = 'no-alt';
 			break;
 		default:
 			checkInStatusText = __(
@@ -53,17 +53,17 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 				'event_espresso'
 			);
 			checkInActionText = __( 'Check In Anyways', 'event_espresso ' );
-			checkInClassName = 'ee-yellow';
-			checkInIconClassName = 'ee-red';
-			checkInIcon = 'no-alt';
+			checkInActionClassName = 'ee-yellow';
+			checkInStatusClassName = 'ee-red';
+			checkInStatusIcon = 'no-alt';
 			break;
 	}
 	return {
 		checkInStatusText,
 		checkInActionText,
-		checkInClassName,
-		checkInIcon,
-		checkInIconClassName,
+		checkInActionClassName,
+		checkInStatusIcon,
+		checkInStatusClassName,
 	};
 };
 
@@ -75,14 +75,14 @@ export const getCheckInActionText = memize( ( checkInEntity ) => {
 	return getCheckInStatusConfiguration( checkInEntity ).checkInActionText;
 } );
 
-export const getCheckInClassName = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInClassName;
+export const getCheckinActionClassName = memize( ( checkInEntity ) => {
+	return getCheckInStatusConfiguration( checkInEntity ).checkInActionClassName;
 } );
 
-export const getCheckInIconString = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInIcon;
+export const getCheckinStatusIcon = memize( ( checkInEntity ) => {
+	return getCheckInStatusConfiguration( checkInEntity ).checkInStatusIcon;
 } );
 
-export const getCheckInIconClassName = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInIconClassName;
+export const getCheckinStatusClassName = memize( ( checkInEntity ) => {
+	return getCheckInStatusConfiguration( checkInEntity ).checkInStatusClassName;
 } );

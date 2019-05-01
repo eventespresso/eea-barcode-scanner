@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
-import { Fragment } from '@wordpress/element';
 
 /**
  * Internal imports
