@@ -7,10 +7,25 @@ import { sprintf } from '@eventespresso/i18n';
 import memize from 'memize';
 import { __ } from '@wordpress/i18n';
 
-const getCheckInStatusConfiguration = ( checkInEntity ) => {
-	const status = isModelEntityOfModel( checkInEntity, 'checkin' ) ?
+/**
+ * Helper for getting checkin status configuration strings.
+ *
+ * @param {BaseEntity|null} checkInEntity	A checkin entity or null.
+ * @param {boolean} 		force			If true and checkInEntity is null
+ * 											this returns strings related to
+ * 											forcing a checkin.
+ * @return {Object}  An configuration object.
+ */
+const getCheckInStatusConfiguration = ( checkInEntity, force = false ) => {
+	let status = isModelEntityOfModel( checkInEntity, 'checkin' ) ?
 		checkInEntity.in :
 		checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_NEVER;
+	status = [
+		checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_NEVER,
+		checkInModel.CHECKIN_STATUS_ID.STATUS_CHECKED_OUT,
+	].includes( status ) && force ?
+		null :
+		status;
 	let checkInStatusText,
 		checkInActionText,
 		checkInActionClassName,
@@ -67,22 +82,87 @@ const getCheckInStatusConfiguration = ( checkInEntity ) => {
 	};
 };
 
-export const getCheckInStatusText = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInStatusText;
-} );
+/**
+ * Returns user friendly checkin status text for the current checkin status.
+ *
+ * @param {BaseEntity|null}	Checkin entity or null
+ * @param {boolean} force	If true and checkInEntity is null this returns
+ * 							strings related to forcing a checkin.
+ * @return {string} A user-friendly string describing the checkin status.
+ * @type {memoized}
+ */
+export const getCheckInStatusText = memize(
+	( checkInEntity, force = false ) => getCheckInStatusConfiguration(
+		checkInEntity,
+		force,
+	).checkInStatusText
+);
 
-export const getCheckInActionText = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInActionText;
-} );
+/**
+ * Returns user friendly checkin action text for the current checkin status.
+ *
+ * "Action text" refers to describing toggling the checkin status for the given
+ * status.  So for example if the provided checkin status is never checked in or
+ * checked out, the action text would be "Check In"
+ *
+ * @param {BaseEntity|null}	Checkin entity or null
+ * @param {boolean} force	If true and checkInEntity is null this returns
+ * 							strings related to forcing a checkin.
+ * @return {string} A user friendly string describing a the action the user can
+ * 					take on this checkin record.
+ * @type {memoized}
+ */
+export const getCheckInActionText = memize(
+	( checkInEntity, force = false ) => getCheckInStatusConfiguration(
+		checkInEntity,
+		force
+	).checkInActionText
+);
 
-export const getCheckinActionClassName = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInActionClassName;
-} );
+/**
+ * Returns a css class name for the checkin action.
+ *
+ * @param {BaseEntity|null}	Checkin entity or null
+ * @param {boolean} force	If true and checkInEntity is null this returns
+ * 							strings related to forcing a checkin.
+ * @return {string} The css class for the action on this checkin.
+ * @type {memoized}
+ */
+export const getCheckInActionClassName = memize(
+	( checkInEntity, force = false ) => getCheckInStatusConfiguration(
+		checkInEntity,
+		force
+	).checkInActionClassName
+);
 
-export const getCheckinStatusIcon = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInStatusIcon;
-} );
+/**
+ * Returns a dashicon reference for the checkin status.
+ *
+ * @param {BaseEntity|null}	Checkin entity or null
+ * @param {boolean} force	If true and checkInEntity is null this returns
+ * 							strings related to forcing a checkin.
+ * @return {string} The dashicon reference for this checkin status.
+ * @type {memoized}
+ */
+export const getCheckInStatusIcon = memize(
+	( checkInEntity, force = false ) => getCheckInStatusConfiguration(
+		checkInEntity,
+		force
+	).checkInStatusIcon
+);
 
-export const getCheckinStatusClassName = memize( ( checkInEntity ) => {
-	return getCheckInStatusConfiguration( checkInEntity ).checkInStatusClassName;
-} );
+/**
+ * Returns css class string for the current checkin status.
+ *
+ * @param {BaseEntity|null}	Checkin entity or null
+ * @param {boolean} force	If true and checkInEntity is null this returns
+ * 							strings related to forcing a checkin.
+ * @return {string} The css class name for the current checkin status.
+ * @type {memoized}
+ */
+export const getCheckInStatusClassName = memize(
+	( checkInEntity, force = false ) => getCheckInStatusConfiguration(
+		checkInEntity,
+		force
+	).checkInStatusClassName
+);
