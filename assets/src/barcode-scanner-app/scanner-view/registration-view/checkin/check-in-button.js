@@ -7,13 +7,13 @@ import PropTypes from 'prop-types';
 
 import {
 	getCheckInActionText,
-	getCheckinActionClassName,
+	getCheckInActionClassName,
 } from './get-check-in-status-configuration';
 
 const CheckInButton = ( { checkinEntity, onClick } ) => {
 	const buttonText = getCheckInActionText( checkinEntity );
 	const cssClass = classnames(
-		getCheckinActionClassName( checkinEntity ),
+		getCheckInActionClassName( checkinEntity ),
 		'ee-button',
 		'ee-roundish'
 	);
