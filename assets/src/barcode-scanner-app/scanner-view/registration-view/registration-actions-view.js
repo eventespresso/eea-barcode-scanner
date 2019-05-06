@@ -7,13 +7,14 @@ import { withSelect } from '@wordpress/data';
 import { Spinner } from '@wordpress/components';
 import { statusModel } from '@eventespresso/model';
 import PropTypes from 'prop-types';
+import { withLatestCheckin } from '@eventespresso/higher-order-components';
 
 /**
  * Internal Imports
  */
 import TransactionOwing from './transaction-owing';
 import RegistrationStatus from './registration-status';
-import { CheckInAction, withLatestCheckin } from './checkin';
+import { CheckInAction } from './checkin';
 import RegistrationLinks from './registration-links';
 
 const isRegistration = ( registration ) =>

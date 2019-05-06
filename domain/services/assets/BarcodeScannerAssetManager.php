@@ -13,14 +13,21 @@ class BarcodeScannerAssetManager extends AssetManager
 {
 
     const JS_HANDLE_SCANNER_COMPATIBILITY = 'eea-scanner-detection-cps';
+
     const JS_HANDLE_SCANNER_DETECTION = 'eea-scanner-detection';
+
     const JS_HANDLE_CHOSEN = 'eea-bs-chosen';
+
     const JS_HANDLE_SCANNER_DETECTION_CORE = 'eea-scanner-detection-core';
+
     const CSS_HANDLE_CHOSEN = 'eea-bs-chosen';
+
     const CSS_HANDLE_SCANNER_DETECTION = 'eea-scanner-detection-css';
 
     const JS_HANDLE_SCANNER_APP = 'eea-bs-scanner-app-js';
+
     const CSS_HANDLE_SCANNER_APP = 'eea-bs-scanner-app-css';
+
     const ASSET_CHUNK_NAME = 'barcode-scanner-app';
 
 
@@ -87,7 +94,7 @@ class BarcodeScannerAssetManager extends AssetManager
                 $this->domain->assetNamespace(),
                 self::ASSET_CHUNK_NAME
             ),
-            [ CoreAssetManager::JS_HANDLE_COMPONENTS, 'wp-notices' ]
+            [CoreAssetManager::JS_HANDLE_COMPONENTS, CoreAssetManager::JS_HANDLE_HOCS, 'wp-notices']
         )->setRequiresTranslation();
     }
 
@@ -120,7 +127,7 @@ class BarcodeScannerAssetManager extends AssetManager
                 $this->domain->assetNamespace(),
                 self::ASSET_CHUNK_NAME
             ),
-            [ 'wp-components', CoreAssetManager::CSS_HANDLE_COMPONENTS ]
+            ['wp-components', CoreAssetManager::CSS_HANDLE_COMPONENTS]
         );
     }
 }

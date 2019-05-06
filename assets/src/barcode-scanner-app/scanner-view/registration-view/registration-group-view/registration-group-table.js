@@ -10,12 +10,12 @@ import 'react-table/react-table.css';
 import PropTypes from 'prop-types';
 import { Spinner } from '@wordpress/components';
 import { compose, ifCondition } from '@wordpress/compose';
+import { withLatestCheckin } from '@eventespresso/higher-order-components';
 
 /**
  * Internal imports
  */
 import {
-	withLatestCheckin,
 	CheckInButton,
 	CheckInTimestamp,
 	CheckInStatusIcon,

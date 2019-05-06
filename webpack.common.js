@@ -11,7 +11,7 @@ const externals = {
 	'@eventespresso/helpers': 'eejs.helpers',
 	'@eventespresso/model': 'eejs.model',
 	'@eventespresso/value-objects': 'eejs.valueObjects',
-	'@eventespresso/hocs': 'eejs.hocs',
+	'@eventespresso/higher-order-components': 'eejs.hocs',
 	'@eventespresso/editor-hocs': 'eejs.editorHocs',
 	'@wordpress/element': 'wp.element',
 	'@wordpress/components': 'wp.components',

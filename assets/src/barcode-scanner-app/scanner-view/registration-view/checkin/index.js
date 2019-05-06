@@ -1,7 +1,6 @@
 export { default as CheckInButton } from './check-in-button';
 export { default as CheckInAction } from './check-in-action';
 export * from './get-check-in-status-configuration';
-export { default as withLatestCheckin } from './with-latest-checkin';
 export { default as CheckInTimestamp } from './check-in-timestamp';
 export { default as CheckInStatusIcon } from './check-in-status-icon';
 export { default as CheckInResult } from './check-in-result';
