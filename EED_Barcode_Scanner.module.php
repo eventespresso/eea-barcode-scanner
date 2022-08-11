@@ -347,7 +347,7 @@ class EED_Barcode_Scanner extends EED_Module
                 '',
                 'eea-banner-scanner-action-select'
             ),
-            'button_class'    => is_admin() ? 'button button-primary' : 'ee-roundish ee-green ee-button',
+            'button_class'    => is_admin() ? 'button button--primary' : 'ee-roundish ee-green ee-button',
         );
 
         // First thing to determine is if we have all the details needed to display a specific record.

@@ -48,9 +48,6 @@ $frontend_class = is_admin() ? '' : ' eea-barcode-scanner-frontend';
             </div>
             <span class="spinner"></span>
         </div>
-        <!--<div class="eea-bs-ed-selector">
-            <span class="eea-bs-ed-selector-divider"<?php echo $divider_display; ?>></span>
-        </div> -->
         <div class="eea-bs-ed-selector eea-bs-dtt-selection">
             <div class="eea-bs-dtt-selection-container">
                 <?php echo $dtt_selector; ?>
@@ -79,11 +76,11 @@ $frontend_class = is_admin() ? '' : ' eea-barcode-scanner-frontend';
 
             <!-- on with the form -->
             <?php echo $action_selector; ?>
-            <input type="text" class="eea-barcode-scan-code" name="eea_barcode_scan_code" value="" placeholder="<?php _e('Scan or enter barcode here.', 'event_espresso'); ?>">
+            <input type="text" class="eea-barcode-scan-code ee-input-width--big" name="eea_barcode_scan_code" value=""
+                   placeholder="<?php _e('Scan or enter barcode here.', 'event_espresso'); ?>">
             <input class="<?php echo $button_class; ?>" type="submit" value="<?php _e('Go', 'event_espresso'); ?>">
+            <span class="spinner"></span>
         </form>
-        <span class="spinner"></span>
-        <div style="clear:both"></div>
     </div>
     <div class="eea-barcode-scanning-results">
         <!-- used by js -->
