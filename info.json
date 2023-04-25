@@ -21,7 +21,5 @@
   ],
   "srcBuildFolderName": "eea-barcode-scanner",
   "textDomain": "event_espresso",
-  "remoteNamesToPushTo": [
-    "demoee"
-  ]
+  "remoteNamesToPushTo": []
 }
