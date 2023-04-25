@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Help Tab for barcode scanning default page.
  */
+
 ?>
 <p><strong><?php _e('Front-end Ticket Scanning Page', 'event_espresso'); ?></strong></p>
 <p><?php _e('Tickets can be scanned from any page of your website by adding this shortcode to any WordPress page:', 'event_espresso'); ?><br>

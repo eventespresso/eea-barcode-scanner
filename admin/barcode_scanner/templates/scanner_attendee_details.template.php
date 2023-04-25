@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template for the attendee details section for barcode scanner.
  *
@@ -52,7 +53,7 @@ $att_link = sprintf(__('%1$sView Contact Details%2$s', 'event_espresso'), '<a hr
         <div class="eea-barcode-scanner-attendee-details-container">
             <h3 class="eea-bs-attendee-name">
                 <?php $contact->e_full_name(); ?><?php if ($registration->is_primary_registrant()) :
-?><span class="dashicons dashicons-star-filled"></span><?php
+                    ?><span class="dashicons dashicons-star-filled"></span><?php
                 endif; ?>
             </h3>
             <section class="eea-bs-contact-email-container">

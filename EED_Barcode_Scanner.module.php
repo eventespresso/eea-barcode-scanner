@@ -10,8 +10,6 @@
  */
 class EED_Barcode_Scanner extends EED_Module
 {
-
-
     /**
      * The constant used for referencing the lookup action
      *
@@ -189,7 +187,8 @@ class EED_Barcode_Scanner extends EED_Module
         );
 
         // is the shortcode or widget in play || is_admin?
-        if (EED_Barcode_Scanner::$shortcode_active
+        if (
+            EED_Barcode_Scanner::$shortcode_active
             || (
                 is_admin()
                 && EE_Registry::instance()->REQ->get('page') == 'eea_barcode_scanner'
@@ -247,10 +246,12 @@ class EED_Barcode_Scanner extends EED_Module
             ),
         );
 
-        if (EE_Registry::instance()->CAP->current_user_can(
-            'ee_read_checkins',
-            'barcode_scanner_simple_lookup'
-        )) {
+        if (
+            EE_Registry::instance()->CAP->current_user_can(
+                'ee_read_checkins',
+                'barcode_scanner_simple_lookup'
+            )
+        ) {
             $action_options[3] =
                 array(
                     'text' => __('Search by Keyword', 'event_espresso'),
@@ -356,7 +357,8 @@ class EED_Barcode_Scanner extends EED_Module
         $this->_response['data']['regcode'] = EE_Registry::instance()->REQ->get('ee_reg_code');
         $doing_lookup                       = false;
 
-        if (! empty($this->_response['data']['EVT_ID'])
+        if (
+            ! empty($this->_response['data']['EVT_ID'])
             && ! empty($this->_response['data']['DTT_ID'])
             && ! empty($this->_response['data']['regcode'])
         ) {
@@ -365,7 +367,8 @@ class EED_Barcode_Scanner extends EED_Module
             $reg_content = $this->_scanner_action_lookup_attendee();
 
 
-            if ($event instanceof EE_Event
+            if (
+                $event instanceof EE_Event
                 && $dtt instanceof EE_Datetime
                 && (
                     ! isset($this->_response['error'])

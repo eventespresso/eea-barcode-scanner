@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Help Tab for barcode scanning default page.
  */
+
 ?>
 <p><strong><?php _e('Scanning Barcodes', 'event_espresso'); ?></strong></p>
 <p><strong><?php _e('Step 1:', 'event_espresso'); ?></strong> <?php _e('Click on the dropdown and locate your event and click on it.', 'event_espresso'); ?></p>

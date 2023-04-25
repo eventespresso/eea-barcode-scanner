@@ -12,6 +12,7 @@
  *
  * ------------------------------------------------------------------------
  */
+
 // define the plugin directory path and URL
 define('EE_BARCODE_SCANNER_BASENAME', plugin_basename(EE_BARCODE_SCANNER_PLUGIN_FILE));
 define('EE_BARCODE_SCANNER_PATH', plugin_dir_path(__FILE__));
@@ -19,7 +20,6 @@ define('EE_BARCODE_SCANNER_URL', plugin_dir_url(__FILE__));
 define('EE_BARCODE_SCANNER_ADMIN', EE_BARCODE_SCANNER_PATH . 'admin' . DS . 'barcode_scanner' . DS);
 class EE_Barcode_Scanner extends EE_Addon
 {
-
     /**
      * class constructor
      */

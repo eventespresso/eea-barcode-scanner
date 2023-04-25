@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class EES_Espresso_Barcode_Scanner
  *
@@ -9,52 +10,47 @@
  */
 class EES_Espresso_Barcode_Scanner extends EES_Shortcode
 {
-
-
-
     /**
      *  set_hooks - for hooking into EE Core, modules, etc
      *
-     *  @access     public
-     *  @return     void
+     * @access     public
+     * @return     void
      */
     public static function set_hooks()
     {
     }
 
 
-
     /**
      *  set_hooks_admin - for hooking into EE Admin Core, modules, etc
      *
-     *  @access     public
-     *  @return     void
+     * @access     public
+     * @return     void
      */
     public static function set_hooks_admin()
     {
     }
 
 
-
     /**
      *  set_definitions
      *
-     *  @access     public
-     *  @return     void
+     * @access     public
+     * @return     void
      */
     public static function set_definitions()
     {
     }
 
 
-
     /**
      *  run - initial shortcode module setup called during "wp_loaded" hook
-     *  this method is primarily used for loading resources that will be required by the shortcode when it is actually processed
+     *  this method is primarily used for loading resources that will be required by the shortcode when it is actually
+     *  processed
      *
-     *  @access     public
-     *  @param   WP $WP
-     *  @return     void
+     * @access     public
+     * @param WP $WP
+     * @return     void
      */
     public function run(WP $WP)
     {
@@ -65,18 +61,15 @@ class EES_Espresso_Barcode_Scanner extends EES_Shortcode
     }
 
 
-
     /**
-     *    process_shortcode
+     * [ESPRESSO_EE_BARCODE_SCANNER]
      *
-     *    [ESPRESSO_EE_BARCODE_SCANNER]
-     *
-     * @access  public
-     * @param   array $attributes
-     * @return  void
+     * @param array|string $attributes
+     * @return string
+     * @throws EE_Error
      */
-    public function process_shortcode($attributes = array())
+    public function process_shortcode($attributes = []): string
     {
-        EED_Barcode_Scanner::instance()->scanner_form();
+        return EED_Barcode_Scanner::instance()->scanner_form(false);
     }
 }

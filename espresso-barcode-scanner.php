@@ -1,4 +1,5 @@
 <?php
+
 /*
   Plugin Name: Event Espresso - Barcode Scanner (EE 4.9.46+)
   Plugin URI: http://www.eventespresso.com
